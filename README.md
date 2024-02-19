@@ -2,7 +2,7 @@
 
 ### Hello there! 👋
 
-Welcome to the project repository of Group 2 in CMPE352 2024.
+Welcome to the project repository of Group 2 in CMPE352 2024. The wiki page of our repository can be found [here](https://github.com/bounswe/bounswe2024group2/wiki).
 
 ### People 
 [Halil İbrahim Kasapoğlu](https://github.com/bounswe/bounswe2024group2/wiki/Halil-%C4%B0brahim-Kasapo%C4%9Flu)
