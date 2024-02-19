@@ -13,7 +13,7 @@ Welcome to the project repository of Group 2 in CMPE352 2024. The wiki page of o
 
 [Mahmut Buğra Mert](https://github.com/bounswe/bounswe2024group2/wiki/Mahmut-Bu%C4%9Fra-Mert)
 
-İrem Nur Yıldırım
+[İrem Nur Yıldırım]()
 
 [Furkan Şenkal](https://github.com/bounswe/bounswe2024group2/wiki/Furkan-%C5%9Eenkal)
 
