@@ -1,0 +1,44 @@
+name: Weekly Meeting Notes
+description: Document weekly meeting notes to the wiki 
+title: "Add Meeting Notes XX"
+labels: ["wiki", "documentation", "priority: medium", "workload: 2", "issue template"]
+assignees: []
+projects: ["bounswe/36"]
+body:
+  - type: textarea
+    id: meeting-details
+    attributes: 
+      label: Meeting Details
+      description: Provide details of the meeting 
+      value: |
+        - Meeting XX
+        - Date: XX.XX.XXXX
+        - Note Taker: @XX
+        - Platform: Discord
+  - type: textarea
+    id: issue-description
+    attributes: 
+      label: Description
+      description: Provide a description of the meeting notes
+      value: "The meeting, for which details are provided above, has concluded, and meeting notes have been taken down by the note-taker. It is necessary to add them to the respective wiki page and document them there. This page should be displayed in the sidebar for easy access."
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: List of acceptance criteria
+      options:
+        - label: Wiki page initialized
+        - label: Notes documented
+        - label: Wiki page is accessible via the sidebar
+  - type: input
+    id: reviewer
+    attributes:
+      label: Reviewer
+      description: Who will review this task
+      placeholder: ex. @Halil-Ibrahim-Kasapoglu
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline
+      description: When is the deadline for this task
+      placeholder: ex. 01 Feb 2001
