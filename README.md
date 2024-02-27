@@ -17,7 +17,7 @@ Welcome to the project repository of Group 2 in CMPE352 2024. The wiki page of o
 
 [Furkan Şenkal](https://github.com/bounswe/bounswe2024group2/wiki/Furkan-%C5%9Eenkal)
 
-[Muhammed Erkam Gökçepınar](https://github.com/bounswe/bounswe2024group2/wiki/Muhammed-Erkam-G%C3%B6kcep%C4%B1nar)
+[Muhammed Erkam Gökcepınar](https://github.com/bounswe/bounswe2024group2/wiki/Muhammed-Erkam-G%C3%B6kcep%C4%B1nar)
 
 [Osman Yasin Baştuğ](https://github.com/bounswe/bounswe2024group2/wiki/Yasin-Ba%C5%9Ftu%C4%9F)
 
