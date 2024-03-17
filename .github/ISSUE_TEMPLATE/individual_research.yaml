@@ -1,0 +1,42 @@
+name: Individual Research
+description: Requirement for an individual to conduct a research
+title: "Research XTOPICX - XNAMEX"
+labels: ["research", "priority: medium", "workload: 2", "issue template"]
+assignees: []
+projects: ["bounswe/36"]
+body:
+  - type: textarea
+    id: description
+    attributes: 
+      label: Description
+      description: Provide a description of the task
+      value: "There is a need for XNAMEX to conduct on research on the listed topics below. There are several materials discovered that needs to be consumed to complete the research."
+  - type: textarea
+    id: changing-sections
+    attributes: 
+      label: Research Topics
+      description: List of topics to research on
+      value: |
+        - XWikidataX: XLearnFundamentalsOfWikidataAndItsApiX
+        - XSPARQLX: XBeAbleToWriteGoodQueriesX 
+  - type: textarea
+    id: required-changes
+    attributes: 
+      label: Materials to Consume
+      description: Provide detailed information about the materials that needs to be consumed
+      value: |
+        - [XX](url)
+        - [XX](url)
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: List of acceptance criteria
+      options:
+        - label: Materials are consumed
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline
+      description: When is the deadline for this task
+      placeholder: ex. 01 Feb 2001
