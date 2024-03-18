@@ -29,5 +29,5 @@ Our project aims to create a platform that allows people to share their thoughts
 
 ## Project Status 
 
-We have created our requirements about our project and it can be seen [here](https://github.com/bounswe/bounswe2024group2/wiki/Requirements-(Draft)).
+We have created our requirements about our project and it can be seen [here](https://github.com/bounswe/bounswe2024group2/wiki/Requirements).
 Also the project plan, user scenarios and mockups can be accessed from the [wiki page](https://github.com/bounswe/bounswe2024group2/wiki).
