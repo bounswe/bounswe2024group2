@@ -1,4 +1,5 @@
-# 2024 CMPE352 Group 2
+# SemanticFlix - 2024 CMPE352 Group 2
+![Icon](https://github.com/bounswe/bounswe2024group2/assets/36034222/30e12948-b3ba-45fa-bcd1-242041ee5821)
 
 ## 👋 Hello there! 
 
@@ -6,7 +7,7 @@ Welcome to the project repository of Group 2 in CMPE352 2024. Our team consists 
 
 ## 📋 About Project
 
-Our project aims to create a platform which provides people to share their thoughts and comments about films, create film lists and learn some information about films, actors and directors. 
+Our project aims to create a platform that allows people to share their thoughts and comments about films, create film lists, and learn some information about films, actors, and directors by utilizing the power of the semantic web. 
 
 ## 👧👦 Team Members 
 - [Halil İbrahim Kasapoğlu](https://github.com/bounswe/bounswe2024group2/wiki/Halil-%C4%B0brahim-Kasapo%C4%9Flu)
