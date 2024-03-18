@@ -3,7 +3,7 @@
 
 ## 👋 Hello there! 
 
-Welcome to the project repository of Group 2 in CMPE352 2024. Our team consists of students who are attending Bogazici University's Cmpe352 Fundamentals of Software Engineering course. The wiki page of our repository can be found [here](https://github.com/bounswe/bounswe2024group2/wiki).
+Welcome to the project repository of Group 2 in CMPE352 2024. Our team consists of students who are attending Bogazici University's CMPE352 Fundamentals of Software Engineering course. The wiki page of our repository can be found [here](https://github.com/bounswe/bounswe2024group2/wiki).
 
 ## 📋 About Project
 
