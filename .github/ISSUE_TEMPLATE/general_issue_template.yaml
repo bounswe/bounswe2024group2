@@ -1,0 +1,49 @@
+name: Task Tracking Issue
+description: Use this template to track tasks and their review process.
+title: "Task Tracking: [Task Title]"
+labels: ["task", "tracking"]
+assignees: []
+projects: ["bounswe/36"]
+body:
+  - type: markdown
+    attributes:
+      value: "### Description\nThe issue description.\n"
+
+  - type: checkboxes
+    id: tasks
+    attributes:
+      label: Tasks
+      options:
+        - label: Task 1
+          required: false
+        - label: Task 2
+          required: false
+        - label: Task 3
+          required: false
+
+  - type: input
+    id: estimated-time
+    attributes:
+      label: Estimated Time
+      description: Time estimation in minutes.
+      placeholder: e.g., 120
+    validations:
+      required: true
+
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline
+      description: Please specify the deadline for this task.
+      placeholder: DD/MM/YYYY - HH:MM
+    validations:
+      required: true
+
+  - type: input
+    id: reviewer
+    attributes:
+      label: Reviewer
+      description: "@mention the person responsible for reviewing this task, and specify the review deadline."
+      placeholder: "@username - DD/MM/YYYY - HH:MM"
+    validations:
+      required: true
