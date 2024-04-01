@@ -1,49 +1,46 @@
-name: "Issue Name"
-description: "Use this template to track tasks and their review process."
-title: "Issue: [There is an Issue]"
-labels: ["task", "tracking"]
+name: "Issue"
+description: "Somethings have to be done"
+title: "Do something please"
+labels: ["research", "priority: medium", "workload: 2", "issue template"]
 assignees: []
 projects: ["bounswe/36"]
 body:
-  - type: input
-    attributes:
-      value: "### Description\nThe issue description.\n"
-
+  - type: textarea
+    id: description
+    attributes: 
+      label: Description
+      description: Provide a description of the task
+      value: "You need to do this, do that..."
+  - type: textarea
+    id: required-changes
+    attributes: 
+      label: Materials to Consume
+      description: Provide detailed information about the materials that needs to be consumed
+      value: |
+        - [XX](url)
+        - [XX](url)
   - type: checkboxes
-    id: tasks
+    id: acceptance
     attributes:
-      label: Tasks
+      label: Acceptance Criteria
+      description: List of acceptance criteria
       options:
-        - label: Task 1
-          required: true
-        - label: Task 2
-          required: false
-        - label: Task 3
-          required: false
-
+        - label: Materials are consumed
   - type: input
-    id: estimated-time
-    attributes:
-      label: Estimated Time
-      description: Time estimation in hours.
-      placeholder: e.g., 2
-    validations:
-      required: true
-
+  id: estimated time
+  attributes:
+    label: Estimated Time
+    description: How many hours are needed for this issue
+    placeholder: ex. 2, 0.5, 1, 10
   - type: input
     id: deadline
     attributes:
       label: Deadline
-      description: Please specify the deadline for this task.
-      placeholder: DD/MM/YYYY - HH:MM
-    validations:
-      required: true
-
+      description: When is the deadline for this issue
+      placeholder: ex. 01 Feb 2001
   - type: input
-    id: reviewer
-    attributes:
-      label: Reviewer
-      description: "@mention the person responsible for reviewing this task, and specify the review deadline."
-      placeholder: "@username - DD/MM/YYYY"
-    validations:
-      required: true
+  id: reviewer
+  attributes:
+    label: Reviewer
+    description: Who will review this issue
+    placeholder: ex. @danzio
