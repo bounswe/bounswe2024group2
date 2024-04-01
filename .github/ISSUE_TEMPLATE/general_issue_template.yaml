@@ -1,6 +1,6 @@
-name: Task Tracking Issue
-description: Use this template to track tasks and their review process.
-title: "Task Tracking: [Task Title]"
+name: "Issue Name"
+description: "Use this template to track tasks and their review process."
+title: "Issue: [There is an Issue]"
 labels: ["task", "tracking"]
 assignees: []
 projects: ["bounswe/36"]
