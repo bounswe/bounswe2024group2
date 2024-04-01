@@ -5,7 +5,7 @@ labels: ["task", "tracking"]
 assignees: []
 projects: ["bounswe/36"]
 body:
-  - type: markdown
+  - type: input
     attributes:
       value: "### Description\nThe issue description.\n"
 
