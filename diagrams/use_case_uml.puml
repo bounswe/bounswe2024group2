@@ -6,25 +6,50 @@ skinparam actor {
     BorderColor DarkGreen
 }
 
-actor Admin as A
-actor User as U
+package Users{
+
+actor RegisteredUser as U
 actor Guest as G
 
-A --> (Add Films)
-A --> (Remove Films)
-A --> (Manage Users)
-A --> (Login)
-A --> (Logout)
+}
 
+actor Admin as A
+
+
+
+package Posts {
+  A --> (Create Posts)
+  U --> (Create Posts)
+  U --> (Rate Films)
+  A --> (Rate Films)
+
+}
+package Administrative{
+  A --> (Add Films)
+  A --> (Remove Films)
+
+}
+
+package BrowseandView{
 U --> (View Films)
-U --> (Rate Films)
-U --> (Write Reviews)
+G --> (View Films)
+(Searchfilms) as SF
+
+}
+
+
 U --> (Edit Profile)
+
+
+package Authentication{
 U --> (Login)
 U --> (Logout)
-
-G --> (View Films)
+A --> (Login)
+A --> (Logout)
 G --> (Register)
-G --> (Login)
-G --> (Logout)
+}
+
+
+
+
 @enduml
