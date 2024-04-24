@@ -40,9 +40,9 @@ To change the use case diagram, you can use a docker image for plantuml server a
 
 To achieve this, run the commands in your terminal : 
 
-docker pull plantuml/plantuml-server:tomcat  (you can use jetty as well as provider)
+  > docker pull plantuml/plantuml-server:tomcat  (you can use jetty as well as provider)
 
-docker run -d -p 8080:8080 plantuml/plantuml-server:tomcat (run the image, change the first 8080 whatever port you want to use in local)
+  > docker run -d -p 8080:8080 plantuml/plantuml-server:tomcat (run the image, change the first 8080 whatever port you want to use in local)
 
 then open in your browser : http://localhost:8080 (or the port you choose)
 
