@@ -1,0 +1,30 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+skinparam actor {
+    BackgroundColor PaleGreen
+    BorderColor DarkGreen
+}
+
+actor Admin as A
+actor User as U
+actor Guest as G
+
+A --> (Add Films)
+A --> (Remove Films)
+A --> (Manage Users)
+A --> (Login)
+A --> (Logout)
+
+U --> (View Films)
+U --> (Rate Films)
+U --> (Write Reviews)
+U --> (Edit Profile)
+U --> (Login)
+U --> (Logout)
+
+G --> (View Films)
+G --> (Register)
+G --> (Login)
+G --> (Logout)
+@enduml
