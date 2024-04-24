@@ -31,3 +31,21 @@ Our project aims to create a platform that allows people to share their thoughts
 
 We have created our requirements about our project and it can be seen [here](https://github.com/bounswe/bounswe2024group2/wiki/Requirements).
 Also the project plan, user scenarios and mockups can be accessed from the [wiki page](https://github.com/bounswe/bounswe2024group2/wiki).
+
+## How to render and create diagrams 
+
+For Use case diagram written in PlantUml, you can refer to below information to render and edit our puml file. I will also add a pdf version of the current file.
+
+To change the use case diagram, you can use a docker image for plantuml server and further add/change features in your localhost.
+
+To achieve this, run the commands in your terminal : 
+
+docker pull plantuml/plantuml-server:tomcat  (you can use jetty as well as provider)
+
+docker run -d -p 8080:8080 plantuml/plantuml-server:tomcat (run the image, change the first 8080 whatever port you want to use in local)
+
+then open in your browser : http://localhost:8080 (or the port you choose)
+
+You will see the PlantUml server and you can start editing the puml file of ours.
+
+
