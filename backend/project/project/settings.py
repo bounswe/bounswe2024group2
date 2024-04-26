@@ -57,9 +57,13 @@ INSTALLED_APPS = [
     'app',
     'drf_spectacular',
     'rest_framework',
+    # 'corsheaders',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True    #TODO: list the domains that need to be whitelisted
+
 MIDDLEWARE = [
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
