@@ -14,8 +14,8 @@ body:
   - type: textarea
     id: required-changes
     attributes:
-      label: Materials to Consume
-      description: Provide detailed information about the materials that need to be consumed
+      label: Required Activities
+      description: Provide detailed information about the necessary changes/activities
       value: |
         - [XX](url)
         - [XX](url)
