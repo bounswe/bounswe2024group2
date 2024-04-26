@@ -13,9 +13,9 @@ body:
       value: "You need to do this, do that..."
   - type: textarea
     id: required-changes
-    attributes: 
+    attributes:
       label: Materials to Consume
-      description: Provide detailed information about the materials that needs to be consumed
+      description: Provide detailed information about the materials that need to be consumed
       value: |
         - [XX](url)
         - [XX](url)
@@ -27,11 +27,11 @@ body:
       options:
         - label: Materials are consumed
   - type: input
-  id: estimated time
-  attributes:
-    label: Estimated Time
-    description: How many hours are needed for this issue
-    placeholder: ex. 2, 0.5, 1, 10
+    id: estimated-time
+    attributes:
+      label: Estimated Time
+      description: How many hours are needed for this issue
+      placeholder: ex. 2, 0.5, 1, 10
   - type: input
     id: deadline
     attributes:
@@ -39,8 +39,8 @@ body:
       description: When is the deadline for this issue
       placeholder: ex. 01 Feb 2001
   - type: input
-  id: reviewer
-  attributes:
-    label: Reviewer
-    description: Who will review this issue
-    placeholder: ex. @danzio
+    id: reviewer
+    attributes:
+      label: Reviewer
+      description: Who will review this issue
+      placeholder: ex. @danzio
