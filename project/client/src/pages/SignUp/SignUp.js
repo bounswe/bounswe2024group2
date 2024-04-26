@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './SignIn.css'; 
+import './SignUp.css'; 
 
-function SignIn() {
+function SignUp() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,9 +14,9 @@ function SignIn() {
   };
 
   return (
-    <div className="signin-container">
-      <div className="signin-form">
-        <div className="signin-header">
+    <div className="signup-container">
+      <div className="signup-form">
+        <div className="signup-header">
             <img src="/logo.png" alt="Logo" className="logo" />
           <h1>Sign Up</h1>
         </div>
@@ -44,7 +44,7 @@ function SignIn() {
           />
           <button type="submit">Sign Up</button>
         </form>
-        <div className="signin-footer">
+        <div className="signup-footer">
           <span>Already have an account? <a href="/login">Log in</a></span>
         </div>
       </div>
@@ -52,4 +52,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;
