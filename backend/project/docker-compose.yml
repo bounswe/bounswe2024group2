@@ -1,23 +1,16 @@
-version: '3'
+version: '3.7'
+
 services:
   db:
-    image: mysql:5.7
-    platform: linux/amd64
-    container_name: semanticflix_mysql_db
+    image: mysql:8.3
     restart: always
-    volumes:
-      - data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: 'db'
+      MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      - "3307:3306"
-    healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}", "-e", "SELECT 1"]
-      timeout: 20s
-      retries: 10
+      - '3307:3306'  # Use port 3307 on the host to avoid port conflict
+    volumes:
+      - ./mydb:/var/lib/mysql
   
   backend:
     build: 
@@ -29,13 +22,13 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8018:8000"
+      - "8019:8000"
     env_file:
       - .env
     depends_on:
       - db
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:3306 || exit 1"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:3307 || exit 1"]
       interval: 30s
       retries: 10
 volumes:

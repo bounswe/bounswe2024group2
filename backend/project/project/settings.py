@@ -33,16 +33,17 @@ ALLOWED_HOSTS = []
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # Database
-DATABASES = {
+DATABASES = { #TODO : READ these from .env 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE'),
-        'USER': os.getenv('MYSQL_USER'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'db'),  # Use 'db' as default from .env
-        'PORT': os.getenv('DB_PORT', '3306'),  # Use '3306' as default from .env
+        'NAME': 'db',  # The name of your database in MySQL
+        'USER': 'root',  # MySQL user (default is 'root')
+        'PASSWORD': 'password',  # MySQL password
+        'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
+        'PORT': '3307',  # Port where MySQL is running (in this case, Docker container)
+        },
     }
-}
+
 
 # Application definition
 
