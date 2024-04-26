@@ -1,0 +1,103 @@
+import { StyleSheet } from "react-native";
+
+export default StyleSheet.create({
+    container:{
+        alignItems:"center",
+        justifyContent:"center",
+        flex:1,
+        backgroundColor:"#f8f8ff",
+        padding:"5%",
+        borderWidth:1,
+    },
+    top_container:{
+        alignItems:"center",
+        justifyContent:"center",
+        flex:1,
+        backgroundColor:"#f8f8ff",
+
+    },
+    bottom_container:{
+        alignItems:"center",
+        justifyContent:"center",
+        flex:1,
+        backgroundColor:"#f8f8ff",
+
+    },
+    username_input_box:{
+        flexDirection:"row",
+        alignItems:"flex-end",
+        borderWidth:1,
+        borderRadius:10,
+        shadowColor:'black',
+        shadowRadius: 5,
+        minWidth:"100%",
+        margin:"2%",
+    },
+    password_input_box:{
+        borderWidth:1,
+        borderRadius:10,
+        shadowColor:'black',
+        shadowRadius: 5,
+        minWidth:"100%",
+        marginBottom:"2%",
+        margin:"2%",
+    },
+    chpass_view:{
+        alignItems:"flex-start",
+        justifyContent:"flex-end",
+        flexDirection:"row",
+        borderRadius:10,
+        minWidth:"100%",
+    },
+    chpass_button:{
+        alignItems:"flex-end",
+        justifyContent:"flex-end",
+        marginBottom:"3%",
+        padding:"1%",
+    },
+    chpass_text:{
+        fontWeight:"bold",
+        fontSize:16,
+        color:"black",
+    },
+    login_view:{
+        alignItems:"center",
+        justifyContent:"center",
+        backgroundColor:"#DC143C",
+        minWidth:"100%",
+        padding:"2%",
+        borderRadius:10,
+        marginBottom:"3%",
+
+    },
+    login_button:{
+        alignItems:"center",
+        justifyContent:"center",
+        minWidth:"100%",
+        padding:"3%",
+        borderRadius:10,
+    },
+    login_text:{
+        fontWeight:"bold",
+        color:"white",
+        fontSize:18,
+    },
+    input_text:{
+        fontWeight:"bold"
+    },
+    signup_view:{
+        alignItems:"stretch",
+        justifyContent:"space-between",
+        flexDirection:"row",
+        minWidth:"100%",
+        padding:"1%",
+        borderRadius:10,
+        marginBottom:"3%",
+    },
+    signup_text:{
+        fontWeight:"bold",
+        fontSize:16,
+        color:"black",
+    },
+    
+})
