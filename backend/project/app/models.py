@@ -1,54 +1,30 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
 
-class User(models.Model):
+class Actor(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    surname = models.CharField(max_length=100)
+    description = models.TextField()
+    # films = models.ManyToManyField(Film, verbose_name=_(""))
 
-    def __str__(self):
-        return self.name
-class Admin(models.Model):
+    
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+       
+       
+class Director(models.Model):
     name = models.CharField(max_length=100)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-class Guest(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    password = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name    
+    surname = models.CharField(max_length=100)
+    description = models.TextField()
+    
     
 class Film(models.Model):
-    title = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     description = models.TextField()
-    director = models.CharField(max_length=100)
-    producer = models.CharField(max_length=100)
+    cast = models.ManyToManyField(Actor)
+    genre = models.ManyToManyField(Genre)
+    director = models.ManyToManyField(Director)
     release_date = models.DateField()
-    rt_score = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title   
-class Post(models.Model):
-    title = models.CharField(max_length=100)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
-
+    rating = models.FloatField()
     
