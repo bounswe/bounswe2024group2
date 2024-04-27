@@ -32,6 +32,9 @@ ALLOWED_HOSTS = []
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Database
 DATABASES = { #TODO : READ these from .env 
     'default': {
@@ -39,8 +42,8 @@ DATABASES = { #TODO : READ these from .env
         'NAME': 'db',  # The name of your database in MySQL
         'USER': 'root',  # MySQL user (default is 'root')
         'PASSWORD': 'password',  # MySQL password
-        'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
-        'PORT': '3307',  # Port where MySQL is running (in this case, Docker container)
+        'HOST': 'db',  # Host where MySQL is running (in this case, Docker container)
+        'PORT': '3306',  # Port where MySQL is running (in this case, Docker container)
         },
     }
 

@@ -1,5 +1,9 @@
 
-.env
 *.env
+
 .venv
-venv 
+
+.mydb 
+
+.staticfiles
+
