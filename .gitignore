@@ -1,5 +1,10 @@
 
 .DS_Store
 .env
-.venv
+.venv/**
 venv
+__pycache__/**
+*.pyc
+**/mydb/**
+mydb2/**
+*.sqlite3

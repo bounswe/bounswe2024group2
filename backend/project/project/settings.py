@@ -46,8 +46,6 @@ DATABASES = { #TODO : READ these from .env
         'PORT': '3306',  # Port where MySQL is running (in this case, Docker container)
         },
     }
-
-
 # Application definition
 
 INSTALLED_APPS = [

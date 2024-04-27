@@ -72,3 +72,17 @@ def film_detail_api(request, id):
     elif request.method == 'DELETE':
         film.delete()
         return JsonResponse("Film Deleted Successfully", safe=False)
+
+
+#REGISTER
+@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        user_serializer = UserSerializer(data=data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return JsonResponse("User Added Successfully", safe=False)
+        else:
+            return JsonResponse("Failed to Add User", safe=False)
+   
