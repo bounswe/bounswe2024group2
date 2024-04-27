@@ -5,22 +5,32 @@ export default StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-        backgroundColor:"#f8f8ff",
         padding:"5%",
         borderWidth:1,
     },
     top_container:{
         alignItems:"center",
         justifyContent:"center",
-        flex:0.8,
-        backgroundColor:"#f8f8ff",
-
+        flex:0.5,
+        minWidth:"100%",
+        maxWidth:"100%",
+ 
+    },
+    mid_text:{
+        fontWeight:"bold",
+        fontSize:30,
+        color:"black",
+    },
+    mid_container:{
+        alignItems:"center",
+        flex:0.08,
+     
+        
     },
     bottom_container:{
         alignItems:"center",
         justifyContent:"center",
-        flex:1,
-        backgroundColor:"#f8f8ff",
+        flex:0.7,
 
     },
     input_box:{
@@ -32,6 +42,10 @@ export default StyleSheet.create({
         shadowRadius: 5,
         minWidth:"100%",
         margin:"2%",
+    },
+    icon_box:{
+        padding:"2%",
+        marginRight:"1%",
     },
     signup_view:{
         alignItems:"center",

@@ -5,27 +5,33 @@ export default StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-        backgroundColor:"#f8f8ff",
         padding:"5%",
-        borderWidth:1,
     },
     top_container:{
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-        backgroundColor:"#f8f8ff",
-
+        minWidth:"100%",
+        maxWidth:"100%",
+   
+    },
+    welcome:{
+        fontWeight:"bold",
+        fontSize:30,
+        color:"black",
+    },
+    mid_container:{
+        alignItems:"center",
     },
     bottom_container:{
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-        backgroundColor:"#f8f8ff",
 
     },
     username_input_box:{
         flexDirection:"row",
-        alignItems:"flex-end",
+        alignItems:"center",
         borderWidth:1,
         borderRadius:10,
         shadowColor:'black',
@@ -33,7 +39,13 @@ export default StyleSheet.create({
         minWidth:"100%",
         margin:"2%",
     },
+    icon_box:{
+        padding:"2%",
+        marginRight:"1%",
+    },
     password_input_box:{
+        flexDirection:"row",
+        alignItems:"center",
         borderWidth:1,
         borderRadius:10,
         shadowColor:'black',
