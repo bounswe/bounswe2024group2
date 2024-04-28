@@ -1,0 +1,45 @@
+/* MainPage.css */
+.main-page {
+  font-family: 'Arial', sans-serif;
+  background-color: #312f60; /* Light grey background for the whole page */
+}
+
+/* Basic reset for padding and margin */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Styling for navigation bar */
+.navbar {
+  background-color: #333; /* Assuming a dark navbar */
+  color: white;
+  padding: 1rem 2rem; /* Adjust padding as needed */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Utility classes for layout */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.column {
+  flex: 1;
+}
+
+/* Search bar styling */
+.search-bar {
+  /* Add your search bar styling */
+}
+
+/* More styles will be based on the individual components */

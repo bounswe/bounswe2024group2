@@ -1,0 +1,55 @@
+/* FilmList.css */
+.film-list {
+  /* should be in the center */
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 1rem;
+}
+
+.film-list .title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.film-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.movie-item {
+  /* Adjust to correctly size your movie items */
+  /* should only have the banner of the movie */
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.movie-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px; /* Rounded corners for the posters */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Adjustments for responsiveness */
+@media (max-width: 768px) {
+  .film-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar .search-bar {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import './SignUp.css'; // Similar styling as SignUp
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigate = useNavigate();
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle the login logic here, typically sending a request to backend
     console.log('Logging in', { username, password });
+    // go to main page when logged in 
+    navigate('/main-page'); // replace '/main-page' with your main page's route
   };
 
   return (
