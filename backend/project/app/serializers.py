@@ -1,8 +1,21 @@
 from django.contrib.auth.models import User
 from app.models import Genre, Film, Director, Actor
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        return token
+    
+    
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
