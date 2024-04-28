@@ -17,7 +17,7 @@ Ensure that you updated the requirements.txt with your feature's new dependencie
 
 Don't push docker-compose's data folder possibly called "mydb", it is in gitignore but if you pushed it before it can be still in staging area so use  
 
-> git rm -rf <foldername> 
+> git rm -rf < foldername >
 
 before commiting your changes 
 
