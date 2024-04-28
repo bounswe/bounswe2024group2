@@ -6,7 +6,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer
+from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, LogoutSerializer
 from rest_framework.decorators import api_view, permission_classes
 from drf_spectacular.utils import extend_schema
 from .serializers import MyTokenObtainPairSerializer
@@ -16,16 +16,35 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer
 from rest_framework import generics
 
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
+
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,) #to allow unauthenticated users to get token
     serializer_class = MyTokenObtainPairSerializer
 
+
+class LogoutView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+
+        return Response("success", status=200)
+        
+        
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -34,7 +53,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-
+    
 @extend_schema(
     description="API endpoint for retrieving and manipulating films.",
     methods=['GET', 'POST'],

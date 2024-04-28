@@ -22,6 +22,10 @@
             layout: "BaseLayout",
             requestInterceptor: (request) => {
                 request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+                const token = localStorage.getItem('jwtToken')
+                if (token) {
+                    request.headers.Authorization = 'Bearer ' + token
+                }
                 return request;
             }
         })
