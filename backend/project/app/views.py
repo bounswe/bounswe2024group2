@@ -19,14 +19,58 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-
+from .utils import Util
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from django.template import Template, Context
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+    
+    def post(self, request):
+        user = request.data
+        serializer = self.get_serializer(data=user)
+        serializer.is_valid(raise_exception=True)
+        
+        user_data = serializer.validated_data
+        serializer.save()
+        user = User.objects.get(email=user_data['email'])
+        
+        token = RefreshToken.for_user(user).access_token
+        
+        current_site = get_current_site(request).domain
+        relativeLink = reverse('email-verify')
+        
+        absurl = 'http://' + current_site + relativeLink + "?token=" + str(token)
+        email_template = Template("""
+            <html>
+            <body>
+                <p><b>Hey,</b></p>
+                <p>We need to verify your email address so you can use SemanticFlix.</p>
+                <p><a href="{{ absurl }}">Click here to verify your email.</a></p>
+                <p>Thanks,<br>Team SemanticFlix</p>
+            </body>
+            </html>
+        """)
+        context = Context({'absurl': absurl})
+        html_message = email_template.render(context)
+        data = {
+            'html_message': html_message,
+            'to_email': user.email,
+            'email_subject': 'Hello! Verify your email for SemanticFlix!'
+            ''
+        }
+        Util.send_email(data)
+        # self.perform_create(serializer)
+        
+        return Response(user_data, status=201)
 
-
+class VerifyEmail(generics.GenericAPIView):
+    def get(self, request):
+        return Response("Email Verified", status=200)
+    
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,) #to allow unauthenticated users to get token
     serializer_class = MyTokenObtainPairSerializer

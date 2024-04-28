@@ -23,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True}
         }
-
+        
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -32,12 +32,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data['last_name']
         )
 
-        
         user.set_password(validated_data['password'])
         user.save()
 
         return user
-
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -65,7 +63,6 @@ class LogoutSerializer(serializers.Serializer):
         return attrs
     
     def save(self):
-       
         try:
              RefreshToken(self.token).blacklist()
         except TokenError:

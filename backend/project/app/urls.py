@@ -3,7 +3,7 @@ from django.urls import path
 from app import views
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from .views import film_api, film_detail_api, RegisterView, MyObtainTokenPairView, LogoutView
+from .views import film_api, film_detail_api, RegisterView, MyObtainTokenPairView, LogoutView, VerifyEmail
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='auth_register'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('email-verify/', VerifyEmail.as_view(), name='email-verify'),
 ]
