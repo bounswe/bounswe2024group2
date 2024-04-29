@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 
 
@@ -17,26 +18,19 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'first_name', 'last_name')
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
-
+        fields = ('username', 'password', 'email', 'is_active')
+        
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            is_active=False
         )
 
-        
         user.set_password(validated_data['password'])
         user.save()
 
         return user
-
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -54,7 +48,22 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'username', 'email']
         
+    
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    
+    def validate(self, attrs):
+        self.token = attrs['refresh']
         
+        return attrs
+    
+    def save(self):
+        try:
+             RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad token')
+         
+         
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre

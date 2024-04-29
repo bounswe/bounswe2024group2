@@ -1,0 +1,55 @@
+/* NavBar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #312f60; /* Adjust the color to match your design */
+  padding: 0.5rem 2rem; /* Adjust the padding to match your design */
+}
+
+.navbar .logo {
+  height: 40px; /* Adjust the size to match your design */
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Space between the links */
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white; /* Adjust the color to match your design */
+  font-size: 1rem; /* Adjust the font size to match your design */
+  font-weight: bold;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-container input {
+  padding: 0.5rem;
+  border-radius: 20px; /* Rounded corners for the input */
+  border: none;
+  outline: none;
+}
+
+.search-container button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: none;
+  background-color: transparent;
+  color: white; /* Adjust the color to match your design */
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* Adjust responsive design as needed */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,82 @@
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #312f60; /* Adjust the color to match your design */
+  }
+  
+  .signup-form {
+    background-color: #8899f9;
+    padding: 20px;
+    border-radius: 20px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .signup-form input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+  }
+  .input-item {
+    color: #c4a6dd;
+    background-color: #c4a6dd; 
+  }
+  
+  
+  .signup-form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #c4a6dd;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .signup-header h1 {
+    margin-bottom: 20px;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .signup-footer {
+    margin-top: 20px;
+    color: white;
+    font-size: 12px;
+  }
+  
+  .signup-footer a {
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .login-footer{
+    text-decoration: none;
+    text-align: right;
+    margin-right: 0px;
+    color: white;
+    font-size: 8px;
+  }
+
+  .login-footer a{
+    text-decoration: none;
+    text-align: right;
+    margin-right: 26px;
+    color: white;
+    font-size: 8px;
+  }
+
+  .logo {
+    max-width: 150px; 
+    height: auto; 
+    border-radius: 20px;
+  }
+  
+  

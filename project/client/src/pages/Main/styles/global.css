@@ -1,0 +1,45 @@
+/* styles/global.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; /* Substitute with your preferred font */
+  }
+  
+  .container {
+    width: 80%;
+    margin: auto;
+    max-width: 1200px; /* Adjust max-width as necessary */
+  }
+  
+  .header {
+    background-color: #20232a; /* This is just a placeholder; replace with actual color */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .movie-poster {
+    width: 100px; /* Adjust as necessary */
+    height: auto;
+    border-radius: 8px;
+    margin-right: 15px;
+  }
+  
+  .movie-list {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 0;
+  }
+  
+  .movie-item {
+    min-width: 100px; /* Adjust width as necessary */
+    margin-right: 15px; /* Space between posters */
+  }
+  
+  .clearfix {
+    clear: both;
+  }
+  
+  /* Add more global styles as necessary */
+  

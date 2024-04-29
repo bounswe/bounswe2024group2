@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Actor(models.Model):
@@ -28,3 +29,11 @@ class Film(models.Model):
     release_date = models.DateField()
     rating = models.FloatField()
     
+    
+class BlacklistedToken(models.Model):
+    token = models.CharField(max_length=500)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.token

@@ -9,3 +9,10 @@ __pycache__/**
 **/mydb/**
 mydb2/**
 *.sqlite3
+.venv
+venv
+/backend/project/staticfiles
+/backend/project/mydb
+
+/keypair
+**/.env

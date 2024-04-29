@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 from pathlib import Path
+import datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -33,6 +34,16 @@ if DEBUG:
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
+
+"""
+DATABASES = { #TODO : READ these from .env 
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'db',  # The name of your database in MySQL
+        'USER': 'root',  # MySQL user (default is 'root')
+        'PASSWORD': 'password',  # MySQL password
+        'HOST': 'db',  # Host where MySQL is running (in this case, Docker container)
+        'PORT': '3306',  # Port where MySQL is running (in this case, Docker container)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -43,6 +54,20 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
 
         },
+    }
+    """
+# Application definition
+#database settings for local : 
+
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'db',  # The name of your database in
+            'USER': 'root',
+            'PASSWORD': 'password',
+            'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
+            'PORT': '3307',
+        }
 }
 
 INSTALLED_APPS = [
@@ -55,6 +80,7 @@ INSTALLED_APPS = [
     'app',
     'drf_spectacular',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     # 'corsheaders',
 ]
 
@@ -74,14 +100,21 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'project.urls'
 
 REST_FRAMEWORK = {
-'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
-'PAGE_SIZE': 10,
-'DEFAULT_FILTER_BACKENDS': [
-    'django_filters.rest_framework.DjangoFilterBackend'
-],
-'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-],
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    # 'DEFAULT_FILTER_BACKENDS': [
+    #     'django_filters.rest_framework.DjangoFilterBackend'
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 }
 
 TEMPLATES = [
@@ -102,9 +135,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
  
-REST_FRAMEWORK = {
-       'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -162,3 +193,8 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
