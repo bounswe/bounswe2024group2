@@ -33,7 +33,7 @@ function App(){
 
         <Stack.Screen name ="Main" component={Main} options={{headerShown:false}}/>
         <Stack.Screen name ="Profile" component={Profile} options={{headerShown:false}}/>
-        <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:false, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
+        <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
 
       </Stack.Navigator>
     </NavigationContainer>
