@@ -96,57 +96,49 @@
 }
 
 /* NavBar Styles */
+/* NavBar.css */
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  background-color: #312f60; 
-  padding: 0.5rem 2rem; 
-}
-
-.navbar .logo {
-  height: 40px; 
-}
-
-.nav-links {
-  display: flex;
-  width: 70%;
-  justify-content: flex-end; 
   align-items: center;
-  gap: 1rem; 
+  justify-content: space-between;
+  background-color: #333;
+  padding: 10px 20px;
 }
 
-.nav-links a {
+.nav-links a, .nav-links button {
+  color: white;
   text-decoration: none;
-  color: white; 
-  font-size: 1rem; 
-  line-height: 30px; 
-  font-weight: bold;
+  margin-left: 10px;
 }
 
 .search-container {
   position: relative;
 }
 
-.search-container input {
-  padding: 0.5rem;
-  border-radius: 20px; 
-  border: none;
-  outline: none;
-  height: 30px
+.search-results {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  width: 300px;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.search-container button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  border: none;
-  background-color: transparent;
-  color: white; 
-  padding: 0.5rem;
+.search-result-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
   cursor: pointer;
 }
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: #f8f8f8;
+}
+
 /* RecentPosts Styles */
 .recent-posts {
   max-width: 1000px;
@@ -229,3 +221,20 @@ body, html {
   clear: both;
 }
 
+
+.search-results {
+  position: absolute;
+  width: 100%;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
+  z-index: 1000;
+}
+
+.search-result-item {
+  padding: 8px 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}

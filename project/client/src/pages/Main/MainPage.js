@@ -28,11 +28,31 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  const mockPosts = [
-    // Your mockPosts data...
-  ];
+
+
+const mockPosts = [
+
+    {
+      id: 1,
+      title: 'Post 1',
+      content: 'Content of post 1',
+      rating: 5,
+    },
+    {
+      id: 2,
+      title: 'Post 2',
+      content: 'Content of post 2',
+      rating: 4,
+    },
+    {
+      id: 3,
+      title: 'Post 3',
+      content: 'Content of post 3',
+      rating: 3,
+    },
+];
 
   return (
     <div className="main-page">
