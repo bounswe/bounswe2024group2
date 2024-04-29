@@ -1,0 +1,54 @@
+======= Films played by dicaprio
+{
+  "query": "SELECT ?film ?filmLabel WHERE { ?film wdt:P31 wd:Q11424; wdt:P161 wd:Q38111. SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } }"
+}
+=======
+
+
+===== Film ids starting with the given string 
+{
+  "query": "SELECT DISTINCT ?film ?filmLabel ?filmId WHERE { ?film wdt:P31 wd:Q11424; rdfs:label ?filmLabel. FILTER(STRSTARTS(?filmLabel, \"OPP\")) OPTIONAL { ?film wdt:P345 ?filmId. } SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } } LIMIT 10"
+}
+
+=== Better version of it 
+SELECT DISTINCT ?film ?filmLabel ?filmId WHERE {
+  ?film wdt:P31 wd:Q11424;    # Instance of film
+        rdfs:label ?filmLabel. # Label of the film
+  FILTER(LANG(?filmLabel) = "en")   # Filter out non-English labels
+  FILTER(STRSTARTS(REPLACE(LCASE(?filmLabel), " ", ""), "opportunityk"))  # Matches films with labels starting with "A" (case-insensitive and ignoring spaces)
+}
+LIMIT 3
+====
+
+
+====
+Final film listing sparql
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+SELECT DISTINCT ?film ?filmLabel ?filmId WHERE {
+  {
+    SELECT ?film ?filmLabel ?filmId (1 as ?order) WHERE {
+      ?film wdt:P31 wd:Q11424;    # Instance of film
+            rdfs:label ?filmLabel. # Label of the film
+      FILTER(LANG(?filmLabel) = "en")   # Filter out non-English labels
+      FILTER(STRSTARTS(REPLACE(LCASE(?filmLabel), " ", ""), "oppen"))  # Matches labels starting with "oppen" (case-insensitive and ignoring spaces)
+    }
+  }
+  UNION
+  {
+    SELECT ?film ?filmLabel ?filmId (2 as ?order) WHERE {
+      ?film wdt:P31 wd:Q11424;    # Instance of film
+            rdfs:label ?filmLabel. # Label of the film
+      FILTER(LANG(?filmLabel) = "en")   # Filter out non-English labels
+      FILTER(REGEX(?filmLabel, "oppen", "i"))  # Matches labels containing "oppen" (case-insensitive)
+      FILTER (!STRSTARTS(REPLACE(LCASE(?filmLabel), " ", ""), "oppen")) # Ensure it's not already matched by starts with
+    }
+  }
+}
+ORDER BY ?order
+LIMIT 3
+
+
+====

@@ -1,6 +1,9 @@
 
 .DS_Store
 .env
+/keypair
+.venv/**
+venv
 __pycache__/**
 *.pyc
 **/mydb/**

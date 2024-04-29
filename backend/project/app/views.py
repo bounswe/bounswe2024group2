@@ -6,6 +6,9 @@ from django.template import Template, Context
 from django.conf import settings
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
+from app.models import Film, Genre, Director, Actor
+from app.serializers import *
+#from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer,WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer, MyTokenObtainPairSerializer, LogoutSerializer
 from rest_framework import permissions, status , viewsets, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -14,9 +17,13 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import jwt
 from rest_framework_simplejwt.views import TokenObtainPairView
-
-from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, RegisterSerializer, LogoutSerializer, MyTokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
+from .serializers import RegisterSerializer
+from rest_framework import generics
+from app.wikidata import WikidataAPI
+from app.qlever import QleverAPI
+from rest_framework.response import Response
+from rest_framework import status
 from .utils import Util
 
 
@@ -167,5 +174,72 @@ def film_detail_api(request, id):
     elif request.method == 'DELETE':
         film.delete()
         return JsonResponse("Film Deleted Successfully", safe=False)
+
+
+# A simple endpoint for sending a semantic query to the Wikidata API
+@extend_schema(
+    description="API endpoint for sending a semantic query to the Wikidata API.",
+    methods=['POST'],
+    request=WikidataQuerySerializer,
+)
+@api_view(['POST'])
+def execute_query(request):
+    """
+    Allow users to send a semantic query to the Wikidata API.
+    """
+    if request.method == 'POST':
+        serializer = WikidataQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            query_text = serializer.validated_data.get('query')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.execute_query(query_text)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+# Find films with a pattern string and a limit value
+@extend_schema(
+    description="API endpoint for finding films with a pattern string and a limit value.",
+    methods=['POST'],
+    request=FilmPatternWithLimitQuerySerializer,
+)
+@api_view(['POST'])
+def query_film_pattern(request):
+    """
+    Find films with a pattern string and a limit value using Qlever.
+    """
+    if request.method == 'POST':
+        serializer = FilmPatternWithLimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            pattern = serializer.validated_data.get('pattern')
+            limit = serializer.validated_data.get('limit')
+
+            # Execute the query using the Qlever class
+            qlever = QleverAPI()
+            results = qlever.film_pattern_query(pattern, limit)
+
+            print(results)
+
+            # change response format
+            # get only film ids and labels
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value']
+                }
+                films.append(film)
+            return Response(films)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 

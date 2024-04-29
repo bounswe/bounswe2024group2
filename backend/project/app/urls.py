@@ -3,9 +3,10 @@ from django.urls import path
 from app import views
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from .views import film_api, film_detail_api, RegisterView, MyObtainTokenPairView, LogoutView, VerifyEmail
+from .views import film_api, film_detail_api, RegisterView, execute_query, query_film_pattern, MyObtainTokenPairView, LogoutView, VerifyEmail
 from rest_framework_simplejwt.views import TokenRefreshView
 
+    
 urlpatterns = [
     path('film/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('film/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
@@ -13,7 +14,10 @@ urlpatterns = [
     path('film/<int:id>/', film_detail_api, name='film-detail'),
     path('login/', MyObtainTokenPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', RegisterView.as_view(), name='auth_register'),
+     path('register/', RegisterView.as_view(), name='auth_register'),
+    path('wikidata-query/', execute_query, name='wikidata-query'),
+    path('query-film-pattern/', query_film_pattern, name='query-film-pattern'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('email-verify/', VerifyEmail.as_view(), name='email-verify'),
+    path('email-verify/', VerifyEmail.as_view(), name='email-verify')
 ]
+

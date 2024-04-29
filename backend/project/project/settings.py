@@ -44,6 +44,12 @@ DATABASES = { #TODO : READ these from .env
         'PASSWORD': 'password',  # MySQL password
         'HOST': 'db',  # Host where MySQL is running (in this case, Docker container)
         'PORT': '3306',  # Port where MySQL is running (in this case, Docker container)
+
+    }
+}
+"""
+
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
