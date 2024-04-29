@@ -49,9 +49,10 @@ class WikidataAPI:
             }}
         """
         response = self.execute_query(query)
-        
-        return response
-    
+
+        results = response['results']['bindings'] 
+        return results[0]['label']['value'] if results else None
+            
     def get_film_details(self, entity_id):
 
         entity_id = self.convert_entity_id(entity_id)
@@ -77,54 +78,18 @@ class WikidataAPI:
         """
         response = self.execute_query(query)
 
-
-        """
-        "head": {
-    "vars": [
-      "filmLabel",
-      "description",
-      "image",
-      "directorIds",
-      "castMemberIds",
-      "duration",
-      "genreIds"
-    ]
-  },
-  "results": {
-    "bindings": [
-      {
-        "filmLabel": {
-          "xml:lang": "en",
-          "type": "literal",
-          "value": "Ryuichi Sakamoto | Opus"
-        },
-        "description": {
-          "xml:lang": "en",
-          "type": "literal",
-          "value": "2023 film by Neo Sora"
-        },
-        "duration": {
-          "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-          "type": "literal",
-          "value": "103"
-        },
-        "directorIds": {
-          "type": "literal",
-          "value": "http://www.wikidata.org/entity/Q124830632"
-        },
-        "castMemberIds": {
-          "type": "literal",
-          "value": ""
-        },
-        "genreIds": {
-          "type": "literal",
-          "value": "http://www.wikidata.org/entity/Q93204"
-        }
-      }
-    ]
-        """
-
-        
+        results = results['results']['bindings']
+        details = []
+        for result in results:
+            detail = {
+                'label': result['filmLabel']['value'],
+                'description': result['description']['value'],
+                'image': result['image']['value'] if 'image' in result else None,
+                'genres': [self.get_label_of_entity(genreId) for genreId in result['genreIds']['value'].split(", ")] if 'genreIds' in result else None,
+                'directors': [self.get_label_of_entity(directorId) for directorId in result['directorIds']['value'].split(", ")] if 'directorIds' in result else None,
+                'castMembers': [self.get_label_of_entity(castMemberId) for castMemberId in result['castMemberIds']['value'].split(", ")] if 'castMemberIds' in result else None
+            }
+            details.append(detail)
         
         return response
 
