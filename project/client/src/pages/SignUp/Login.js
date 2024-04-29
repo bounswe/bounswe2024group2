@@ -2,36 +2,6 @@ import React, { useState } from 'react';
 import './SignUp.css'; // Similar styling as SignUp
 import { useNavigate } from 'react-router-dom';
 
-// // import React, { useState } from 'react';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import SignUp from './pages/SignUp/SignUp';
-// import Login from './pages/SignUp/Login';
-// import ForgotPassword from './pages/SignUp/ForgotPassword';
-// import MainPage from './pages/Main/MainPage'; // Make sure this path is correct
-
-// function App() {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-//   // You will need to pass setIsLoggedIn to components where the login status changes,
-//   // like in your Login component after successful authentication
-
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/signup" element={<SignUp />} />
-//         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-//         <Route path="/forgotPassword" element={<ForgotPassword />} /> 
-//         <Route path="/" element={<MainPage isLoggedIn={isLoggedIn} />} /> {/* Default route to MainPage */}
-//         <Route path="/main-page" element={<MainPage isLoggedIn={isLoggedIn} />} /> 
-//         {/* ...other routes */}
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-
 
 function Login({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
@@ -102,7 +72,7 @@ function Login({ setIsLoggedIn }) {
           <button type="submit">Login</button>
         </form>
         <div className="signup-footer">
-          <span>Don't have an account <a href="/">Sign Up</a></span>
+          <span>Don't have an account <a href="/SignUp">Sign Up</a></span>
         </div>
       </div>
     </div>
