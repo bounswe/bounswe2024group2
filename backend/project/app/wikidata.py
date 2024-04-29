@@ -43,9 +43,9 @@ class WikidataAPI:
         entity_id = self.convert_entity_id(entity_id)
 
         query = f"""
-        SELECT ?item ?itemLabel ?itemDescription ?itemAltLabel WHERE {{
-            wd:{entity_id} wdt:P31 wd:Q11424.
-            SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+        SELECT ?label WHERE {{
+            wd:{entity_id} rdfs:label ?label .
+            FILTER(LANG(?label) = "en")
             }}
         """
         response = self.execute_query(query)
@@ -76,6 +76,55 @@ class WikidataAPI:
             LIMIT 1
         """
         response = self.execute_query(query)
+
+
+        """
+        "head": {
+    "vars": [
+      "filmLabel",
+      "description",
+      "image",
+      "directorIds",
+      "castMemberIds",
+      "duration",
+      "genreIds"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "filmLabel": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "Ryuichi Sakamoto | Opus"
+        },
+        "description": {
+          "xml:lang": "en",
+          "type": "literal",
+          "value": "2023 film by Neo Sora"
+        },
+        "duration": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+          "type": "literal",
+          "value": "103"
+        },
+        "directorIds": {
+          "type": "literal",
+          "value": "http://www.wikidata.org/entity/Q124830632"
+        },
+        "castMemberIds": {
+          "type": "literal",
+          "value": ""
+        },
+        "genreIds": {
+          "type": "literal",
+          "value": "http://www.wikidata.org/entity/Q93204"
+        }
+      }
+    ]
+        """
+
+        
         
         return response
 
