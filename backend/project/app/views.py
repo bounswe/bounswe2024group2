@@ -7,7 +7,8 @@ from django.conf import settings
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer,WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer
+from app.serializers import *
+#from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer,WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer, MyTokenObtainPairSerializer, LogoutSerializer
 from rest_framework import permissions, status , viewsets, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
