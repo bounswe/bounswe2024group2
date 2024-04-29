@@ -14,7 +14,7 @@ services:
     volumes:
       - ./mydb:/var/lib/mysql
     networks:
-      - backend-network
+      - semanticflix-network
   
   backend:
     image: semanticflix_backend
@@ -38,8 +38,23 @@ services:
       interval: 30s
       retries: 10
     networks:
-    - backend-network
+      - semanticflix-network
+
+  frontend:
+    image: semanticflix_frontend
+    build: 
+      context: ./project/client
+      dockerfile: Dockerfile
+    container_name: semanticflix_frontend
+    command: sh -c "npm start"
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - semanticflix-network
 
 networks:
-  backend-network:
+  semanticflix-network:
     driver: bridge
