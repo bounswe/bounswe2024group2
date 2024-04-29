@@ -23,13 +23,19 @@ function Login({navigation}) {
     setUsername(username);
   }
 
+    function handleSignup(){
+        navigation.navigate("Signup");
+    }
+    
+    function handleForgotPassword(){
+        navigation.navigate("ForgotMain");
+    }
+
+
   function changePassword(password) {
     setPassword(password);
   }
 
-  function handleSignup() {
-    navigation.navigate('Signup');
-  }
 
   async function handleLogin() {
     const loginURL = baseURL + '/login/';
@@ -60,6 +66,7 @@ function Login({navigation}) {
       Alert.alert('hata');
     }
   }
+
 
   return (
     <KeyboardAvoidingView
@@ -121,6 +128,7 @@ function Login({navigation}) {
           <TouchableOpacity onPress={handleSignup} style={styles.button}>
             <Text style={styles.signup_text}>Sign Up</Text>
           </TouchableOpacity>
+
         </View>
       </View>
     </KeyboardAvoidingView>
