@@ -46,9 +46,9 @@ services:
       context: ./project/client
       dockerfile: Dockerfile
     container_name: semanticflix_frontend
-    environment:
-      - API_URL=http://backend:8000
-    command: sh -c "REACT_APP_API_URL=http://backend:8000 npm start"
+    env_file:
+      - .env
+    entrypoint: ["/frontend/start.sh"]
     restart: unless-stopped
     ports:
       - "3000:3000"

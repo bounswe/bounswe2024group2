@@ -62,6 +62,15 @@ DATABASES = {
 
     },
 }
+CORS_ALLOW_HEADERS = [
+    '*'
+]
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+       "http://127.0.0.1:3000",  # Adjust with your frontend URL
+    "http://localhost:3000",  # Additional allowed origin if needed
+    
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -74,8 +83,7 @@ INSTALLED_APPS = [
     'app',
     'drf_spectacular',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
-    # 'corsheaders',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
