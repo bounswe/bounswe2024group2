@@ -11,6 +11,29 @@ function SignUp() {
     // Handle the form submission logic here.
     // This would typically involve sending a request to your backend.
     console.log('Signing in', { email, username, password });
+
+    fetch('http://207.154.242.6:8020/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, username, password, first_name: 'arfgae', last_name: 'ager'}),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Sign up successful');
+          // Redirect to login page
+          window.location.href = '/login';
+        } else {
+          console.log('Sign up failed');
+          // Handle sign up failure here
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        // Handle sign up failure here
+      });
+
   };
 
   return (

@@ -52,10 +52,14 @@ const mockPosts = [
 ];
 
 
-function MainPage() {
+// MainPage.js
+
+function MainPage({ isLoggedIn, setIsLoggedIn }) {
+  // ... rest of your code
+
   return (
     <div className="main-page">
-      <NavBar />
+      <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <RecentPosts posts={mockPosts} />
       <FilmList title="Recently released" films={mockFilms.slice(0, 3)} />
       <FilmList title="Popular films" films={mockFilms} />
@@ -64,5 +68,7 @@ function MainPage() {
     </div>
   );
 }
+
+// ...
 
 export default MainPage;
