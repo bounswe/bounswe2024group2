@@ -103,9 +103,9 @@ class WikidataAPI:
                 'image': result['image']['value'] if 'image' in result else None,
                 # put both id and the label for each genre
                 # It should be none if there is no genre
-                'genre': genres,
-                'director': directors,
-                'castMember': castMembers,
+                'genres': genres,
+                'directors': directors,
+                'castMembers': castMembers,
             }
             details.append(detail)
         
