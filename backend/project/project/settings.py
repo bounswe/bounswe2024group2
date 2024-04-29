@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 if DEBUG:
     ALLOWED_HOSTS = ['*']
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Database
 DATABASES = {
     'default': {
@@ -40,10 +43,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
 
         },
-    }
-
-
-# Application definition
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -76,6 +76,12 @@ ROOT_URLCONF = 'project.urls'
 REST_FRAMEWORK = {
 'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
 'PAGE_SIZE': 10,
+'DEFAULT_FILTER_BACKENDS': [
+    'django_filters.rest_framework.DjangoFilterBackend'
+],
+'DEFAULT_AUTHENTICATION_CLASSES': [
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+],
 }
 
 TEMPLATES = [

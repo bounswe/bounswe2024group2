@@ -7,8 +7,24 @@ from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from app.models import Film, Genre, Director, Actor
 from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from drf_spectacular.utils import extend_schema
+from .serializers import MyTokenObtainPairSerializer
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from .serializers import RegisterSerializer
+from rest_framework import generics
+
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,) #to allow unauthenticated users to get token
+    serializer_class = MyTokenObtainPairSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -25,6 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
     request=FilmSerializer,
 )
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated]) #to check if auth works maybe we dont need auth to get film details???
 def film_api(request):
     """
     Retrieve or create films.
@@ -46,8 +63,10 @@ def film_api(request):
     description="API endpoint for updating and deleting individual films.",
     methods=['GET', 'PUT', 'DELETE'],
     request=FilmSerializer
+
 )
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated]) #to check if auth works, maybe we dont need auth to get film details???
 def film_detail_api(request, id):
     """
     Retrieve, update or delete a film instance.
@@ -72,3 +91,5 @@ def film_detail_api(request, id):
     elif request.method == 'DELETE':
         film.delete()
         return JsonResponse("Film Deleted Successfully", safe=False)
+
+
