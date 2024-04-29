@@ -1,7 +1,6 @@
-// NavBar.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './NavBar.css'; // Make sure the path to your CSS file is correct
+import '../MainPage.css'; // Make sure the path to your CSS file is correct
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
