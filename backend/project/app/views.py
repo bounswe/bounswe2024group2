@@ -6,7 +6,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, WikidataQuerySerializer
+from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer
 from rest_framework.decorators import api_view, permission_classes
 from drf_spectacular.utils import extend_schema
 from .serializers import MyTokenObtainPairSerializer
@@ -16,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer
 from rest_framework import generics
 from app.wikidata import WikidataAPI
+from app.qlever import QleverAPI
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -121,3 +122,45 @@ def execute_query(request):
             return Response(results)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+# Find films with a pattern string and a limit value
+@extend_schema(
+    description="API endpoint for finding films with a pattern string and a limit value.",
+    methods=['POST'],
+    request=FilmPatternWithLimitQuerySerializer,
+)
+@api_view(['POST'])
+def query_film_pattern(request):
+    """
+    Find films with a pattern string and a limit value using Qlever.
+    """
+    if request.method == 'POST':
+        serializer = FilmPatternWithLimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            pattern = serializer.validated_data.get('pattern')
+            limit = serializer.validated_data.get('limit')
+
+            # Execute the query using the Qlever class
+            qlever = QleverAPI()
+            results = qlever.film_pattern_query(pattern, limit)
+
+            print(results)
+
+            # change response format
+            # get only film ids and labels
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value']
+                }
+                films.append(film)
+            return Response(films)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+

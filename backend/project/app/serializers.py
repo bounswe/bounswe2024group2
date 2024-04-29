@@ -80,3 +80,7 @@ class ActorSerializer(serializers.ModelSerializer):
 
 class WikidataQuerySerializer(serializers.Serializer):
     query = serializers.CharField()
+
+class FilmPatternWithLimitQuerySerializer(serializers.Serializer):
+    pattern = serializers.CharField()
+    limit = serializers.IntegerField()
