@@ -9,6 +9,7 @@ function FilmList({ title, films }) {
           {films.map(film => (
             <div key={film.id} className="movie-item">
               <img src={film.poster} /* alt={film.title} */ />
+              {/* i need to see the below text */}
               <span>{film.title}</span>
             </div>
           ))}
