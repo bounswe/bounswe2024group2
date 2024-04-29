@@ -78,7 +78,7 @@ class WikidataAPI:
         """
         response = self.execute_query(query)
 
-        results = results['results']['bindings']
+        results = response['results']['bindings']
         details = []
         for result in results:
             detail = {
