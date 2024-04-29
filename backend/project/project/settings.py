@@ -29,7 +29,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 if DEBUG:
     ALLOWED_HOSTS = ['*']
-
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_CREDENTIALS = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -64,6 +65,7 @@ DATABASES = {
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -76,10 +78,8 @@ INSTALLED_APPS = [
     # 'corsheaders',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True    #TODO: list the domains that need to be whitelisted
-
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
