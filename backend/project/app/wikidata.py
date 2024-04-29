@@ -91,5 +91,5 @@ class WikidataAPI:
             }
             details.append(detail)
         
-        return response
+        return details
 
