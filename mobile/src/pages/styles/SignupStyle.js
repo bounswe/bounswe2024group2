@@ -14,12 +14,17 @@ export default StyleSheet.create({
         flex:0.5,
         minWidth:"100%",
         maxWidth:"100%",
+
  
     },
-    mid_text:{
+    mid_text:(isKeyboardOpen)=>{
+        return{
         fontWeight:"bold",
         fontSize:30,
         color:"black",
+        zIndex:0,
+        opacity:isKeyboardOpen?0:1,
+        }
     },
     mid_container:{
         alignItems:"center",
@@ -31,17 +36,22 @@ export default StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         flex:0.7,
+        backgroundColor:'white',
+        opacity:1,
 
     },
     input_box:{
         flexDirection:"row",
-        alignItems:"flex-end",
+        alignItems:"center",
+        justifyContent:"flex-start",
         borderWidth:1,
         borderRadius:10,
         shadowColor:'black',
         shadowRadius: 5,
         minWidth:"100%",
         margin:"2%",
+        zIndex:2,
+        backgroundColor:"white",
     },
     icon_box:{
         padding:"2%",
@@ -70,7 +80,8 @@ export default StyleSheet.create({
         fontSize:18
     },
     input_text:{
-        fontWeight:"bold"
+        fontWeight:"bold",
+        width:"80%",
     },
     login_view:{
         alignItems:"stretch",

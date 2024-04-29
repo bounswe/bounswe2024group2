@@ -97,7 +97,8 @@ export default StyleSheet.create({
         fontSize:18,
     },
     input_text:{
-        fontWeight:"bold"
+        fontWeight:"bold",
+        width:"80%",
     },
     signup_view:{
         alignItems:"stretch",
