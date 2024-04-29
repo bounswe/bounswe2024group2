@@ -39,7 +39,7 @@ function Login() {
             className="input-item"
           />
           <div className="login-footer">
-            <span><a href="/">Forgot your password?</a></span>
+            <span><a href="/forgotPassword">Forgot your password?</a></span>
           </div>
           <button type="submit">Login</button>
         </form>

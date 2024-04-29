@@ -1,6 +1,6 @@
 // NavBar.js
 import React from 'react';
-import './NavBar.css'; // Make sure the path to your CSS file is correct
+import '../MainPage.css'; // Make sure the path to your CSS file is correct
 
 function NavBar() {
   return (
