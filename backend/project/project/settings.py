@@ -15,7 +15,7 @@ load_dotenv()
 from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -25,10 +25,9 @@ SECRET_KEY = 'django-insecure-^620ajfgga_4pexh^(#wf-kt@d#=ac5rh2$b-)ps=-*c6@ylke
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
-
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -36,11 +35,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DATABASES = { #TODO : READ these from .env 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db',  # The name of your database in MySQL
-        'USER': 'root',  # MySQL user (default is 'root')
-        'PASSWORD': 'password',  # MySQL password
-        'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
-        'PORT': '3307',  # Port where MySQL is running (in this case, Docker container)
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+
         },
     }
 
