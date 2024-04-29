@@ -24,8 +24,13 @@ from app.wikidata import WikidataAPI
 from app.qlever import QleverAPI
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_str,  DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 from .utils import Util
-
+from django.utils.encoding import force_bytes
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -105,8 +110,75 @@ class LogoutView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-
         return Response("success", status=200)
+        
+          
+class RequestPasswordResetEmail(generics.GenericAPIView):
+    serializer_class = ResetPasswordEmailRequestSerializer
+    
+    def post(self, request):
+        data = {'request': request, 'data': request.data}
+        serializer = self.serializer_class(data=data)
+        email = request.data['email']
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            
+            current_site = get_current_site(request=request).domain
+            relativeLink = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            
+            absurl = 'http://' + current_site + relativeLink + "?token=" + str(token)
+            email_template = Template("""
+                <html>
+                <body>
+                    <p><b>Hey,</b></p>
+                    <p>WYou can use the following link to reset your password/.</p>
+                    <p><a href="{{ absurl }}">Click here to reset your password.</a></p>
+                    <p>Thanks,<br>Team SemanticFlix</p>
+                </body>
+                </html>
+            """)
+            context = Context({'absurl': absurl})
+            html_message = email_template.render(context)
+            data = {
+                'html_message': html_message,
+                'to_email': user.email,
+                'email_subject': 'Hello! Reset Your Password for SemanticFlix!'
+                ''
+            }
+            
+            Util.send_email(data)
+        
+        return Response({'success': "Whe have sent you a link to reset your password "}, status=200)
+
+class PasswordTokenCheckAPI(generics.GenericAPIView):
+        def get(self, request, uidb64, token):
+           try:
+               id = force_str(urlsafe_base64_decode(uidb64))
+               user = User.objects.get(id=id)
+               
+            #    if not user.is_active:
+            #        raise AuthenticationFailed('User is not active')
+               
+               return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64,'token': token}, status=200)
+               
+               if not PasswordResetTokenGenerator().check_token(token, user):
+                   raise Response({'message': 'The reset link is invalid, please request a new one.'}, status=401)
+               
+               return Response({'message': 'Credentials are correct'}, status=200)
+           except DjangoUnicodeDecodeError as e:
+               if not PasswordResetTokenGenerator().check_token(token, user):
+                   raise Response({'message': 'The reset link is invalid, please request a new one.'}, status=401)
+        
+
+class  SetNewPasswordAPIView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+    
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Password reset success'}, status=200)
         
         
 class UserViewSet(viewsets.ModelViewSet):
@@ -181,6 +253,7 @@ def film_detail_api(request, id):
     description="API endpoint for sending a semantic query to the Wikidata API.",
     methods=['POST'],
     request=WikidataQuerySerializer,
+
 )
 @api_view(['POST'])
 def execute_query(request):
