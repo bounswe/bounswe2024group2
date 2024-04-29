@@ -12,7 +12,7 @@ function SignUp() {
     // This would typically involve sending a request to your backend.
     console.log('Signing in', { email, username, password });
 
-    fetch('http://207.154.242.6:8020/register/', {
+    fetch(`${process.env.REACT_APP_API_URL}/register/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

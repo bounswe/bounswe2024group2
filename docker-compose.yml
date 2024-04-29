@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
     container_name: semanticflix_backend
     command: sh -c "python backend/project/manage.py migrate --noinput && python backend/project/manage.py collectstatic --noinput && python backend/project/manage.py runserver 0.0.0.0:8000"
-    restart: always
+    restart: unless-stopped
     volumes:
       - .:/app
     ports:
@@ -46,8 +46,10 @@ services:
       context: ./project/client
       dockerfile: Dockerfile
     container_name: semanticflix_frontend
-    command: sh -c "npm start"
-    restart: always
+    environment:
+      - API_URL=http://backend:8000
+    command: sh -c "REACT_APP_API_URL=http://backend:8000 npm start"
+    restart: unless-stopped
     ports:
       - "3000:3000"
     depends_on:

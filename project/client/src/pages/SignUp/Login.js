@@ -16,7 +16,7 @@ function Login({ setIsLoggedIn }) {
     // send a request to backend (http://207.154.242.6:8020/docs/) to login
     // if login is successful, redirect to main page
     
-    fetch('http://207.154.242.6:8020/login/', {
+    fetch(`${process.env.REACT_APP_API_URL}/login/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
