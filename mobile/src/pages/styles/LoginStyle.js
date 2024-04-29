@@ -22,6 +22,7 @@ export default StyleSheet.create({
     },
     mid_container:{
         alignItems:"center",
+        flex:0.1,
     },
     bottom_container:{
         alignItems:"center",

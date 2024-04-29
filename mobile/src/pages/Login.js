@@ -1,15 +1,59 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, TouchableOpacity, TextInput, Image } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image, Alert } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles/LoginStyle"
 
 
 function Login({navigation}){
+    const [username, setUsername] = useState("bbbb");
+    const [password, setPassword] = useState("ERKAM.gokcepinar");
+    const baseURL = "http://207.154.242.6:8020";
     
+    console.log(username, password);
+
+    function changeUsername(username){
+        setUsername(username);
+    }
     
+    function changePassword(password){
+        setPassword(password);
+    }
+
     function handleSignup(){
         navigation.navigate("Signup");
     }
+
+    async function handleLogin(){
+        const loginURL = baseURL + "/login/"
+        try{
+            console.log(username, password);
+            const response = await fetch(loginURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            });
+          
+            console.log(response.headers);
+            if (response){
+
+                navigation.navigate("Main");
+            }else{
+                console.log("response null")
+                Alert.alert("Hata");
+            }
+        }
+        catch (error){
+            console.log(error)
+            Alert.alert("hata")
+        }
+        
+    }
+    
 
     return(
         <View style={styles.container}>
@@ -25,13 +69,13 @@ function Login({navigation}){
                     <View style={styles.icon_box}>
                         <MaterialCommunityIcons name="account-outline" color="black" size={30}/>
                     </View>
-                    <TextInput style={styles.input_text} placeholder="Username" isHidden={false}/>
+                    <TextInput style={styles.input_text} placeholder="Username" onChange={changeUsername} value={username} />
                 </View>
                 <View style={styles.password_input_box}>
                     <View style={styles.icon_box}>
                         <MaterialCommunityIcons name="lock-outline" color="black" size={30}/>
                     </View>
-                    <TextInput style={styles.input_text} placeholder="Password" secureTextEntry={true}/>
+                    <TextInput style={styles.input_text} placeholder="Password" secureTextEntry={true} onChange={changePassword} value={password} />
                 </View>
                 <View style={styles.chpass_view}>
                     <TouchableOpacity style={styles.chpass_button}> 
@@ -39,7 +83,7 @@ function Login({navigation}){
                     </TouchableOpacity>
                 </View>
                 <View style={styles.login_view}>
-                    <TouchableOpacity style={styles.login_button}> 
+                    <TouchableOpacity onPress={handleLogin} style={styles.login_button}> 
                         <Text style={styles.login_text}> Log In </Text>
                     </TouchableOpacity>
                 </View>
