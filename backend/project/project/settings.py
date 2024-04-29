@@ -49,7 +49,7 @@ DATABASES = { #TODO : READ these from .env
 }
 """
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -59,21 +59,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
 
-        },
-    }
-    """
-# Application definition
-#database settings for local : 
-
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'db',  # The name of your database in
-            'USER': 'root',
-            'PASSWORD': 'password',
-            'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
-            'PORT': '3307',
-        }
+    },
 }
 
 INSTALLED_APPS = [
