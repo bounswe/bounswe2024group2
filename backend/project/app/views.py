@@ -219,7 +219,6 @@ def query_film_pattern(request):
         if serializer.is_valid():
             pattern = serializer.validated_data.get('pattern')
             limit = serializer.validated_data.get('limit')
-
             # Execute the query using the Qlever class
             qlever = QleverAPI()
             results = qlever.film_pattern_query(pattern, limit)
@@ -237,6 +236,42 @@ def query_film_pattern(request):
                 }
                 films.append(film)
             return Response(films)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+# Find films with a pattern string and a limit value
+@extend_schema(
+    description="API endpoint for recently released films.",
+    methods=['POST'],
+    request=LimitQuerySerializer,
+)
+@api_view(['POST'])
+def recently_released_films(request):
+    """
+    Find films up to a limit value using Qlever.
+    """
+    if request.method == 'POST':
+        serializer = LimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            limit = serializer.validated_data.get('limit')
+
+            # Execute the query using the Qlever class
+            qlever = QleverAPI()
+            results = qlever.recently_released_films(limit)
+
+            print(results)
+            # change response format
+            # get only film ids and labels
+            # results = results['results']['bindings']
+            # films = []
+            # for result in results:
+            #     film = {
+            #         'id': result['film']['value'],
+            #         'label': result['filmLabel']['value']
+            #     }
+            #     films.append(film)
+            return Response(results)
         
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
