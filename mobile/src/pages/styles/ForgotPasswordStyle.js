@@ -11,21 +11,32 @@ export default StyleSheet.create({
     top_container:{
         alignItems:"center",
         justifyContent:"center",
-        flex:0.5,
+        flex:0.8,
         minWidth:"100%",
         maxWidth:"100%",
- 
+   
     },
-    mid_text:{
+    mid_title:{
         fontWeight:"bold",
         fontSize:30,
         color:"black",
     },
+    mid_text:{
+        fontSize:15,
+        fontWeight:"500",
+        textAlign:"center",
+    },
     mid_container:{
         alignItems:"center",
-        flex:0.08,
-     
-        
+        flex:0.3,
+    },
+    title_box:{
+        alignItems:"center",
+        marginBottom:"7%",
+    },
+    text_box:{
+        alignItems:"center",
+        justifyContent:"center"
     },
     bottom_container:{
         alignItems:"center",
@@ -33,59 +44,47 @@ export default StyleSheet.create({
         flex:0.7,
 
     },
-    input_box:{
+    email_input_box:{
         flexDirection:"row",
-        alignItems:"flex-end",
+        alignItems:"center",
         borderWidth:1,
         borderRadius:10,
         shadowColor:'black',
         shadowRadius: 5,
         minWidth:"100%",
         margin:"2%",
+        marginBottom:"10%",
     },
     icon_box:{
         padding:"2%",
         marginRight:"1%",
     },
-    signup_view:{
+    
+    verification_view:{
         alignItems:"center",
         justifyContent:"center",
         backgroundColor:"#DC143C",
         minWidth:"100%",
         padding:"2%",
         borderRadius:10,
-        marginBottom:"2%",
-        marginTop:"5%",
+        marginBottom:"3%",
+
     },
-    signup_button:{
+    verification_button:{
         alignItems:"center",
         justifyContent:"center",
         minWidth:"100%",
         padding:"3%",
         borderRadius:10,
     },
-    signup_text:{
+    verification_text:{
         fontWeight:"bold",
         color:"white",
-        fontSize:18
+        fontSize:18,
     },
     input_text:{
         fontWeight:"bold"
     },
-    login_view:{
-        alignItems:"stretch",
-        justifyContent:"space-between",
-        flexDirection:"row",
-        minWidth:"100%",
-        padding:"1%",
-        borderRadius:10,
-        marginBottom:"3%",
-        
-    },
-    login_text:{
-        fontWeight:"bold",
-        fontSize:16,
-        color:"black",
-    },
+   
     
 })

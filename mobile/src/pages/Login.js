@@ -22,6 +22,11 @@ function Login({navigation}){
     function handleSignup(){
         navigation.navigate("Signup");
     }
+    
+    function handleForgotPassword(){
+        navigation.navigate("ForgotMain");
+    }
+
 
     async function handleLogin(){
         const loginURL = baseURL + "/login/"
@@ -78,7 +83,7 @@ function Login({navigation}){
                     <TextInput style={styles.input_text} placeholder="Password" secureTextEntry={true} onChange={changePassword} value={password} />
                 </View>
                 <View style={styles.chpass_view}>
-                    <TouchableOpacity style={styles.chpass_button}> 
+                    <TouchableOpacity onPress={handleForgotPassword} style={styles.chpass_button}> 
                         <Text style={styles.chpass_text}> Forgot Password? </Text>
                     </TouchableOpacity>
                 </View>
