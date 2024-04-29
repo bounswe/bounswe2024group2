@@ -85,9 +85,10 @@ class WikidataAPI:
                 'label': result['filmLabel']['value'],
                 'description': result['description']['value'],
                 'image': result['image']['value'] if 'image' in result else None,
-                'genres': [self.get_label_of_entity(genreId) for genreId in result['genreIds']['value'].split(", ")] if 'genreIds' in result else None,
-                'directors': [self.get_label_of_entity(directorId) for directorId in result['directorIds']['value'].split(", ")] if 'directorIds' in result else None,
-                'castMembers': [self.get_label_of_entity(castMemberId) for castMemberId in result['castMemberIds']['value'].split(", ")] if 'castMemberIds' in result else None
+                # put both id and the label for each genre
+                'genres': [{'id': genreId, 'label': self.get_label_of_entity(genreId)} for genreId in result['genreIds']['value'].split(", ")] if 'genreIds' in result else None,
+                'directors': [{'id': directorId, 'label': self.get_label_of_entity(directorId)} for directorId in result['directorIds']['value'].split(", ")] if 'directorIds' in result else None,
+                'castMembers': [{'id': castMemberId, 'label': self.get_label_of_entity(castMemberId)} for castMemberId in result['castMemberIds']['value'].split(", ")] if 'castMemberIds' in result else None
             }
             details.append(detail)
         
