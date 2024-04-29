@@ -1,28 +1,24 @@
 
-from rest_framework import viewsets
-from rest_framework import permissions
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from django.http.response import JsonResponse
-from django.contrib.auth.models import User
-from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, LogoutSerializer
-from rest_framework.decorators import api_view, permission_classes
-from drf_spectacular.utils import extend_schema
-from .serializers import MyTokenObtainPairSerializer
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated
-from .serializers import RegisterSerializer
-from rest_framework import generics
-
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.template import Template, Context
+from django.conf import settings
+from django.http.response import JsonResponse
+from django.contrib.auth.models import User
+from rest_framework import permissions, status , viewsets, generics
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
+from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import AllowAny, IsAuthenticated
+import jwt
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from app.models import Film, Genre, Director, Actor
+from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, RegisterSerializer, LogoutSerializer, MyTokenObtainPairSerializer
+from .utils import Util
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -63,14 +59,31 @@ class RegisterView(generics.CreateAPIView):
             ''
         }
         Util.send_email(data)
-        # self.perform_create(serializer)
         
-        return Response(user_data, status=201)
+        return Response({
+            'username': user.username,
+            'email': user.email,
+            'password': user_data['password']}, status=status.HTTP_201_CREATED)
+
 
 class VerifyEmail(generics.GenericAPIView):
     def get(self, request):
-        return Response("Email Verified", status=200)
-    
+        token = request.GET.get('token')
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
+            user = User.objects.get(id=payload['user_id'])
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+                return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Email already verified'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.ExpiredSignatureError as identifier:
+            return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.exceptions.DecodeError as identifier:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,) #to allow unauthenticated users to get token
     serializer_class = MyTokenObtainPairSerializer
