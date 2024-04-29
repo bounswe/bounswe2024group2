@@ -280,4 +280,56 @@ def recently_released_films(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
+# Retrieve film details from Wikidata
+@extend_schema(
+    description="API endpoint for retrieving film details from Wikidata.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_film_details(request):
+    """
+    Retrieve film details from Wikidata.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_film_details(entity_id)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Retrieve label of a Wikidata entity
+@extend_schema(
+    description="API endpoint for retrieving the label of a Wikidata entity.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_label_of_entity(request):
+    """
+    Retrieve the label of a Wikidata entity.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_label_of_entity(entity_id)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
