@@ -1,5 +1,3 @@
-// components/FilmList.js
-
 import React from 'react';
 import '../MainPage'; // Your CSS for the FilmList
 
