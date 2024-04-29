@@ -1,0 +1,5 @@
+======= Films played by dicaprio
+{
+  "query": "SELECT ?film ?filmLabel WHERE { ?film wdt:P31 wd:Q11424; wdt:P161 wd:Q38111. SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\". } }"
+}
+=======

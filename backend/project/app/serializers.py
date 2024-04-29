@@ -77,3 +77,6 @@ class ActorSerializer(serializers.ModelSerializer):
         model = Actor
         fields = ['name', 'surname', 'description']
         
+
+class WikidataQuerySerializer(serializers.Serializer):
+    query = serializers.CharField()

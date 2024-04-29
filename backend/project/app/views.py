@@ -6,7 +6,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
 from app.models import Film, Genre, Director, Actor
-from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer
+from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer, WikidataQuerySerializer
 from rest_framework.decorators import api_view, permission_classes
 from drf_spectacular.utils import extend_schema
 from .serializers import MyTokenObtainPairSerializer
@@ -15,6 +15,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer
 from rest_framework import generics
+from app.wikidata import WikidataAPI
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class RegisterView(generics.CreateAPIView):
@@ -93,3 +96,28 @@ def film_detail_api(request, id):
         return JsonResponse("Film Deleted Successfully", safe=False)
 
 
+# A simple endpoint for sending a semantic query to the Wikidata API
+@extend_schema(
+    description="API endpoint for sending a semantic query to the Wikidata API.",
+    methods=['POST'],
+    request=WikidataQuerySerializer,
+)
+@api_view(['POST'])
+def execute_query(request):
+    """
+    Allow users to send a semantic query to the Wikidata API.
+    """
+    if request.method == 'POST':
+        serializer = WikidataQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            query_text = serializer.validated_data.get('query')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.execute_query(query_text)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

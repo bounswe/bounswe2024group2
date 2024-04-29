@@ -10,9 +10,9 @@ SELECT ?item ?itemLabel ?itemDescription ?itemAltLabel WHERE {
     }
 """
 
-class Wikidata:
+class WikidataAPI:
     def __init__(self):
-        self.url = "https://www.wikidata.org/w/api.php"
+        self.endpoint_url = "https://query.wikidata.org/sparql"
         self.params = {
             "action": "wbsearchentities",
             "format": "json",
@@ -20,11 +20,18 @@ class Wikidata:
         }
 
     # Send a semantic query to the Wikidata API
-    def query(self, query: str) -> List[str]:
-        self.params["search"] = query
-        response = requests.get(url=self.url, params=self.params)
-        data = response.json()
-        return data["search"]
+    def execute_query(self, query):
+        try:
+            response = requests.get(
+                self.endpoint_url,
+                params={'query': query, 'format': 'json'}
+            )
+            response.raise_for_status()
+            print(response)
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print("Error:", e)
+            return None
         
     
 
