@@ -93,3 +93,6 @@ class WikidataQuerySerializer(serializers.Serializer):
 class FilmPatternWithLimitQuerySerializer(serializers.Serializer):
     pattern = serializers.CharField()
     limit = serializers.IntegerField()
+
+class LimitQuerySerializer(serializers.Serializer):
+    limit = serializers.IntegerField()

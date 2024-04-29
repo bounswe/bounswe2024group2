@@ -3,7 +3,8 @@ from django.urls import path
 from app import views
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from .views import film_api, film_detail_api, RegisterView, execute_query, query_film_pattern, MyObtainTokenPairView, LogoutView, VerifyEmail
+# from .views import film_api, film_detail_api, RegisterView, execute_query, query_film_pattern, MyObtainTokenPairView, LogoutView, VerifyEmail
+from app.views import *
 from rest_framework_simplejwt.views import TokenRefreshView
 
     
@@ -18,6 +19,7 @@ urlpatterns = [
     path('wikidata-query/', execute_query, name='wikidata-query'),
     path('query-film-pattern/', query_film_pattern, name='query-film-pattern'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('email-verify/', VerifyEmail.as_view(), name='email-verify')
+    path('email-verify/', VerifyEmail.as_view(), name='email-verify'),
+    path('recently-release-films/', recently_released_films, name='recently-release-films'),
 ]
 
