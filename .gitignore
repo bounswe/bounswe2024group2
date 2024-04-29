@@ -3,6 +3,7 @@
 .env
 .venv
 venv
+
 /backend/project/staticfiles
 /backend/project/mydb
-/backend/project/mydb
+
