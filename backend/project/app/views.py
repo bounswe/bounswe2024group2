@@ -263,15 +263,18 @@ def recently_released_films(request):
             print(results)
             # change response format
             # get only film ids and labels
-            # results = results['results']['bindings']
-            # films = []
-            # for result in results:
-            #     film = {
-            #         'id': result['film']['value'],
-            #         'label': result['filmLabel']['value']
-            #     }
-            #     films.append(film)
-            return Response(results)
+
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value'],
+                    'earliestPublicationDate': result['earliestPublicationDate']['value']
+                }
+                films.append(film)
+
+            return Response(films)
         
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

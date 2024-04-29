@@ -73,7 +73,6 @@ class QleverAPI:
         # convert it to "2024-12-05T00:00:00Z"
         current_time = current_time.split(".")[0] + "Z"
 
-
         SPARQL = f"""
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
