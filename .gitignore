@@ -7,3 +7,4 @@ venv
 /backend/project/staticfiles
 /backend/project/mydb
 
+/keypair
