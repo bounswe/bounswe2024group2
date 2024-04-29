@@ -80,15 +80,32 @@ class WikidataAPI:
 
         results = response['results']['bindings']
         details = []
+        
+        print(results)
+
         for result in results:
+            genreIds = result['genreIds']['value'] if 'genreIds' in result else None
+            directorIds = result['directorIds']['value'] if 'directorIds' in result else None
+            castMemberIds = result['castMemberIds']['value'] if 'castMemberIds' in result else None
+            genres = [{'id': genreId, 'label': self.get_label_of_entity(genreId)} for genreId in genreIds.split(", ")] if genreIds else None
+            directors = [{'id': directorId, 'label': self.get_label_of_entity(directorId)} for directorId in directorIds.split(", ")] if directorIds else None
+            castMembers = [{'id': castMemberId, 'label': self.get_label_of_entity(castMemberId)} for castMemberId in castMemberIds.split(", ")] if castMemberIds else None
+            if genreIds == None:
+                genres = None
+            if directorIds == None:
+                directors = None
+            if castMemberIds == None:
+                castMembers = None
+            
             detail = {
                 'label': result['filmLabel']['value'],
                 'description': result['description']['value'],
                 'image': result['image']['value'] if 'image' in result else None,
                 # put both id and the label for each genre
-                'genres': [{'id': genreId, 'label': self.get_label_of_entity(genreId)} for genreId in result['genreIds']['value'].split(", ")] if 'genreIds' in result else None,
-                'directors': [{'id': directorId, 'label': self.get_label_of_entity(directorId)} for directorId in result['directorIds']['value'].split(", ")] if 'directorIds' in result else None,
-                'castMembers': [{'id': castMemberId, 'label': self.get_label_of_entity(castMemberId)} for castMemberId in result['castMemberIds']['value'].split(", ")] if 'castMemberIds' in result else None
+                # It should be none if there is no genre
+                'genre': genres,
+                'director': directors,
+                'castMember': castMembers,
             }
             details.append(detail)
         
