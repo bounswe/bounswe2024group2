@@ -7,12 +7,14 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mockFilms, mockUsers} from '../fakeData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Movie from '../components/Movie';
 import RecentPost from '../components/RecentPost';
+import {useNavigation} from '@react-navigation/native';
 
 function Main() {
   const {
@@ -27,41 +29,51 @@ function Main() {
     midContainer,
     sectionHeaderText,
   } = styles;
-  console.log(mockFilms[0]);
+  const navigation = useNavigation();
   return (
-    <SafeAreaView style={safeAreaStyle}>
-      <View style={topContainer}>
-        <Text style={nameText}>Hello {mockUsers[0].name}!</Text>
-        <View style={profilePhotoContainer}>
-          <Image
-            style={profilePhoto}
-            source={require('../img/mockUserProfilePhoto.png')}
-          />
+    <>
+      <SafeAreaView style={safeAreaStyle}>
+        <View style={topContainer}>
+          <Text style={nameText}>Hello {mockUsers[0].name}!</Text>
+          <View style={profilePhotoContainer}>
+            <Pressable onPress={() => navigation.navigate('Profile')}>
+            <Image
+              style={profilePhoto}
+              source={require('../img/mockUserProfilePhoto.png')}
+            />
+            </Pressable>
+          </View>
         </View>
-      </View>
-      <View style={searchBarContainer}>
-        <MaterialCommunityIcons name="magnify" size={20} color="rgb(9,33,74)" />
-        <TextInput style={searchInputStyle} placeholder="Search" />
-      </View>
-      <View style={midContainer}>
-        <Text style={[sectionHeaderText,{marginBottom:10}]}>Recent Posts</Text>
-        <RecentPost postData={mockFilms[1]}/>
-      </View>
-      <View style={moviesContainer}>
-        <Text style={sectionHeaderText}>Popular Movies</Text>
-        <ScrollView
-          style={{marginTop: 10}}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}>
-          <Movie movieIndex={0} />
-          <Movie movieIndex={1} />
-          <Movie movieIndex={2} />
-          <Movie movieIndex={0} />
-          <Movie movieIndex={1} />
-          <Movie movieIndex={2} />
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+        <View style={searchBarContainer}>
+          <MaterialCommunityIcons
+            name="magnify"
+            size={20}
+            color="rgb(9,33,74)"
+          />
+          <TextInput style={searchInputStyle} placeholder="Search" />
+        </View>
+        <View style={midContainer}>
+          <Text style={[sectionHeaderText, {marginBottom: 10}]}>
+            Recent Posts
+          </Text>
+          <RecentPost postData={mockFilms[1]} />
+        </View>
+        <View style={moviesContainer}>
+          <Text style={sectionHeaderText}>Popular Movies</Text>
+          <ScrollView
+            style={{marginTop: 10}}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}>
+            <Movie movieIndex={1} />
+            <Movie movieIndex={1} />
+            <Movie movieIndex={2} />
+            <Movie movieIndex={0} />
+            <Movie movieIndex={1} />
+            <Movie movieIndex={2} />
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </>
   );
 }
 
