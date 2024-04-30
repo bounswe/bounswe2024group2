@@ -48,4 +48,40 @@ then open in your browser : http://localhost:8080 (or the port you choose)
 
 You will see the PlantUml server and you can start editing the puml file of ours.
 
+### Pre-requisites
+Make sure you have docker installed in your local machine. If not, you can download it from [here](https://docs.docker.com/get-docker/). To check if you have docker installed, you can run the following command in your terminal:
+
+```bash
+docker --version
+```
+
+If you have docker installed, you should see the version of docker you have. If you don't see the version, you should install docker.
+
+
+### Installation
+1. Clone the repository:
+
+```bash
+ git clone https://github.com/bounswe/bounswe2024group2.git
+```
+
+2. Go into the project folder
+
+```bash
+cd bounswe2024group2
+```
+
+3. Build the docker images
+
+```bash
+docker-compose build
+```
+
+4. Run the docker containers
+
+```bash
+docker-compose up -d
+```
+
+With these commands, you will start the containers for backend, frontend and database. You can access the frontend from `http://localhost:3000` and the backend from `http://localhost:8020`. Database will be running on `localhost:3037`.
 
