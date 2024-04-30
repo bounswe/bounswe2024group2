@@ -15,7 +15,6 @@ services:
       - ./mydb:/var/lib/mysql
     networks:
       - semanticflix-network
-  
   backend:
     image: semanticflix_backend
     build: 
