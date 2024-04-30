@@ -7,13 +7,17 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
+
   TouchableOpacity,
+  Pressable,
+
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mockFilms, mockUsers} from '../fakeData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Movie from '../components/Movie';
 import RecentPost from '../components/RecentPost';
+
 import styles from "./styles/MainStyle"
 
 function Main({navigation}) {
@@ -30,10 +34,12 @@ function Main({navigation}) {
         <View style={styles.topContainer}>
             <Text style={styles.nameText}>Hello {mockUsers[0].name}!</Text>
             <View style={styles.profilePhotoContainer}>
-                <Image
+                <Pressable onPress={() => navigation.navigate('Profile')}>
+                  <Image
                     style={styles.profilePhoto}
                     source={require('../img/mockUserProfilePhoto.png')}
-                />
+                  />
+                </Pressable>
             </View>
         </View>
         <View style={styles.searchBarContainer}>
@@ -61,6 +67,8 @@ function Main({navigation}) {
             </ScrollView>
         </View>
     </SafeAreaView>
+
+
   );
 }
 
