@@ -29,7 +29,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     const handleSearch = (event) => {
         event.preventDefault();
         if (!searchTerm.trim()) return;
-        fetch('http://207.154.242.6:8020/query-film-pattern/', {
+        fetch('http://localhost:8020/query-film-pattern/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

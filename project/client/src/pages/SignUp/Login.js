@@ -13,10 +13,10 @@ function Login({ setIsLoggedIn }) {
     event.preventDefault();
     // Handle the login logic here, typically sending a request to backend
     console.log('Logging in', { username, password });
-    // send a request to backend (http://207.154.242.6:8020/docs/) to login
+    // send a request to backend (http://localhost:8020/docs/) to login
     // if login is successful, redirect to main page
     
-    fetch('http://207.154.242.6:8020/login/', {
+    fetch('http://localhost:8020/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

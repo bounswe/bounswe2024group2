@@ -13,7 +13,7 @@ function SignUp() {
     // Handle the form submission logic here.
     // This would typically involve sending a request to your backend.
     console.log('Signing in', { email, username, password });
-    fetch('http://207.154.242.6:8020/register/', {
+    fetch('http://localhost:8020/register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
