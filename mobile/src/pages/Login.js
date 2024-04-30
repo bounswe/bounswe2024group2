@@ -13,8 +13,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import styles from './styles/LoginStyle';
 
 function Login({navigation}) {
-  const [username, setUsername] = useState('bbbb');
-  const [password, setPassword] = useState('ERKAM.gokcepinar');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const baseURL = 'http://207.154.242.6:8020';
 
   console.log(username, password);
@@ -39,40 +39,39 @@ function Login({navigation}) {
 
   async function handleLogin() {
     const loginURL = baseURL + '/login/';
-    navigation.navigate('Main');
-    return;
+    
     try {
-      console.log(username, password);
-      const response = await fetch(loginURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
+        console.log(username, password);
+        const response = await fetch(loginURL, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+            username:username,
+            password:password,
+            }),
+        });
 
-      console.log(response.headers);
-      if (response) {
-        navigation.navigate('Main');
-      } else {
-        console.log('response null');
-        Alert.alert('Hata');
-      }
+        console.log(response.headers);
+        console.log(response.status)
+        if (response.status == 200) {
+            navigation.navigate('Main');
+        } else {
+            console.log('response null');
+            Alert.alert('Wrong username or password');
+        }
     } catch (error) {
       console.log(error);
-      Alert.alert('hata');
+      Alert.alert('Wrong username or password');
     }
   }
 
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <View style={styles.top_container}>
+    
+      <View style={styles.container}>
+        <View style={styles.top_container}>
         <Image
           source={require('./assets/logo.png')}
           style={{width: '70%', height: '70%', resizeMode: 'contain'}}
@@ -93,7 +92,7 @@ function Login({navigation}) {
           <TextInput
             style={styles.input_text}
             placeholder="Username"
-            onChange={changeUsername}
+            onChangeText={changeUsername}
             value={username}
           />
         </View>
@@ -109,12 +108,12 @@ function Login({navigation}) {
             style={styles.input_text}
             placeholder="Password"
             secureTextEntry={true}
-            onChange={changePassword}
+            onChangeText={changePassword}
             value={password}
           />
         </View>
         <View style={styles.chpass_view}>
-          <TouchableOpacity style={styles.chpass_button}>
+          <TouchableOpacity onPress={handleForgotPassword} style={styles.chpass_button}>
             <Text style={styles.chpass_text}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -131,7 +130,9 @@ function Login({navigation}) {
 
         </View>
       </View>
-    </KeyboardAvoidingView>
+    
+      </View>
+      
   );
 }
 
