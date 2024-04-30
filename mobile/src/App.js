@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ForgotPassword from "./pages/ForgotPassword"
 import VerifyPassChange from "./pages/VerifyPassChange"
 import ResetPass from "./pages/ResetPass"
+import Search from "./pages/Search"
 
 function App(){
   const Stack = createNativeStackNavigator();
@@ -16,7 +17,7 @@ function App(){
       <Stack.Navigator>
         <Stack.Screen name ="ForgotPassword" component={ForgotPassword} options={{headerShown:false}}/>
         <Stack.Screen name ="VerifyPassChange" component={VerifyPassChange} options={{headerShown:false}}/>
-        <Stack.Screen name ="ResetPass" component={ResetPass} options={{headerShown:false}}/>
+        <Stack.Screen name ="ResetPass" component={ResetPass} options={{headerShown:true}}/>
       </Stack.Navigator>
     )
   }
@@ -26,7 +27,8 @@ function App(){
       <Stack.Navigator>
         <Stack.Screen name ="Login" component={Login} options={{headerShown:false}}/>
         <Stack.Screen name ="Signup" component={Signup} options={{headerShown:false}}/>
-        <Stack.Screen name ="Main" component={Main} options={{headerShown:true}}/>
+        <Stack.Screen name ="Main" component={Main} options={{headerShown:false}}/>
+        <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
         <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
       </Stack.Navigator>
     </NavigationContainer>

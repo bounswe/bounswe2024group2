@@ -15,9 +15,10 @@ import styles from './styles/SignupStyle';
 import axios from 'axios';
 
 function Signup({navigation}) {
-  const [email, setEmail] = useState('aaaa');
-  const [username, setUsername] = useState('bbbb');
-  const [password, setPassword] = useState('ERKAM.gokcepinar');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordA, setPasswordA] = useState('');
   const baseURL = 'http://207.154.242.6:8020';
   const [isKeyboardOpen, setKeyboardOpen] = useState(false);
   useEffect(() => {
@@ -52,8 +53,7 @@ function Signup({navigation}) {
           username,
           password,
           email,
-          first_name: 'erkam',
-          last_name: 'gokcepinar',
+          isactive:true,
         }),
       });
       /* const response = await axios.post("http://192.168.4.56:8020/register/", {
@@ -63,9 +63,10 @@ function Signup({navigation}) {
                 first_name: "erkam",
                 last_name: "gokcepinar"
             }); */
-      console.log(response.json);
-      if (response) {
-        navigation.navigate('Main');
+      console.log(response.status);
+      if (response.status == 200 || response.status == 201 ) {
+        navigation.navigate('Login');
+        Alert.alert("Successful registeration, please verify your account from your email");
       } else {
         console.log('response null');
         Alert.alert('Hata');
@@ -107,6 +108,7 @@ function Signup({navigation}) {
             style={styles.input_text}
             value={email}
             placeholder="Email"
+            onChangeText={setEmail}
           />
         </View>
         <View style={styles.input_box}>
@@ -121,6 +123,7 @@ function Signup({navigation}) {
             style={styles.input_text}
             value={username}
             placeholder="Username"
+            onChangeText={setUsername}
           />
         </View>
         <View style={styles.input_box}>
@@ -136,6 +139,7 @@ function Signup({navigation}) {
             value={password}
             placeholder="Password"
             secureTextEntry={true}
+            onChangeText={setPassword}
           />
         </View>
         <View style={styles.input_box}>
@@ -148,9 +152,10 @@ function Signup({navigation}) {
           </View>
           <TextInput
             style={styles.input_text}
-            value={password}
+            value={passwordA}
             placeholder="Password again"
             secureTextEntry={true}
+            onChangeText={setPasswordA}
           />
         </View>
         <View style={styles.signup_view}>
