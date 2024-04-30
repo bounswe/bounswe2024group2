@@ -150,7 +150,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             
             Util.send_email(data)
         
-        return Response({'success': "Whe have sent you a link to reset your password "}, status=200)
+        return Response({'success': "Whe have sent you a link to reset your password", "token": token, 'uidb64': uidb64}, status=200)
 
 class PasswordTokenCheckAPI(generics.GenericAPIView):
         def get(self, request, uidb64, token):

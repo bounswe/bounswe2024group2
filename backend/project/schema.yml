@@ -1,7 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Your Project API
+  title: SemanticFlix
   version: 1.0.0
-  description: Your project description
-paths: {}
+  description: A platform that allows users to discuss films.
 components: {}
