@@ -3,7 +3,7 @@ from django.urls import path
 from app import views
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from .views import film_api, film_detail_api, RegisterView, execute_query, query_film_pattern, MyObtainTokenPairView, LogoutView, VerifyEmail, PasswordTokenCheckAPI, RequestPasswordResetEmail, SetNewPasswordAPIView
+from app.views import *
 from rest_framework_simplejwt.views import TokenRefreshView
 
     
@@ -22,5 +22,8 @@ urlpatterns = [
     path('request-reset-email', RequestPasswordResetEmail.as_view(), name='request-reset-email'),
     path('password-reset/<uidb64>/<token>/', PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete', SetNewPasswordAPIView.as_view(), name='password-reset-complete')
+    path('recently-release-films/', recently_released_films, name='recently-release-films'),
+    path('get-film-details/', get_film_details, name='get-film-details'),
+    path('get-label-of-entity/', get_label_of_entity, name='get-label-of-entity'),
 ]
 

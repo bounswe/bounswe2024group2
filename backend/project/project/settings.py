@@ -29,7 +29,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 if DEBUG:
     ALLOWED_HOSTS = ['*']
-
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOW_CREDENTIALS = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -49,7 +50,7 @@ DATABASES = { #TODO : READ these from .env
 }
 """
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -59,25 +60,12 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
 
-        },
-    }
-    """
-# Application definition
-#database settings for local : 
-
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'db',  # The name of your database in
-            'USER': 'root',
-            'PASSWORD': 'password',
-            'HOST': '127.0.0.1',  # Host where MySQL is running (in this case, Docker container)
-            'PORT': '3307',
-        }
+    },
 }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -90,10 +78,8 @@ INSTALLED_APPS = [
     # 'corsheaders',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True    #TODO: list the domains that need to be whitelisted
-
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

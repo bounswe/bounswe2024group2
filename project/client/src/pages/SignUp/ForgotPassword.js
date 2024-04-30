@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ForgotPassword.css'; // Similar styling as SignUp
+import './ForgotPassword.css'; 
 
 function Login() {
   const [email, setemail] = useState('');
@@ -17,7 +17,7 @@ function Login() {
             <img src="/logo.png" alt="Logo" className="logo" />
           <h1>Forgot Password</h1>
         </div>
-        <div className = "forgot-password-epxlanation">
+        <div className = "forgot-password-explanation">
             <h1>Type your email so that we can send you a verification code to reset your password</h1>
         </div>
         <form onSubmit={handleSubmit}>
@@ -26,7 +26,7 @@ function Login() {
             placeholder="email"
             value={email}
             onChange={(e) => setemail(e.target.value)}
-            className="input-item"
+            className="forgotPassword-input-item"
           />
         <button type="submit">Send Verification</button>
         </form>

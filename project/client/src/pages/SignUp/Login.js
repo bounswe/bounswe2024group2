@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './SignUp.css'; // Similar styling as SignUp
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+
+function Login({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,8 +13,35 @@ function Login() {
     event.preventDefault();
     // Handle the login logic here, typically sending a request to backend
     console.log('Logging in', { username, password });
+    // send a request to backend (http://207.154.242.6:8020/docs/) to login
+    // if login is successful, redirect to main page
+    
+    fetch('http://207.154.242.6:8020/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Login successful');
+          setIsLoggedIn(true);
+          localStorage.setItem('isLoggedIn', 'true'); // Persist login state
+          navigate('/main-page'); // replace '/main-page' with your main page's route
+        } else {
+          console.log('Login failed');
+          // handle login failure here
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        // handle login failure here
+      });
+
+
     // go to main page when logged in 
-    navigate('/main-page'); // replace '/main-page' with your main page's route
+    // navigate('/main-page'); // replace '/main-page' with your main page's route
   };
 
   return (
@@ -44,7 +72,7 @@ function Login() {
           <button type="submit">Login</button>
         </form>
         <div className="signup-footer">
-          <span>Don't have an account <a href="/">Sign Up</a></span>
+          <span>Don't have an account <a href="/SignUp">Sign Up</a></span>
         </div>
       </div>
     </div>

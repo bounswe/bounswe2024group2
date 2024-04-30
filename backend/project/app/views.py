@@ -292,7 +292,6 @@ def query_film_pattern(request):
         if serializer.is_valid():
             pattern = serializer.validated_data.get('pattern')
             limit = serializer.validated_data.get('limit')
-
             # Execute the query using the Qlever class
             qlever = QleverAPI()
             results = qlever.film_pattern_query(pattern, limit)
@@ -314,5 +313,96 @@ def query_film_pattern(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+# Find films with a pattern string and a limit value
+@extend_schema(
+    description="API endpoint for recently released films.",
+    methods=['POST'],
+    request=LimitQuerySerializer,
+)
+@api_view(['POST'])
+def recently_released_films(request):
+    """
+    Find films up to a limit value using Qlever.
+    """
+    if request.method == 'POST':
+        serializer = LimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            limit = serializer.validated_data.get('limit')
 
+            # Execute the query using the Qlever class
+            qlever = QleverAPI()
+            results = qlever.recently_released_films(limit)
+
+            print(results)
+            # change response format
+            # get only film ids and labels
+
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value'],
+                    'earliestPublicationDate': result['earliestPublicationDate']['value']
+                }
+                films.append(film)
+
+            return Response(films)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+# Retrieve film details from Wikidata
+@extend_schema(
+    description="API endpoint for retrieving film details from Wikidata.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_film_details(request):
+    """
+    Retrieve film details from Wikidata.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_film_details(entity_id)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Retrieve label of a Wikidata entity
+@extend_schema(
+    description="API endpoint for retrieving the label of a Wikidata entity.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_label_of_entity(request):
+    """
+    Retrieve the label of a Wikidata entity.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_label_of_entity(entity_id)
+
+            print(results)
+
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
