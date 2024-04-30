@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import os from 'os';
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,7 +30,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     const handleSearch = (event) => {
         event.preventDefault();
         if (!searchTerm.trim()) return;
-        fetch('http://207.154.242.6:8020/query-film-pattern/', {
+        fetch('${process.env.REACT_APP_BACKEND_URL}/query-film-pattern/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

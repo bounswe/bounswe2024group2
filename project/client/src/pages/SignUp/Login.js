@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SignUp.css'; // Similar styling as SignUp
 import { useNavigate } from 'react-router-dom';
-
+import os from 'os';
 
 function Login({ setIsLoggedIn }) {
   const [username, setUsername] = useState('');
@@ -16,7 +16,7 @@ function Login({ setIsLoggedIn }) {
     // send a request to backend (http://207.154.242.6:8020/docs/) to login
     // if login is successful, redirect to main page
     
-    fetch('http://207.154.242.6:8020/login/', {
+    fetch('${process.env.REACT_APP_BACKEND_URL}/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import NavBar from './components/NavBar';
 import RecentPosts from './components/RecentPosts';
 import FilmList from './components/FilmList';
 import './MainPage.css'; // Make sure this path is correct
+import os from 'os';
 
 function MainPage({ isLoggedIn, setIsLoggedIn }) {
   const [recentFilms, setRecentFilms] = useState([]);
@@ -34,7 +35,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
 
 
   useEffect(() => {
-    fetch('http://207.154.242.6:8020/recently-release-films/', {
+    fetch('${process.env.REACT_APP_BACKEND_URL}/recently-release-films/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
