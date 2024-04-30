@@ -19,13 +19,6 @@ body:
       value: |
         - [XX](url)
         - [XX](url)
-  - type: checkboxes
-    id: acceptance
-    attributes:
-      label: Acceptance Criteria
-      description: List of acceptance criteria
-      options:
-        - label: Materials are consumed
   - type: input
     id: estimated-time
     attributes:
