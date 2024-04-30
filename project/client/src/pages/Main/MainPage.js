@@ -7,6 +7,32 @@ import './MainPage.css'; // Make sure this path is correct
 function MainPage({ isLoggedIn, setIsLoggedIn }) {
   const [recentFilms, setRecentFilms] = useState([]);
 
+  const mockPosts = [
+  {
+    id: 1,
+    user: 'johndoe',
+    title: 'Inception',
+    content: 'Mind-blowing narrative and effects. A must-watch!',
+    rating: '★★★★☆'
+  },
+  {
+    id: 2,
+    user: 'janedoe',
+    title: 'Parasite',
+    content: 'A brilliant social satire that will keep you on the edge of your seat.',
+    rating: '★★★★★'
+  },
+  {
+    id: 3,
+    user: 'smith',
+    title: 'Interstellar',
+    content: 'A visually stunning masterpiece with deep emotional resonance.',
+    rating: '★★★★☆'
+  },
+  // Add more mock post data...
+];
+
+
   useEffect(() => {
     fetch('http://207.154.242.6:8020/recently-release-films/', {
       method: 'POST',
@@ -31,28 +57,6 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
   }, []);
 
 
-
-const mockPosts = [
-
-    {
-      id: 1,
-      title: 'Post 1',
-      content: 'Content of post 1',
-      rating: 5,
-    },
-    {
-      id: 2,
-      title: 'Post 2',
-      content: 'Content of post 2',
-      rating: 4,
-    },
-    {
-      id: 3,
-      title: 'Post 3',
-      content: 'Content of post 3',
-      rating: 3,
-    },
-];
 
   return (
     <div className="main-page">
