@@ -18,9 +18,10 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def post(self, request):
+        user = request.user
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(author=user)
         return Response("success", status=200)
 
     def put(self, request, pk=None):
@@ -47,10 +48,22 @@ class LikeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response("success", status=200)
+        user = request.user
+        post_id = request.data.get('post')
+        # Check if the user has already liked the post
+        like = Like.objects.filter(user=user, post=post_id).first()
+        
+        if like:
+            # If the user has already liked the post, delete the like
+            print("user has already liked the post")
+            like.delete()
+            return Response("Like deleted successfully", status=200)
+        else:
+            # If the user has not liked the post, create a new like
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=user)
+            return Response("success", status=200)
 
     def put(self, request, pk=None):
         like = self.get_object(pk)
