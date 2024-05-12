@@ -5,8 +5,9 @@ from django.urls import reverse
 from django.template import Template, Context
 from django.conf import settings
 from django.http.response import JsonResponse
-from django.contrib.auth.models import User
-from app.models import Film, Genre, Director, Actor
+# from django.contrib.auth.models import User
+
+from app.models import Film, Genre, Director, Actor, User as User
 from app.serializers import *
 #from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer,WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer, MyTokenObtainPairSerializer, LogoutSerializer
 from rest_framework import permissions, status , viewsets, generics
@@ -22,7 +23,6 @@ from .serializers import RegisterSerializer
 from rest_framework import generics
 from app.wikidata import WikidataAPI
 from app.qlever import QleverAPI
-from rest_framework.response import Response
 from rest_framework import status
 from .utils import Util
 
@@ -79,8 +79,8 @@ class VerifyEmail(generics.GenericAPIView):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
             user = User.objects.get(id=payload['user_id'])
-            if not user.is_active:
-                user.is_active = True
+            if not user.is_verified:
+                user.is_verified = True
                 user.save()
                 return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
             else:
