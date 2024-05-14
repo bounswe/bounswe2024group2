@@ -36,7 +36,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
 
-"""
 DATABASES = { #TODO : READ these from .env 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -151,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'app.CustomUser'
+AUTH_USER_MODEL = 'app.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

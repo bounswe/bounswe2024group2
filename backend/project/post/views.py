@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from app.models import CustomUser
+from app.models import User
 from .models import *
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
