@@ -3,6 +3,18 @@ import requests
 import json
 from typing import List
 
+"""
+NOTES FOR IDS 
+
+HORROR --->  wd:Q200092
+COMEDY ---> wd:Q157443
+ACTION ---> wd:Q188473
+DRAMA ---> Q1919632
+ROMANCE ---> wd:Q1054574
+SCIENCE FICTION ---> Q20656232
+ANIMATION --->wd:Q202866
+"""
+
 QUERY = """
 SELECT ?item ?itemLabel ?itemDescription ?itemAltLabel WHERE {
     ?item wdt:P31 wd:Q11424.
@@ -110,4 +122,47 @@ class WikidataAPI:
             details.append(detail)
         
         return details
+    
+    def get_films_by_genre(self,genre_name):
+        endpoint_url = "https://query.wikidata.org/sparql"
+        
+        # Prepare the SPARQL query with the user-provided genre name
+        query = f"""
+        SELECT ?film ?filmLabel WHERE {{
+        ?film wdt:P31 wd:Q11424;  # Films
+                wdt:P136 ?genre.  # Genre of the film
+        
+        ?genre rdfs:label ?genreLabel.
+        FILTER(CONTAINS(LCASE(?genreLabel), "{genre_name.lower()}"))
+        SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }}
+        }} LIMIT 50
+        """
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
+            "Accept": "application/json"
+        }
+        
+        params = {
+            "query": query,
+            "format": "json"
+        }
+        
+        try:
+            response = requests.get(endpoint_url, headers=headers, params=params)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            data = response.json()
+            
+            # Extracting the films from the query results
+            films = []
+            for item in data["results"]["bindings"]:
+                film_label = item["filmLabel"]["value"] if 'filmLabel' in item else "No label found"
+                films.append(film_label)
+            
+            return films
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return []
+    
 

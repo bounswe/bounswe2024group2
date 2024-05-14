@@ -13,7 +13,7 @@ from rest_framework import permissions, status , viewsets, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema,OpenApiResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import jwt
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -285,6 +285,7 @@ def recently_released_films(request):
     description="API endpoint for retrieving film details from Wikidata.",
     methods=['POST'],
     request=WikidataEntityIdSerializer,
+    
 )
 @api_view(['POST'])
 def get_film_details(request):
@@ -305,6 +306,25 @@ def get_film_details(request):
             return Response(results)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@extend_schema(
+    description="API endpoint for retrieving films by providing genre name.",
+    methods=['POST'],
+    request=GenreSerializer,
+    responses={200: OpenApiResponse(description="A list of films matching the genre")}
+)
+@api_view(['POST'])
+def get_films_by_genre(request):
+    """
+    Retrieve films by providing genre name. The genre name is expected as a query parameter.
+    """
+    if request.method == 'POST':
+        serializer = GenreSerializer(data=request.data)
+        if serializer.is_valid():
+            genre_name = serializer.validated_data['name']
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_films_by_genre(genre_name)
+            return Response(results)
+        return Response(serializer.errors, status=400)
 
 
 # Retrieve label of a Wikidata entity
