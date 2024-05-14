@@ -35,7 +35,7 @@ if DEBUG:
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
-
+"""
 DATABASES = { #TODO : READ these from .env 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
