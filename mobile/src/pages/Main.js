@@ -7,7 +7,7 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
-
+  Alert,
   TouchableOpacity,
   Pressable,
 
@@ -22,10 +22,16 @@ import styles from "./styles/MainStyle"
 
 function Main({navigation}) {
     const [searchInput, setSearchInput] = useState("");
-    console.log(mockFilms[0]);
+    // console.log(mockFilms[0]);
 
     function handleSearch(){
-        navigation.navigate("Search", {searchInput: searchInput});
+        if(searchInput == ""){
+            Alert.alert("Please write what you want to search.")
+        }
+        else{
+            navigation.navigate("Search", {searchInput: searchInput});
+        }
+        
     }
     
 

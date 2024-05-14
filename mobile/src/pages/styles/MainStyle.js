@@ -40,7 +40,7 @@ export default StyleSheet.create({
         marginTop: 30,
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: 'rgba(9,33,74,0.5)',
+        borderColor: 'black',
         borderWidth: 1,
         paddingHorizontal: 10,
     },

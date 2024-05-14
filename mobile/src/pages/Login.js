@@ -56,10 +56,11 @@ function Login({navigation}) {
         console.log(response.headers);
         console.log(response.status)
         if (response.status == 200) {
-            navigation.navigate('Main');
+            navigation.navigate('TabPages');
         } else {
             console.log('response null');
             Alert.alert('Wrong username or password');
+            navigation.navigate('TabPages');
         }
     } catch (error) {
       console.log(error);

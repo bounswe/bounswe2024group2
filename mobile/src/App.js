@@ -4,9 +4,10 @@ import Signup from "./pages/Signup"
 import Main from "./pages/Main"
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from "./pages/Profile"
-
+import Films from "./pages/Films"
 import ForgotPassword from "./pages/ForgotPassword"
 import VerifyPassChange from "./pages/VerifyPassChange"
 import ResetPass from "./pages/ResetPass"
@@ -14,6 +15,8 @@ import Search from "./pages/Search"
 
 function App(){
   const Stack = createNativeStackNavigator();
+
+  const BottomTab = createMaterialBottomTabNavigator();
   
   const ForgotMain = () => {
     return(
@@ -25,6 +28,34 @@ function App(){
     )
   }
 
+  const TabPages = () => {
+    return(
+      <BottomTab.Navigator barStyle={{ backgroundColor: '#DC143C' }}
+                            activeColor="white"
+                            inactiveColor="white"
+                            >
+        <BottomTab.Screen name ="Main" 
+                          component={Main} 
+                          options={{tabBarLabel:'Home', 
+                                    tabBarIcon:() => (<MaterialCommunityIcons name="home" color="#DC143C" size={25} />),
+                                    headerShown: false
+                                  }}/>
+        <BottomTab.Screen name ="Films" 
+                          component={Films} 
+                          options={{tabBarLabel:'Films', 
+                                   /*  tabBarIcon:() => (<MaterialCommunityIcons name="agenda" color="white" size={25} />), */
+                                    headerShown: false
+                                  }}/>
+        <BottomTab.Screen name ="Profile" 
+                          component={Profile} 
+                          options={{tabBarLabel:'Profile', 
+                                    tabBarIcon:() => (<MaterialCommunityIcons name="account" color="white" size={25} />),
+                                    headerShown: false
+                                  }}/>
+      </BottomTab.Navigator>
+    )
+  }
+
   return(
     <>
     <NavigationContainer>
@@ -32,11 +63,8 @@ function App(){
         <Stack.Screen name ="Login" component={Login} options={{headerShown:false}}/>
         <Stack.Screen name ="Signup" component={Signup} options={{headerShown:false}}/>
 
-        <Stack.Screen name ="Main" component={Main} options={{headerShown:false}}/>
+        <Stack.Screen name ="TabPages" component={TabPages} options={{headerShown:false}}/>
         <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
-
-        <Stack.Screen name ="Profile" component={Profile} options={{headerShown:false}}/>
-
         <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
 
       </Stack.Navigator>
