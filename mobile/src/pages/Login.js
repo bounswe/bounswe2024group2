@@ -17,7 +17,7 @@ function Login({navigation}) {
   const [password, setPassword] = useState('');
   const baseURL = 'http://207.154.242.6:8020';
 
-  console.log(username, password);
+  // console.log(username, password);
 
   function changeUsername(username) {
     setUsername(username);
@@ -36,38 +36,44 @@ function Login({navigation}) {
     setPassword(password);
   }
 
-
-  async function handleLogin() {
-    const loginURL = baseURL + '/login/';
+  // To be activated
+  // async function handleLogin() {
+  //   const loginURL = baseURL + '/login/';
     
-    try {
-        console.log(username, password);
-        const response = await fetch(loginURL, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            username:username,
-            password:password,
-            }),
-        });
+  //   try {
+  //       // console.log(username, password);
+  //       const response = await fetch(loginURL, {
+  //           method: 'POST',
+  //           headers: {
+  //           'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({
+  //           username:username,
+  //           password:password,
+  //           }),
+  //       });
 
-        console.log(response.headers);
-        console.log(response.status)
-        if (response.status == 200) {
-            navigation.navigate('TabPages');
-        } else {
-            console.log('response null');
-            Alert.alert('Wrong username or password');
-            navigation.navigate('TabPages');
-        }
-    } catch (error) {
-      console.log(error);
-      Alert.alert('Wrong username or password');
-    }
+  //       console.log(response.headers);
+  //       console.log(response.status)
+  //       if (response.status == 200) {
+  //           navigation.navigate('TabPages');
+  //       } else {
+  //           console.log('response null');
+  //           Alert.alert('Wrong username or password');
+  //           navigation.navigate('TabPages');
+  //       }
+  //   } catch (error) {
+  //     console.log(error);
+  //     Alert.alert('Wrong username or password');
+  //   }
+  // }
+
+
+
+  // To be deleted
+  const handleLogin = () => {
+    navigation.navigate('TabPages');
   }
-
 
   return (
     
@@ -95,6 +101,7 @@ function Login({navigation}) {
             placeholder="Username"
             onChangeText={changeUsername}
             value={username}
+            autoCapitalize='none'
           />
         </View>
         <View style={styles.password_input_box}>
@@ -111,6 +118,7 @@ function Login({navigation}) {
             secureTextEntry={true}
             onChangeText={changePassword}
             value={password}
+            autoCapitalize='none'
           />
         </View>
         <View style={styles.chpass_view}>

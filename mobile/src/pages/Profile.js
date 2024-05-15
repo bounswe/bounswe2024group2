@@ -11,11 +11,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {mockUsers} from '../fakeData';
+import {mockPosts, mockUsers} from '../fakeData';
 import Movie from '../components/Movie';
 import {useNavigation} from '@react-navigation/native';
 import RecentPost from '../components/RecentPost';
 import {mockFilms} from '../fakeData';
+import EditProfile from './EditProfile';
 const Profile = () => {
   const {
     topContainer,
@@ -36,6 +37,18 @@ const Profile = () => {
     midContainer,
   } = styles;
   const navigation = useNavigation();
+  const navigateToEditProfile = () => {
+    navigation.navigate('EditProfile');
+  }
+  // Change the currentUser variable to logged user after implementing authentication
+  const currentUser = 'johndoe'
+
+  // this will filter the posts of the current user
+  const userPosts = mockPosts.filter(
+    (post) => post.user === currentUser,
+  );
+
+
 
   return (
     <SafeAreaView style={safeAreaStyle}>
@@ -46,6 +59,7 @@ const Profile = () => {
           </View>
           <View style={buttonContainer}>
             <TouchableOpacity
+              onPress={navigateToEditProfile}
               style={[buttonStyle, {backgroundColor: 'rgb(234,61,83)'}]}>
               <Text style={buttonText}>Edit</Text>
             </TouchableOpacity>
@@ -75,7 +89,7 @@ const Profile = () => {
           <Text style={statText}>Following</Text>
         </View>
         <View style={statContainer}>
-          <Text style={statText}>23</Text>
+          <Text style={statText}>{userPosts.length}</Text>
           <Text style={statText}>Posts</Text>
         </View>
         <View style={statContainer}>
@@ -83,19 +97,24 @@ const Profile = () => {
           <Text style={statText}>Lists</Text>
         </View>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+      
+      >
         <View style={moviesContainer}>
-          <Text style={sectionHeaderText}>Favourite Films</Text>
+          <Text style={sectionHeaderText}>Favourite Movies</Text>
           <ScrollView
             style={{marginTop: 10}}
             horizontal={true}
             showsHorizontalScrollIndicator={false}>
-            <Movie movieIndex={0} />
+            {/* <Movie movieIndex={0} />
             <Movie movieIndex={1} />
             <Movie movieIndex={2} />
             <Movie movieIndex={0} />
             <Movie movieIndex={1} />
-            <Movie movieIndex={2} />
+            <Movie movieIndex={2} /> */}
+            {mockFilms.map((film, index) => {
+              return <Movie key={index} movieIndex={index} />;
+            })}
           </ScrollView>
         </View>
         <View style={moviesContainer}>
@@ -104,19 +123,25 @@ const Profile = () => {
             style={{marginTop: 10}}
             horizontal={true}
             showsHorizontalScrollIndicator={false}>
-            <Movie movieIndex={0} />
-            <Movie movieIndex={2} />
-            <Movie movieIndex={1} />
-            <Movie movieIndex={2} />
-            <Movie movieIndex={0} />
-            <Movie movieIndex={2} />
+            {mockFilms.map((film, index) => {
+              return <Movie key={index} movieIndex={index} />;
+            })}
           </ScrollView>
         </View>
         <View style={midContainer}>
           <Text style={[sectionHeaderText, {marginBottom: 10}]}>
-            Recent Posts
+            My Posts
           </Text>
-          <RecentPost postData={mockFilms[1]} />
+          {/* <RecentPost postData={mockPosts[1]} />
+          <RecentPost postData={mockPosts[1]}  />
+          <RecentPost postData={mockPosts[1]} />
+          <RecentPost postData={mockPosts[1]}/> */}
+          {/* {mockPosts.map((post, index) => {
+            return <RecentPost key={index} postData={post} />;
+          })} */}
+          {userPosts.map((post, index) => {
+            return <RecentPost key={index} postData={post} />;
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -213,8 +238,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   midContainer: {
-    height: 200,
-    marginBottom: 20,
+    height: '100%',
+    marginBottom: 10,
   },
 });
 export default Profile;
