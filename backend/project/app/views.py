@@ -353,3 +353,25 @@ def get_label_of_entity(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    description="API endpoint for retrieving directors.",
+    methods=['GET', 'POST'],
+    request=DirectorSerializer,
+)
+@api_view(['GET', 'POST'])
+def director_api(request):
+    """
+    Retrieve or create directors.
+    """
+    if request.method == 'GET':
+        directors = Director.objects.all()
+        directors_serializer = DirectorSerializer(directors, many=True)
+        return JsonResponse(directors_serializer.data, safe=False)
+    elif request.method == 'POST':        
+        directors_serializer = DirectorSerializer(data=request.data)
+        if directors_serializer.is_valid():
+            name = directors_serializer.validated_data['name']
+            surname = directors_serializer.validated_data['surname']
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_director(name, surname)
+            return Response(results)

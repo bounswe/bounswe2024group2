@@ -164,5 +164,94 @@ class WikidataAPI:
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")
             return []
-    
+    def get_director(self,name,surname:str=None):
+        endpoint_url = "https://query.wikidata.org/sparql"
+        """
+        SELECT ?director ?directorLabel WHERE {
+        ?director wdt:P106 wd:Q2526255.
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        FILTER EXISTS {
+            ?director rdfs:label ?directorLabel.
+            FILTER(CONTAINS(LCASE(?directorLabel), "taran"))
+        }
+        } LIMIT 10
+        """
 
+        query = f"""
+        SELECT ?director ?directorLabel WHERE {{
+        ?director wdt:P106 wd:Q2526255.
+        SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+        FILTER EXISTS {{
+            ?director rdfs:label ?directorLabel.
+            FILTER(CONTAINS(LCASE(?directorLabel), "{name.lower()}"))
+        }}
+        }} LIMIT 10
+        """
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
+            "Accept": "application/json"
+        }
+
+        params = {
+            "query": query,
+            "format": "json"
+        }
+
+        try:
+            response = requests.get(endpoint_url, headers=headers, params=params)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            data = response.json()
+
+            # Extracting the films from the query results
+            directors = []
+            for item in data["results"]["bindings"]:
+                director_label = item["directorLabel"]["value"] if 'directorLabel' in item else "No label found"
+                directors.append(director_label)
+
+            return directors
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return []
+    def get_cast_member(self,name):
+
+        endpoint_url = "https://query.wikidata.org/sparql"
+        
+
+        query = f"""
+        SELECT ?cast ?castLabel WHERE {{
+        ?cast wdt:P31 wd:Q33999;
+                    rdfs:label ?castLabel.
+        FILTER(CONTAINS(LCASE(?castLabel), "{name.lower()}"))
+        SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en" }}
+        }} LIMIT 50
+        """
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
+            "Accept": "application/json"
+        }
+
+        params = {
+            "query": query,
+            "format": "json"
+        }
+
+        try:
+            response = requests.get(endpoint_url, headers=headers, params=params)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            data = response.json()
+
+            # Extracting the films from the query results
+            cast = []
+            for item in data["results"]["bindings"]:
+                cast_label = item["castLabel"]["value"] if 'castLabel' in item else "No label found"
+                cast.append(cast_label)
+
+            return cast
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return []
+       
