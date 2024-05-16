@@ -5,6 +5,7 @@ import Login from './pages/SignUp/Login';
 import ForgotPassword from './pages/SignUp/ForgotPassword';
 import MainPage from './pages/Main/MainPage';
 import Profile from './pages/Main/Profile/Profile';
+import Post from './pages/Post/Post';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/" element={<MainPage isLoggedIn={isLoggedIn} />} />
         <Route path="/main-page" element={<MainPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/post" element={<Post />}/>
         {/* ...other routes */}
       </Routes>
     </Router>
