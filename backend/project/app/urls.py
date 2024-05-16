@@ -22,6 +22,9 @@ urlpatterns = [
     path('email-verify/', VerifyEmail.as_view(), name='email-verify'),
     path('recently-release-films/', recently_released_films, name='recently-release-films'),
     path('get-film-details/', get_film_details, name='get-film-details'),
+    path('get-films-by-genre/', get_films_by_genre, name='get-films-by-genre'),
     path('get-label-of-entity/', get_label_of_entity, name='get-label-of-entity'),
+    path('get-director/', director_api, name='get-director'),
+    path('get-film-info/', get_film_info, name='get-film-info'),
 ]
 

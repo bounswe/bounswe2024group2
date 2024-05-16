@@ -62,6 +62,7 @@ class LogoutSerializer(serializers.Serializer):
          
          
 class GenreSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=100)  
     class Meta:
         model = Genre
         fields = ['name']
