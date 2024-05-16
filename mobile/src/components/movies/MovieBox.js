@@ -1,18 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 
 const FilmBox = (props) => {
+
+
     return(
         <View style={styles.container}>
-            <View style={styles.inner_box}>
+            <View style={styles.image_box}>
                 <Image source={require("../../pages/assets/movie.png")}
                         style={styles.image}
                 />
-                <Text>
+            </View>
+            <View style={styles.text_box}>
+                <Text style={styles.title}>
                     {props.film.label}
                 </Text>
             </View>
+                
+            
             
         </View>
     )
@@ -21,21 +27,31 @@ const FilmBox = (props) => {
 
 const styles = StyleSheet.create({
     container:{
-        flexDirection:"row",
         backgroundColor:"white",
-        borderWidth:1,
         borderRadius:5,
-        borderColor:"#f8f8ff",
+        height:190,
+        width:112,
+  
     },
-    inner_box:{
+    image_box:{
 
+        height:170,
+        borderWidth:1,
+        borderRadius:10,
     },
     image:{
-        width:70,
-        height:70,
+        width:111,
+        height:170,
         resizeMode:"contain"
         
     },
+    text_box:{
+     
+    },
+    title:{
+        fontWeight:"bold",
+        color:"black"
+    }
 
 })
 
