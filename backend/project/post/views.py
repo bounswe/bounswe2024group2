@@ -43,7 +43,20 @@ class PostViewSet(viewsets.ModelViewSet):
         post.delete()
         return Response("Post deleted successfully", status=200)
     
-
+    def search_post(self, request, search_query):
+        posts_title_based = Post.objects.filter(title__contains=search_query)
+        posts_content_based =  Post.objects.filter(content__contains=search_query)
+        posts = posts_title_based.union(posts_content_based)
+        data = []
+        for post in posts:
+            film = {}
+            film["title"]   = post.title
+            film["content"] = post.content
+            film["film"]    = post.film
+            film["author_username"]  = User.objects.get(username=post.author).username
+            data.append(film)
+        return Response(data)
+    
 
 
 class LikeViewSet(viewsets.ModelViewSet):
