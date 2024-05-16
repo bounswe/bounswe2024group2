@@ -12,7 +12,10 @@ import ForgotPassword from "./pages/ForgotPassword"
 import VerifyPassChange from "./pages/VerifyPassChange"
 import ResetPass from "./pages/ResetPass"
 import Search from "./pages/Search"
+import EditProfile from "./pages/EditProfile"
+
 import Movie from "./pages/Movie"
+
 
 function App(){
   const Stack = createNativeStackNavigator();
@@ -46,7 +49,7 @@ function App(){
         <BottomTab.Screen name ="Main" 
                           component={Main} 
                           options={{tabBarLabel:'Home', 
-                                    tabBarIcon:() => (<MaterialCommunityIcons name="home" color="#DC143C" size={25} />),
+                                    tabBarIcon:() => (<MaterialCommunityIcons name="home" color="white" size={25} />),
                                     headerShown: false
                                   }}/>
         <BottomTab.Screen name ="Movies" 
@@ -74,6 +77,7 @@ function App(){
         <Stack.Screen name ="TabPages" component={TabPages} options={{headerShown:false}}/>
         <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
         <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
+        <Stack.Screen name='EditProfile' component={EditProfile} options={{headerShown:false}}/>
 
       </Stack.Navigator>
     </NavigationContainer>
