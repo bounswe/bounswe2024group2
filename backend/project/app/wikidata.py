@@ -2,8 +2,10 @@
 import requests
 import json
 from typing import List
+from app.tmdb import TMDB
 from app.scripts.omdb_api import get_movie_details
 from datetime import datetime
+import time
 
 """
 NOTES FOR IDS 
@@ -16,14 +18,7 @@ ROMANCE ---> wd:Q1054574
 SCIENCE FICTION ---> Q20656232
 ANIMATION --->wd:Q202866
 """
-import time
 
-QUERY = """
-SELECT ?item ?itemLabel ?itemDescription ?itemAltLabel WHERE {
-    ?item wdt:P31 wd:Q11424.
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-    }
-"""
 
 class WikidataAPI:
     def __init__(self):
@@ -106,7 +101,7 @@ class WikidataAPI:
                 (GROUP_CONCAT(DISTINCT ?directorLabel; separator=", ") AS ?directorNames)
                 (GROUP_CONCAT(DISTINCT ?castMember; separator=", ") AS ?castMemberIds) 
                 (GROUP_CONCAT(DISTINCT ?castMemberLabel; separator=", ") AS ?castMemberNames)
-                ?duration (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genreIds)
+                ?duration ?tmdb (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genreIds)
                 (GROUP_CONCAT(DISTINCT ?genreLabel; separator=", ") AS ?genreNames) {{
             VALUES ?film {{ wd:{entity_id} }} 
             ?film wdt:P31 wd:Q11424;
@@ -120,8 +115,9 @@ class WikidataAPI:
                     OPTIONAL {{ ?film wdt:P136 ?genre. }}
                     OPTIONAL {{ ?genre rdfs:label ?genreLabel FILTER(LANG(?genreLabel) = "en").}}
                     OPTIONAL {{ ?film schema:description ?description FILTER(LANG(?description) = "en"). }}
+                    OPTIONAL {{ ?film wdt:P4947 ?tmdb. }}
             }}
-            GROUP BY ?filmLabel ?description ?image ?duration
+            GROUP BY ?filmLabel ?description ?image ?duration ?tmdb
             LIMIT 1
         """
         print(query)
@@ -167,10 +163,20 @@ class WikidataAPI:
             if castMemberIds == None:
                 castMembers = None
             
+            tmdb = result['tmdb']['value'] if 'tmdb' in result else None
+
+            tmdbManager = TMDB()
+            if tmdb:
+                poster = tmdbManager.get_movie_poster(tmdb)
+            else:
+                poster = None
+            
+
             detail = {
                 'label': result['filmLabel']['value'],
                 'description': result['description']['value'],
                 'image': result['image']['value'] if 'image' in result else None,
+                'poster': poster,
                 # put both id and the label for each genre
                 # It should be none if there is no genre
                 'genres': genres,
