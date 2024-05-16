@@ -4,6 +4,7 @@ import json
 from typing import List
 from app.tmdb import TMDB
 from app.scripts.omdb_api import get_movie_details
+from datetime import datetime
 import time
 
 """
@@ -187,29 +188,41 @@ class WikidataAPI:
         return details
     def recently_released_and_info(self, limit):
 
-        SPARQL=f"""SELECT ?film ?filmLabel ?publicationDate ?genreLabel ?imdbID ?rottenTomatoesID WHERE {{
-            ?film wdt:P31 wd:Q11424;               # Instance of film
-                    wdt:P364 wd:Q1860;               # Language (English)
-                    wdt:P577 ?publicationDate;       # Publication date
-                    wdt:P136 ?genre;                 # Genre
-                    wdt:P345 ?imdbID;                # IMDb ID
-                    wdt:P1258 ?rottenTomatoesID.     # Rotten Tomatoes ID
-            
+        current_date = datetime.now().isoformat()
+
+        # Define the limit for the number of results
+
+        # SPARQL query
+        SPARQL = f"""
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT ?film ?filmLabel (SAMPLE(?publicationDate) AS ?earliestPublicationDate) 
+            (SAMPLE(?genreLabel) AS ?sampleGenreLabel) (SAMPLE(?imdbID) AS ?sampleImdbID) WHERE {{
+            ?film wdt:P31 wd:Q11424;                  # Instance of film
+                wdt:P364 wd:Q1860;                 # Original language is English
+                wdt:P577 ?publicationDate;         # Publication date
+                wdt:P136 ?genre;                   # Genre
+                wdt:P345 ?imdbID;                  # IMDb ID
+
+            FILTER (?publicationDate < "{current_date}"^^xsd:dateTime)     
             SERVICE wikibase:label {{
-                bd:serviceParam wikibase:language "en". 
+                bd:serviceParam wikibase:language "en".
                 ?film rdfs:label ?filmLabel.
                 ?genre rdfs:label ?genreLabel.
             }}
-            }}
-                ORDER BY DESC(?publicationDate)
-                LIMIT {limit}
-"""
+        }}
+        GROUP BY ?film ?filmLabel
+        ORDER BY DESC(?earliestPublicationDate)
+        LIMIT {limit}
+        """
         
         results = self.execute_query(SPARQL)
+        print("heyyy ",results)
         i=0
         for result in results['results']['bindings']:
-            imdbID=results['results']['bindings'][i]['imdbID']['value']
-            rottenTomatoesID=results['results']['bindings'][i]['rottenTomatoesID']['value']
+            imdbID=results['results']['bindings'][i]['sampleImdbID']['value']
             poster_url=get_movie_details(imdbID)['Poster URL'] if 'Poster URL' in get_movie_details(imdbID) else "No poster found"
             ratings=get_movie_details(imdbID)['rotten_rating'] if 'rotten_rating' in get_movie_details(imdbID) else "No rating found"
             print("poster url is ",poster_url)

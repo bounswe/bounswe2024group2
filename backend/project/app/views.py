@@ -300,16 +300,12 @@ def get_film_info(request):
             results = results['results']['bindings']
             films = []
             for result in results:
-                print(result["filmLabel"]['value'])
-                print(result["publicationDate"]['value'])
-                print(result["genreLabel"]['value'])
                 film = {
                     'id': result['film']['value'],
                     'label': result['filmLabel']['value'],
-                    'publicationDate': result['publicationDate']['value'],
-                    'genreLabel': result['genreLabel']['value'],
-                    'imdbID': result['imdbID']['value'],
-                    'rottenTomatoesID': result['rottenTomatoesID']['value'],
+                    'publicationDate': result['earliestPublicationDate']['value'],
+                    'genreLabel': result['sampleGenreLabel']['value'] if 'genreLabel' in result else '',
+                    'imdbID': result['sampleImdbID']['value'] if 'imdbID' in result else '',
                     'poster_url': result['poster_url'] if 'poster_url' in result else '',
                     'rating': result['ratings'] if 'ratings' in result else '',
                 }
