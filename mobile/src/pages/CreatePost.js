@@ -13,7 +13,7 @@ function CreatePost({navigation, route}){
 
     /* console.log(title); */
     const baseURL = 'http://207.154.242.6:8020';
-    async function postData(title, content, film) {
+    async function postData() {
         const postData = {
             title: reviewTitle,
             content: reviewContent,
@@ -47,7 +47,7 @@ function CreatePost({navigation, route}){
     }
     
     function handlePost(){
-        postData(reviewTitle, reviewContent, title);
+        postData();
     }
 
     

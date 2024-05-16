@@ -63,8 +63,11 @@ export default StyleSheet.create({
     },
     midContainer: {
         marginTop: 50,
-        height: 200,
+        
         marginBottom: 20,
+    },
+    seperator:{
+        margin:4,
     },
     movie: {
         width: 150,

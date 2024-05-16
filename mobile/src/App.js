@@ -16,6 +16,8 @@ import EditProfile from "./pages/EditProfile"
 
 import Movie from "./pages/Movie"
 import CreatePost from "./pages/CreatePost"
+import Actor from "./pages/Actor"
+import Director from "./pages/Director"
 
 
 function App(){
@@ -37,6 +39,8 @@ function App(){
       <Stack.Navigator>
         <Stack.Screen name ="Movies" component={Movies} options={{headerShown:false}}/>
         <Stack.Screen name ="Movie" component={Movie} options={{headerShown:false}}/>
+        <Stack.Screen name ="Actor" component={Actor} options={{headerShown:false}}/>
+        <Stack.Screen name ="Director" component={Director} options={{headerShown:false}}/>
         <Stack.Screen name ="CreatePost" component={CreatePost} options={{headerShadowVisible:false, headerTitle:""}}/>
         <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
       </Stack.Navigator>

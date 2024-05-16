@@ -20,6 +20,9 @@ import Movie from '../components/Movie';
 import RecentPost from '../components/RecentPost';
 import config from '../config';
 import styles from "./styles/MainStyle"
+import PostBox from '../components/PostBox';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 function Main({navigation, route}) {
     const [searchInput, setSearchInput] = useState("");
@@ -51,7 +54,7 @@ function Main({navigation, route}) {
                 'Authorization': `Bearer ${config.token}`
               },
             });
-            console.log(await response.json())
+            console.log(response.status)
             if (response.ok) {
               const json = await response.json();
               setPosts(json); // Verileri güncelle
@@ -64,13 +67,30 @@ function Main({navigation, route}) {
           }
       } 
 
-      useEffect(() => {
-        fetchPosts();
-      }, []);
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchPosts();
+        }, [])
+      );
 
     
+    console.log(posts)
+
+    const itemSeparator = <View style={styles.seperator}/>
     
-    
+    const renderPost = ({item}) =>{
+        console.log(item);
+        return(
+            <View style={styles.movie_box}>
+                <PostBox post={item} />
+               
+            </View>
+            
+           
+            
+        )
+    }
+
     return (
     <SafeAreaView style={styles.safeAreaStyle}>
         <ScrollView>
@@ -94,7 +114,9 @@ function Main({navigation, route}) {
         <View style={styles.midContainer}>
             <Text style={[styles.sectionHeaderText,{marginBottom:10}]}>Recent Posts</Text>
             <FlatList 
-
+                data={posts}
+                renderItem={renderPost}
+                ItemSeparatorComponent={itemSeparator}
             />
             {/* <RecentPost postData={mockFilms[1]}/> */}
         </View>

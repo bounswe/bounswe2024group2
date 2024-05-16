@@ -6,7 +6,7 @@ export default StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-        padding:5,
+        padding:"5%",
         backgroundColor:"white",
     },
     top_container: {
@@ -20,10 +20,25 @@ export default StyleSheet.create({
         width:350,
         resizeMode:"contain"
     },
+    mid_container: {
+        minWidth:350,
+        flex:0.8,
+        
+        padding:"%5",
+        justifyContent:"space-evenly",
+
+    },
+    inner_container: {
+        marginTop:15,
+
+    },
+    seperator:{
+        margin:4,
+    },
     bottom_container: {
         minWidth:350,
         flex:0.8,
-      
+        borderWidth:1,
         padding:"%5",
         justifyContent:"space-evenly",
 
@@ -31,6 +46,11 @@ export default StyleSheet.create({
     title:{
         fontWeight:"bold",
         fontSize:30,
+        color:"black",
+    },
+    subtitle:{
+        fontWeight:"bold",
+        fontSize:25,
         color:"black",
     },
     description:{
