@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
+
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchCategory, setSearchCategory] = useState('films');
@@ -67,6 +68,5 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
       </form>
     </div>
   );
-}
 
 export default NavBar;
