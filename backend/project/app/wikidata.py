@@ -2,6 +2,7 @@
 import requests
 import json
 from typing import List
+from app.scripts.omdb_api import get_movie_details
 
 """
 NOTES FOR IDS 
@@ -143,6 +144,16 @@ class WikidataAPI:
 """
         
         results = self.execute_query(SPARQL)
+        i=0
+        for result in results['results']['bindings']:
+            imdbID=results['results']['bindings'][i]['imdbID']['value']
+            rottenTomatoesID=results['results']['bindings'][i]['rottenTomatoesID']['value']
+            poster_url=get_movie_details(imdbID)['Poster URL'] if 'Poster URL' in get_movie_details(imdbID) else "No poster found"
+            ratings=get_movie_details(imdbID)['rotten_rating'] if 'rotten_rating' in get_movie_details(imdbID) else "No rating found"
+            print("poster url is ",poster_url)
+            results['results']['bindings'][i]['poster_url']=poster_url
+            results['results']['bindings'][i]['ratings']=ratings
+            i+=1
 
 
         return results

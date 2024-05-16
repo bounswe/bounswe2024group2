@@ -312,7 +312,9 @@ def get_film_info(request):
                     'publicationDate': result['publicationDate']['value'],
                     'genreLabel': result['genreLabel']['value'],
                     'imdbID': result['imdbID']['value'],
-                    'rottenTomatoesID': result['rottenTomatoesID']['value']
+                    'rottenTomatoesID': result['rottenTomatoesID']['value'],
+                    'poster_url': result['poster_url'] if 'poster_url' in result else '',
+                    'rating': result['ratings'] if 'ratings' in result else '',
                 }
                 films.append(film)
 
