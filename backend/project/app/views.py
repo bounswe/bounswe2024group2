@@ -5,15 +5,13 @@ from django.urls import reverse
 from django.template import Template, Context
 from django.conf import settings
 from django.http.response import JsonResponse
-from django.contrib.auth.models import User
-from app.models import Film, Genre, Director, Actor
+from app.models import Film, Genre, Director, Actor, User as User
 from app.serializers import *
-#from app.serializers import UserSerializer, FilmSerializer, GenreSerializer, DirectorSerializer, ActorSerializer,WikidataQuerySerializer, FilmPatternWithLimitQuerySerializer, MyTokenObtainPairSerializer, LogoutSerializer
 from rest_framework import permissions, status , viewsets, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema,OpenApiResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import jwt
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -22,7 +20,6 @@ from .serializers import RegisterSerializer
 from rest_framework import generics
 from app.wikidata import WikidataAPI
 from app.qlever import QleverAPI
-from rest_framework.response import Response
 from rest_framework import status
 from .utils import Util
 
@@ -79,8 +76,8 @@ class VerifyEmail(generics.GenericAPIView):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
             user = User.objects.get(id=payload['user_id'])
-            if not user.is_active:
-                user.is_active = True
+            if not user.is_verified:
+                user.is_verified = True
                 user.save()
                 return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
             else:
@@ -113,7 +110,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
@@ -279,12 +276,56 @@ def recently_released_films(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+# Retrieve film details, genre imdbId rottenTomatoesId and genre order by release date 
+@extend_schema(
+    description="API endpoint for retrieving film details, genre imdbId rottenTomatoesId and genre order by release date.",
+    methods=['POST'],
+    request=LimitQuerySerializer,
+)
+@api_view(['POST'])
+def get_film_info(request):
+    """
+    Retrieve film details, genre imdbId rottenTomatoesId and genre order by release date.
+    """
+    if request.method == 'POST':
+        serializer = LimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            limit = serializer.validated_data.get('limit')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.recently_released_and_info(limit)
+
+            print("results are:",results)
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                print(result["filmLabel"]['value'])
+                print(result["publicationDate"]['value'])
+                print(result["genreLabel"]['value'])
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value'],
+                    'publicationDate': result['publicationDate']['value'],
+                    'genreLabel': result['genreLabel']['value'],
+                    'imdbID': result['imdbID']['value'],
+                    'rottenTomatoesID': result['rottenTomatoesID']['value'],
+                    'poster_url': result['poster_url'] if 'poster_url' in result else '',
+                    'rating': result['ratings'] if 'ratings' in result else '',
+                }
+                films.append(film)
+
+            return Response(films)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 # Retrieve film details from Wikidata
 @extend_schema(
     description="API endpoint for retrieving film details from Wikidata.",
     methods=['POST'],
     request=WikidataEntityIdSerializer,
+    
 )
 @api_view(['POST'])
 def get_film_details(request):
@@ -305,6 +346,25 @@ def get_film_details(request):
             return Response(results)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@extend_schema(
+    description="API endpoint for retrieving films by providing genre name.",
+    methods=['POST'],
+    request=GenreSerializer,
+    responses={200: OpenApiResponse(description="A list of films matching the genre")}
+)
+@api_view(['POST'])
+def get_films_by_genre(request):
+    """
+    Retrieve films by providing genre name. The genre name is expected as a query parameter.
+    """
+    if request.method == 'POST':
+        serializer = GenreSerializer(data=request.data)
+        if serializer.is_valid():
+            genre_name = serializer.validated_data['name']
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_films_by_genre(genre_name)
+            return Response(results)
+        return Response(serializer.errors, status=400)
 
 
 # Retrieve label of a Wikidata entity
@@ -333,3 +393,25 @@ def get_label_of_entity(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    description="API endpoint for retrieving directors.",
+    methods=['GET', 'POST'],
+    request=DirectorSerializer,
+)
+@api_view(['GET', 'POST'])
+def director_api(request):
+    """
+    Retrieve or create directors.
+    """
+    if request.method == 'GET':
+        directors = Director.objects.all()
+        directors_serializer = DirectorSerializer(directors, many=True)
+        return JsonResponse(directors_serializer.data, safe=False)
+    elif request.method == 'POST':        
+        directors_serializer = DirectorSerializer(data=request.data)
+        if directors_serializer.is_valid():
+            name = directors_serializer.validated_data['name']
+            surname = directors_serializer.validated_data['surname']
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_director(name, surname)
+            return Response(results)

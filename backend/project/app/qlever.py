@@ -68,12 +68,12 @@ class QleverAPI:
         
         return results
     
-    def recently_released_films(self, limit):
+    def recently_released_films(self, limit): # TODO : add genre and poster 
         current_time = datetime.datetime.now().isoformat()
         # convert it to "2024-12-05T00:00:00Z"
         current_time = current_time.split(".")[0] + "Z"
-
-        SPARQL = f"""
+        SPARQL=f"""
+        
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX wd: <http://www.wikidata.org/entity/>
@@ -89,12 +89,17 @@ class QleverAPI:
             GROUP BY ?film ?filmLabel
             ORDER BY DESC(?earliestPublicationDate)
             LIMIT {limit}
+    
         """
+
+        # rotten tomatoes id : P1258 , we can use for rating
 
         print(SPARQL)
 
         results = self.execute_query(SPARQL)
         
         return results
+    
+    
     
 
