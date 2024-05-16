@@ -223,29 +223,28 @@ class WikidataAPI:
 
         # SPARQL query
         SPARQL = f"""
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        SELECT ?film ?filmLabel (SAMPLE(?publicationDate) AS ?earliestPublicationDate) 
-            (SAMPLE(?genreLabel) AS ?sampleGenreLabel) (SAMPLE(?imdbID) AS ?sampleImdbID) WHERE {{
-            ?film wdt:P31 wd:Q11424;                  # Instance of film
-                wdt:P364 wd:Q1860;                 # Original language is English
-                wdt:P577 ?publicationDate;         # Publication date
-                wdt:P136 ?genre;                   # Genre
-                wdt:P345 ?imdbID;                  # IMDb ID
-
-            FILTER (?publicationDate < "{current_date}"^^xsd:dateTime)     
-            SERVICE wikibase:label {{
-                bd:serviceParam wikibase:language "en".
-                ?film rdfs:label ?filmLabel.
-                ?genre rdfs:label ?genreLabel.
-            }}
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    SELECT ?film ?filmLabel (SAMPLE(?publicationDate) AS ?earliestPublicationDate) 
+        (SAMPLE(?genreLabel) AS ?sampleGenreLabel) (SAMPLE(?imdbID) AS ?sampleImdbID) WHERE {{
+        ?film wdt:P31 wd:Q11424;                  # Instance of film
+            wdt:P364 wd:Q1860;                    # Original language is English
+            wdt:P577 ?publicationDate;            # Publication date
+            wdt:P136 ?genre;                      # Genre
+            wdt:P345 ?imdbID;                     # IMDb ID
+        FILTER (?publicationDate < "{current_date}"^^xsd:dateTime)     
+        SERVICE wikibase:label {{
+            bd:serviceParam wikibase:language "en".
+            ?film rdfs:label ?filmLabel.
+            ?genre rdfs:label ?genreLabel.
         }}
-        GROUP BY ?film ?filmLabel
-        ORDER BY DESC(?earliestPublicationDate)
-        LIMIT {limit}
-        """
+    }}
+    GROUP BY ?film ?filmLabel
+    ORDER BY DESC(?earliestPublicationDate)
+    LIMIT {limit}
+"""
         
         results = self.execute_query(SPARQL)
         print("heyyy ",results)
