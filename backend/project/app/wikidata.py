@@ -57,24 +57,6 @@ class WikidataAPI:
             return entity_id.split("/")[-1]
         return entity_id
 
-    def get_labels_of_entities(self, entity_ids):
-        labels = []
-        # Create a single query to get the labels of all the entities
-        query = f"""
-        SELECT ?item ?itemLabel WHERE {{
-            VALUES ?item {{ {" ".join(entity_ids)} }}
-            ?item rdfs:label ?itemLabel .
-            FILTER(LANG(?itemLabel) = "en")
-            }}
-        """
-        response = self.execute_query(query)
-        results = response['results']['bindings']
-        for result in results:
-            entity_id = result['item']['value'].split("/")[-1]
-            label = result['itemLabel']['value']
-            labels.append({'id': entity_id, 'label': label})
-        return labels
-
     def get_label_of_entity(self, entity_id):
         
         try:
@@ -163,7 +145,7 @@ class WikidataAPI:
             else:
                 castMembers = [{'id': castMemberId, 'label': castMemberName} for castMemberId, castMemberName in zip(castMemberIds.split(", "), castMemberNames.split(", "))] if castMemberIds else None
             
-            
+
             if genreIds == None:
                 genres = None
             if directorIds == None:
