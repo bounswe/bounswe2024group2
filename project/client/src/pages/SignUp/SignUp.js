@@ -11,7 +11,6 @@ function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Signing up', { email, username, password });
-
     fetch('http://207.154.242.6:8020/register/', {
       method: 'POST',
       headers: {
