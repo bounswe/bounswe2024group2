@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import './NavBar.css'; // Make sure you have a CSS file for styling
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,6 +50,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         <div className="navbar">
             <img src="./logo.png" alt="SemanticFlix" className="logo" />
             <div className="nav-links">
+                <Link to="/main-page">Home</Link>
                 <Link to="/films">Films</Link>
                 <Link to="/lists">Lists</Link>
                 {isLoggedIn ? (

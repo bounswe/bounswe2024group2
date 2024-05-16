@@ -1,0 +1,78 @@
+/* NavBar.css */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #312f60; /* Dark background */
+    color: white; /* White text */
+}
+
+.logo {
+    height: 50px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.nav-links a {
+    color: white; /* White text */
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.nav-links button {
+    background: none;
+    border: none;
+    color: white; /* White text */
+    cursor: pointer;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-container input {
+    padding: 5px;
+    border: 1px solid #555; /* Border color */
+    border-radius: 5px;
+    background-color: #222; /* Dark background */
+    color: white; /* White text */
+}
+
+.search-container button {
+    background: none;
+    border: none;
+    color: white; /* White text */
+    cursor: pointer;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white; /* Light background */
+    color: black; /* Dark text */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    z-index: 1000;
+}
+
+.search-result-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    color: black; /* Dark text */
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: #f0f0f0; /* Light hover background */
+    cursor: pointer;
+}
