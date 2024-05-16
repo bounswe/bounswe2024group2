@@ -93,33 +93,62 @@ class WikidataAPI:
         entity_id = self.convert_entity_id(entity_id)
 
         query = f"""
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX schema: <http://schema.org/>
-            PREFIX wd: <http://www.wikidata.org/entity/>
-            PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-                SELECT ?filmLabel ?description ?image (GROUP_CONCAT(DISTINCT ?director; separator=", ") AS ?directorIds)
-                (GROUP_CONCAT(DISTINCT ?directorLabel; separator=", ") AS ?directorNames)
-                (GROUP_CONCAT(DISTINCT ?castMember; separator=", ") AS ?castMemberIds) 
-                (GROUP_CONCAT(DISTINCT ?castMemberLabel; separator=", ") AS ?castMemberNames)
-                ?duration ?tmdb (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genreIds)
-                (GROUP_CONCAT(DISTINCT ?genreLabel; separator=", ") AS ?genreNames) {{
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX schema: <http://schema.org/>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT ?filmLabel ?description ?image 
+            (GROUP_CONCAT(DISTINCT ?director; separator=", ") AS ?directorIds)
+            ?directorNames
+            (GROUP_CONCAT(DISTINCT ?castMember; separator=", ") AS ?castMemberIds) 
+            ?castMemberNames
+            ?duration ?tmdb 
+            (GROUP_CONCAT(DISTINCT ?genre; separator=", ") AS ?genreIds)
+            ?genreNames
+        WHERE {{
             VALUES ?film {{ wd:{entity_id} }} 
             ?film wdt:P31 wd:Q11424;
-                    rdfs:label ?filmLabel FILTER(LANG(?filmLabel) = "en")
-                    OPTIONAL {{ ?film wdt:P18 ?image. }}
-                    OPTIONAL {{ ?film wdt:P57 ?director. }}
-                    OPTIONAL {{ ?director rdfs:label ?directorLabel FILTER(LANG(?directorLabel) = "en").}}
-                    OPTIONAL {{ ?film wdt:P161 ?castMember. }}
-                    OPTIONAL {{ ?castMember rdfs:label ?castMemberLabel FILTER(LANG(?castMemberLabel) = "en").}}
-                    OPTIONAL {{ ?film wdt:P2047 ?duration. }}
-                    OPTIONAL {{ ?film wdt:P136 ?genre. }}
-                    OPTIONAL {{ ?genre rdfs:label ?genreLabel FILTER(LANG(?genreLabel) = "en").}}
-                    OPTIONAL {{ ?film schema:description ?description FILTER(LANG(?description) = "en"). }}
-                    OPTIONAL {{ ?film wdt:P4947 ?tmdb. }}
+                rdfs:label ?filmLabel FILTER(LANG(?filmLabel) = "en").
+            OPTIONAL {{ ?film wdt:P18 ?image. }}
+            OPTIONAL {{ ?film wdt:P57 ?director. }}
+            OPTIONAL {{ ?film wdt:P161 ?castMember. }}
+            OPTIONAL {{ ?film wdt:P136 ?genre. }}
+            
+            OPTIONAL {{
+                SELECT ?film (GROUP_CONCAT(DISTINCT ?directorLabel; separator=", ") AS ?directorNames)
+                WHERE {{
+                    ?film wdt:P57 ?director.
+                    ?director rdfs:label ?directorLabel FILTER(LANG(?directorLabel) = "en").
+                }}
+                GROUP BY ?film
             }}
-            GROUP BY ?filmLabel ?description ?image ?duration ?tmdb
-            LIMIT 1
+
+            OPTIONAL {{
+                SELECT ?film (GROUP_CONCAT(DISTINCT ?castMemberLabel; separator=", ") AS ?castMemberNames)
+                WHERE {{
+                    ?film wdt:P161 ?castMember.
+                    ?castMember rdfs:label ?castMemberLabel FILTER(LANG(?castMemberLabel) = "en").
+                }}
+                GROUP BY ?film
+            }}
+
+            OPTIONAL {{
+                SELECT ?film (GROUP_CONCAT(DISTINCT ?genreLabel; separator=", ") AS ?genreNames)
+                WHERE {{
+                    ?film wdt:P136 ?genre.
+                    ?genre rdfs:label ?genreLabel FILTER(LANG(?genreLabel) = "en").
+                }}
+                GROUP BY ?film
+            }}
+            
+            OPTIONAL {{ ?film wdt:P2047 ?duration. }}
+            OPTIONAL {{ ?film schema:description ?description FILTER(LANG(?description) = "en"). }}
+            OPTIONAL {{ ?film wdt:P4947 ?tmdb. }}
+        }}
+        GROUP BY ?filmLabel ?description ?image ?directorNames ?castMemberNames ?genreNames ?duration ?tmdb
+        LIMIT 1
         """
+
         print(query)
         response = self.execute_query(query)
 

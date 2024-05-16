@@ -12,10 +12,17 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
     
-    def get(self, request, pk=None):
-        post = self.get_object(pk)
-        serializer = self.serializer_class(post)
-        return Response(serializer.data)
+    def get_all_posts(self, request):
+        posts = Post.objects.all()
+        data = []
+        for post in posts:
+            film = {}
+            film["title"]   = post.title
+            film["content"] = post.content
+            film["film"]    = post.film
+            film["author_username"]  = User.objects.get(username=post.author).username
+            data.append(film)
+        return Response(data)
     
     def post(self, request):
         user = request.user
@@ -35,6 +42,8 @@ class PostViewSet(viewsets.ModelViewSet):
         post = self.get_object(pk)
         post.delete()
         return Response("Post deleted successfully", status=200)
+    
+
 
 
 class LikeViewSet(viewsets.ModelViewSet):
@@ -87,3 +96,4 @@ class LikeCountViewSet(viewsets.ViewSet):
         print(pk)
         like_count = self.queryset.filter(post_id=pk).count()
         return Response({'like_count': like_count})
+    

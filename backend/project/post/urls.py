@@ -5,7 +5,7 @@ from post.views import *
 
     
 urlpatterns = [
-    path('post/', PostViewSet.as_view({'get': 'list', 'post': 'post', }), name='create_post'), 
+    path('post/', PostViewSet.as_view({'get': 'get_all_posts', 'post': 'post', }), name='create_post'), 
     path('post/<int:pk>/', PostViewSet.as_view({'get': 'retrieve', 'put': 'put', 'delete': 'destroy'}), name='post-detail'),
     path('like/', LikeViewSet.as_view({'get': 'get', 'post': 'post', }), name='create_like'),
     path('like/<int:pk>/', LikeViewSet.as_view({'get': 'retrieve', 'put': 'put', 'delete': 'delete'}), name='like-detail'),
