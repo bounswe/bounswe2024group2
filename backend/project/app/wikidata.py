@@ -393,4 +393,102 @@ class WikidataAPI:
         except requests.exceptions.RequestException as e:
             print(f"Request failed: {e}")
             return []
-       
+        
+
+    def get_director_details(self,entity_id):
+        entity_id = self.convert_entity_id(entity_id)
+
+        query = f"""
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX schema: <http://schema.org/>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT ?director ?directorName ?directorDescription ?directorImage ?directorDOB 
+            (GROUP_CONCAT(DISTINCT ?film; separator=", ") AS ?filmIds)
+            (GROUP_CONCAT(DISTINCT ?filmLabel; separator=", ") AS ?filmNames)
+        WHERE {{
+            VALUES ?director {{ wd:{entity_id} }} 
+            ?director rdfs:label ?directorName FILTER(LANG(?directorName) = "en").
+            OPTIONAL {{ ?director schema:description ?directorDescription FILTER(LANG(?directorDescription) = "en"). }}
+            OPTIONAL {{ ?director wdt:P18 ?directorImage. }}
+            OPTIONAL {{ ?director wdt:P569 ?directorDOB. }}
+
+            OPTIONAL {{
+                ?film wdt:P57 ?director.
+                ?film rdfs:label ?filmLabel FILTER(LANG(?filmLabel) = "en").
+            }}
+        }}
+        GROUP BY ?director ?directorName ?directorDescription ?directorImage ?directorDOB
+        LIMIT 1
+        """
+        print(query)
+        response = self.execute_query(query)
+        print(response)
+        results = response['results']['bindings']
+        details = []
+
+        for result in results:
+            filmIds = result['filmIds']['value'] if 'filmIds' in result else None
+            filmNames = result['filmNames']['value'] if 'filmNames' in result else None
+            films = [{'id': filmId, 'label': filmName} for filmId, filmName in zip(filmIds.split(", "), filmNames.split(", "))] if filmIds else None
+
+            detail = {
+                'name': result['directorName']['value'],
+                'description': result['directorDescription']['value'] if 'directorDescription' in result else None,
+                'image': result['directorImage']['value'] if 'directorImage' in result else None,
+                'dob': result['directorDOB']['value'] if 'directorDOB' in result else None,
+                'films': films
+            }
+            details.append(detail)
+
+        return details
+
+
+    def get_actor_details(self,entity_id):
+        entity_id = self.convert_entity_id(entity_id)
+
+        query = f"""
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX schema: <http://schema.org/>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT ?castMember ?castMemberName ?castMemberDescription ?castMemberImage ?castMemberDOB 
+            (GROUP_CONCAT(DISTINCT ?film; separator=", ") AS ?filmIds)
+            (GROUP_CONCAT(DISTINCT ?filmLabel; separator=", ") AS ?filmNames)
+        WHERE {{
+            VALUES ?castMember {{ wd:{entity_id} }} 
+            ?castMember rdfs:label ?castMemberName FILTER(LANG(?castMemberName) = "en").
+            OPTIONAL {{ ?castMember schema:description ?castMemberDescription FILTER(LANG(?castMemberDescription) = "en"). }}
+            OPTIONAL {{ ?castMember wdt:P18 ?castMemberImage. }}
+            OPTIONAL {{ ?castMember wdt:P569 ?castMemberDOB. }}
+
+            OPTIONAL {{
+                ?film wdt:P161 ?castMember.
+                ?film rdfs:label ?filmLabel FILTER(LANG(?filmLabel) = "en").
+            }}
+        }}
+        GROUP BY ?castMember ?castMemberName ?castMemberDescription ?castMemberImage ?castMemberDOB
+        LIMIT 1
+        """
+        response = self.execute_query(query)
+        print(response)
+        results = response['results']['bindings']
+        details = []
+        
+        for result in results:
+            filmIds = result['filmIds']['value'] if 'filmIds' in result else None
+            filmNames = result['filmNames']['value'] if 'filmNames' in result else None
+            films = [{'id': filmId, 'label': filmName} for filmId, filmName in zip(filmIds.split(", "), filmNames.split(", "))] if filmIds else None
+
+            detail = {
+                'name': result['castMemberName']['value'],
+                'description': result['castMemberDescription']['value'] if 'castMemberDescription' in result else None,
+                'image': result['castMemberImage']['value'] if 'castMemberImage' in result else None,
+                'dob': result['castMemberDOB']['value'] if 'castMemberDOB' in result else None,
+                'films': films
+            }
+            details.append(detail)
+
+        return details
+    
+

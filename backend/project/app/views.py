@@ -321,7 +321,6 @@ def get_film_info(request):
     description="API endpoint for retrieving film details from Wikidata.",
     methods=['POST'],
     request=WikidataEntityIdSerializer,
-    
 )
 @api_view(['POST'])
 def get_film_details(request):
@@ -342,6 +341,54 @@ def get_film_details(request):
             return Response(results)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+@extend_schema(
+    description="API endpoint for retrieving actor details from Wikidata.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_actor_details(request):
+    """
+    Retrieve actor details from Wikidata.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_actor_details(entity_id)
+            print(results)
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@extend_schema(
+    description="API endpoint for retrieving film details from Wikidata.",
+    methods=['POST'],
+    request=WikidataEntityIdSerializer,
+)
+@api_view(['POST'])
+def get_director_details(request):
+    """
+    Retrieve director details from Wikidata.
+    """
+    if request.method == 'POST':
+        serializer = WikidataEntityIdSerializer(data=request.data)
+        if serializer.is_valid():
+            entity_id = serializer.validated_data.get('entity_id')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.get_director_details(entity_id)
+            print(results)
+            return Response(results)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @extend_schema(
     description="API endpoint for retrieving films by providing genre name.",
     methods=['POST'],
