@@ -279,6 +279,47 @@ def recently_released_films(request):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+# Retrieve film details, genre imdbId rottenTomatoesId and genre order by release date 
+@extend_schema(
+    description="API endpoint for retrieving film details, genre imdbId rottenTomatoesId and genre order by release date.",
+    methods=['POST'],
+    request=LimitQuerySerializer,
+)
+@api_view(['POST'])
+def get_film_info(request):
+    """
+    Retrieve film details, genre imdbId rottenTomatoesId and genre order by release date.
+    """
+    if request.method == 'POST':
+        serializer = LimitQuerySerializer(data=request.data)
+        if serializer.is_valid():
+            limit = serializer.validated_data.get('limit')
+
+            # Execute the query using the WikidataAPI class
+            wikidata_api = WikidataAPI()
+            results = wikidata_api.recently_released_and_info(limit)
+
+            print("results are:",results)
+            results = results['results']['bindings']
+            films = []
+            for result in results:
+                print(result["filmLabel"]['value'])
+                print(result["publicationDate"]['value'])
+                print(result["genreLabel"]['value'])
+                film = {
+                    'id': result['film']['value'],
+                    'label': result['filmLabel']['value'],
+                    'publicationDate': result['publicationDate']['value'],
+                    'genreLabel': result['genreLabel']['value'],
+                    'imdbID': result['imdbID']['value'],
+                    'rottenTomatoesID': result['rottenTomatoesID']['value']
+                }
+                films.append(film)
+
+            return Response(films)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 # Retrieve film details from Wikidata
 @extend_schema(

@@ -122,6 +122,30 @@ class WikidataAPI:
             details.append(detail)
         
         return details
+    def recently_released_and_info(self, limit):
+
+        SPARQL=f"""SELECT ?film ?filmLabel ?publicationDate ?genreLabel ?imdbID ?rottenTomatoesID WHERE {{
+            ?film wdt:P31 wd:Q11424;               # Instance of film
+                    wdt:P364 wd:Q1860;               # Language (English)
+                    wdt:P577 ?publicationDate;       # Publication date
+                    wdt:P136 ?genre;                 # Genre
+                    wdt:P345 ?imdbID;                # IMDb ID
+                    wdt:P1258 ?rottenTomatoesID.     # Rotten Tomatoes ID
+            
+            SERVICE wikibase:label {{
+                bd:serviceParam wikibase:language "en". 
+                ?film rdfs:label ?filmLabel.
+                ?genre rdfs:label ?genreLabel.
+            }}
+            }}
+                ORDER BY DESC(?publicationDate)
+                LIMIT {limit}
+"""
+        
+        results = self.execute_query(SPARQL)
+
+
+        return results
     
     def get_films_by_genre(self,genre_name):
         endpoint_url = "https://query.wikidata.org/sparql"

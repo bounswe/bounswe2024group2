@@ -25,5 +25,6 @@ urlpatterns = [
     path('get-films-by-genre/', get_films_by_genre, name='get-films-by-genre'),
     path('get-label-of-entity/', get_label_of_entity, name='get-label-of-entity'),
     path('get-director/', director_api, name='get-director'),
+    path('get-film-info/', get_film_info, name='get-film-info'),
 ]
 
