@@ -1,11 +1,15 @@
 import React, {useState, useEffect} from "react";
 import { Text, View, TouchableOpacity, TextInput, ScrollView, FlatList} from "react-native";
-import styles from "./styles/FilmsStyle"
+import styles from "./styles/MoviesStyle"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FilmBox from "../components/films/FilmBox";
+import MovieBox from "../components/movies/MovieBox";
+import { Alert } from "react-native";
 
-function Films({navigation}){
+function Movies({navigation}){
     const [searchInput, setSearchInput] = useState("");
+    const [recentMovies, setRecentMovies] = useState([]);
+
+    const limit = 50;
 
     function handleSearch(){
         if(searchInput == ""){
@@ -17,7 +21,38 @@ function Films({navigation}){
         
     }
 
-    const a = [
+    const baseURL = 'http://207.154.242.6:8020';
+    async function fetchRecentMovies() {
+        const recentURL = baseURL + '/recently-release-films/';
+        
+        try {
+    
+          const response = await fetch(recentURL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              limit: limit,
+            }),
+          }).then(response => response.json()) // Step 2: Parse the JSON response
+          .then(json => setRecentMovies(json)) // Update state with the parsed data
+          .catch(error => console.error(error));
+          
+          
+          console.log(recentMovies);
+          
+        } catch (error) {
+          console.log(error);
+          Alert.alert('hata');
+        }
+      }
+
+    useEffect(() => {
+      fetchRecentMovies();
+    }, []);
+
+    /* const a = [
         {
           "id": "http://www.wikidata.org/entity/Q121290006",
           "label": "Alex/October"
@@ -59,30 +94,44 @@ function Films({navigation}){
           "label": "A Woman from Cairo"
         }
       ];
-
+ */
 
     const renderFilm = ({item}) =>{
         console.log(item);
+        function handleMovie(){
+          navigation.navigate("Movie", item);
+        }
+
         return(
-            <FilmBox film={item} />
+            <View style={styles.movie_box}>
+              <TouchableOpacity onPress={handleMovie}>
+                <MovieBox film={item} />
+              </TouchableOpacity> 
+            </View>
+            
+           
+            
         )
     }
+    const itemSeparator = <View style={styles.seperator}/>
 
     return(
         <View style={styles.container}>
-            <View>
-                <View style={styles.searchBarContainer}>
+            <View style={styles.top_container}>
+                <View style={styles.search_bar_container}>
                     <TouchableOpacity onPress={handleSearch}>
                         <MaterialCommunityIcons name="magnify" size={20} color="rgb(9,33,74)" />
                     </TouchableOpacity>
-                    <TextInput style={styles.searchInputStyle} placeholder="Search" value={searchInput} onChangeText={setSearchInput}/>
+                    <TextInput style={styles.search_input_style} placeholder="Search" value={searchInput} onChangeText={setSearchInput}/>
                 </View>
             </View>
             <View>
         
-                <FlatList data={a}
+                <FlatList data={recentMovies}
                     renderItem={renderFilm}
                     numColumns={3}
+                    ItemSeparatorComponent={itemSeparator}
+                    columnWrapperStyle={{}}
                 />
             
             </View>
@@ -91,4 +140,4 @@ function Films({navigation}){
     )
 }
 
-export default Films;
+export default Movies;

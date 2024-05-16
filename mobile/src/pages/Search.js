@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Text, View } from "react-native";
 import styles from "./styles/SearchStyle"
 
-function Search({naigation, route}) {
+function Search({navigation, route}) {
     const {searchInput} = route.params;
     const limit = 10;
     console.log(searchInput)

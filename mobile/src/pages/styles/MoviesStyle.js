@@ -9,15 +9,12 @@ export default StyleSheet.create({
         padding:"5%",
         backgroundColor:"white",
     },
-    topContainer: {
-        height: 60,
-        justifyContent: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
+    top_container: {
+        marginTop:30,
+        marginBottom:20,
     },
 
-    searchBarContainer: {
+    search_bar_container: {
         width: '100%',
         height: 50,
         borderRadius: 10,
@@ -28,11 +25,17 @@ export default StyleSheet.create({
         borderWidth: 1,
         paddingHorizontal: 10,
     },
-    searchInputStyle: {
+    search_input_style: {
         flex: 1,
         height: '100%',
         paddingLeft: 10,
         color: 'rgb(9,33,74)',
     },
-    
+   
+    seperator:{
+        margin:4,
+    },
+    movie_box:{
+        padding:3,
+    }
 });

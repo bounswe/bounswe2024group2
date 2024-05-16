@@ -7,11 +7,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Profile from "./pages/Profile"
-import Films from "./pages/Films"
+import Movies from "./pages/Movies"
 import ForgotPassword from "./pages/ForgotPassword"
 import VerifyPassChange from "./pages/VerifyPassChange"
 import ResetPass from "./pages/ResetPass"
 import Search from "./pages/Search"
+import Movie from "./pages/Movie"
 
 function App(){
   const Stack = createNativeStackNavigator();
@@ -24,6 +25,14 @@ function App(){
         <Stack.Screen name ="ForgotPassword" component={ForgotPassword} options={{headerShown:false}}/>
         <Stack.Screen name ="VerifyPassChange" component={VerifyPassChange} options={{headerShown:false}}/>
         <Stack.Screen name ="ResetPass" component={ResetPass} options={{headerShown:true}}/>
+      </Stack.Navigator>
+    )
+  }
+  const MovieRelated = () => {
+    return(
+      <Stack.Navigator>
+        <Stack.Screen name ="Movies" component={Movies} options={{headerShown:false}}/>
+        <Stack.Screen name ="Movie" component={Movie} options={{headerShown:false}}/>
       </Stack.Navigator>
     )
   }
@@ -40,10 +49,10 @@ function App(){
                                     tabBarIcon:() => (<MaterialCommunityIcons name="home" color="#DC143C" size={25} />),
                                     headerShown: false
                                   }}/>
-        <BottomTab.Screen name ="Films" 
-                          component={Films} 
-                          options={{tabBarLabel:'Films', 
-                                   /*  tabBarIcon:() => (<MaterialCommunityIcons name="agenda" color="white" size={25} />), */
+        <BottomTab.Screen name ="Movies" 
+                          component={MovieRelated} 
+                          options={{tabBarLabel:'Movies', 
+                                    tabBarIcon:() => (<MaterialCommunityIcons name="movie-open" color="white" size={25} />),
                                     headerShown: false
                                   }}/>
         <BottomTab.Screen name ="Profile" 
@@ -62,7 +71,6 @@ function App(){
       <Stack.Navigator>
         <Stack.Screen name ="Login" component={Login} options={{headerShown:false}}/>
         <Stack.Screen name ="Signup" component={Signup} options={{headerShown:false}}/>
-
         <Stack.Screen name ="TabPages" component={TabPages} options={{headerShown:false}}/>
         <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
         <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
