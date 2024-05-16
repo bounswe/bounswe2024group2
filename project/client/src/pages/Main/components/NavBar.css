@@ -1,78 +1,61 @@
-/* NavBar.css */
+
+/* src/pages/Main/components/NavBar.css */
 .navbar {
     display: flex;
     align-items: center;
-    padding: 10px;
-    background-color: #312f60; /* Dark background */
-    color: white; /* White text */
-}
-
-.logo {
-    height: 50px;
-}
-
-.nav-links {
+    justify-content: space-between;
+    background-color: #333;
+    padding: 10px 20px;
+  }
+  
+  .nav-links a, .nav-links button {
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+  }
+  
+  .nav-links a:hover, .nav-links button:hover {
+    text-decoration: underline;
+  }
+  
+  .logo {
+    height: 50px; /* Adjust as needed */
+  }
+  
+  .search-container {
     display: flex;
     align-items: center;
-    margin-left: auto;
-    margin-right: 20px;
-}
-
-.nav-links a {
-    color: white; /* White text */
-    margin: 0 10px;
-    text-decoration: none;
-}
-
-.nav-links button {
-    background: none;
+    background-color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-container input {
     border: none;
-    color: white; /* White text */
-    cursor: pointer;
-}
-
-.search-container {
-    position: relative;
-}
-
-.search-container input {
-    padding: 5px;
-    border: 1px solid #555; /* Border color */
-    border-radius: 5px;
-    background-color: #222; /* Dark background */
-    color: white; /* White text */
-}
-
-.search-container button {
-    background: none;
+    outline: none;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .search-container select {
     border: none;
-    color: white; /* White text */
+    outline: none;
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin-left: 10px;
+  }
+  
+  .search-container button {
+    border: none;
+    background-color: #333;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-left: 10px;
     cursor: pointer;
-}
-
-.search-results {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white; /* Light background */
-    color: black; /* Dark text */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    z-index: 1000;
-}
-
-.search-result-item {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    color: black; /* Dark text */
-}
-
-.search-result-item:last-child {
-    border-bottom: none;
-}
-
-.search-result-item:hover {
-    background: #f0f0f0; /* Light hover background */
-    cursor: pointer;
-}
+  }
+  
+  .search-container button:hover {
+    background-color: #555;
+  }
+  

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../MainPage'; // Your CSS for the FilmList
+import '../MainPage.css'; // Your CSS for the FilmList
 
 function FilmList({ title, films }) {
     return (

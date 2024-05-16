@@ -1,41 +1,68 @@
-/* MainPage.css */
+/* src/pages/Main/MainPage.css */
 .main-page {
   font-family: 'Arial', sans-serif;
-  background-color: #312f60; /* Light grey background for the whole page */
+  background-color: #312f60;
+  min-height: 100vh;
+  padding-top: 20px; /* Add some padding at the top */
 }
 
-/* Basic reset for padding and margin */
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-/* Utility classes for layout */
 .container {
   width: 90%;
-  max-width: 900px;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #312f60; /* White background for the container */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.row {
+h2 {
+  font-size: 2rem;
+  color: #1ca9ad;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-results {
   display: flex;
   flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
-.column {
-  flex: 1;
+.search-result-item {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+  width: 250px;
+  text-align: center; /* Center-align text */
 }
 
-/* Search bar styling */
-.search-bar {
-  /* Add your search bar styling */
+.search-result-item:hover {
+  transform: scale(1.05);
 }
 
+.search-result-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.search-result-item h3 {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
+
+.search-result-item p {
+  font-size: 0.9rem;
+  margin: 10px;
+  color: #555;
+}
 
 /* FilmList Styles */
 .film-list {
-  /* should be in the center */
   margin: 2rem auto;
   max-width: 1000px;
   padding: 1rem;
@@ -55,27 +82,26 @@
 
 .movie-item {
   width: 100%;
-  height: 300px;
   overflow: hidden;
   position: relative;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  text-align: center; /* Center-align text */
 }
 
 .movie-item img {
   width: 100%;
   height: auto;
-  border-radius: 8px; 
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-
 .movie-item span {
-  margin-top: 5px; /* Space between the image and text */
   display: block;
   font-size: 1rem;
-  color: #000000;
+  color: #000;
+  margin-top: 10px; /* Space between the image and text */
 }
 
 /* Adjustments for responsiveness */
@@ -89,152 +115,8 @@
     align-items: flex-start;
   }
 
-  .navbar .search-bar {
+  .navbar .search-container {
     width: 100%;
     margin-top: 1rem;
   }
-}
-
-/* NavBar Styles */
-/* NavBar.css */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #333;
-  padding: 10px 20px;
-}
-
-.nav-links a, .nav-links button {
-  color: white;
-  text-decoration: none;
-  margin-left: 10px;
-}
-
-.search-container {
-  position: relative;
-}
-
-.search-results {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  width: 300px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.search-result-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-}
-
-.search-result-item:last-child {
-  border-bottom: none;
-}
-
-.search-result-item:hover {
-  background-color: #f8f8f8;
-}
-
-/* RecentPosts Styles */
-.recent-posts {
-  max-width: 1000px;
-  background: #312f60;
-  border-radius: 8px;
-  margin: 2rem auto;
-  padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.recent-post-item {
-  /* display: flex; */
-  align-items: center;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #222; /* A light bottom border for separation */
-  padding-bottom: 1rem;
-  color: white
-}
-
-.recent-post-item:last-child {
-  border-bottom: none;
-}
-
-.recent-post-item img {
-  width: 50px; 
-  height: 50px; 
-  border-radius: 50%;
-  margin-right: 1rem;
-}
-
-.recent-post-item .content {
-  flex-grow: 1;
-}
-
-.recent-post-item .rating {
-  /* Styling for the rating, possibly stars */
-
-}
-
-/* styles/global.css */
-
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif; 
-}
-
-.container {
-  width: 80%;
-  margin: auto;
-  max-width: 1200px;
-}
-
-.header {
-  background-color: #20232a; 
-  color: white;
-  padding: 20px 0;
-  text-align: center;
-}
-
-.movie-poster {
-  width: 100px; 
-  height: auto;
-  border-radius: 8px;
-  margin-right: 15px;
-}
-
-.movie-list {
-  display: flex;
-  overflow-x: auto;
-  padding: 20px 0;
-}
-
-.movie-item {
-  min-width: 100px; 
-  margin-right: 15px; 
-}
-
-.clearfix {
-  clear: both;
-}
-
-
-.search-results {
-  position: absolute;
-  width: 100%;
-  background: white;
-  box-shadow: 0px 4px 8px rgba(0,0,0,0.25);
-  z-index: 1000;
-}
-
-.search-result-item {
-  padding: 8px 16px;
-  border-bottom: 1px solid #ccc;
-}
-
-.search-result-item:last-child {
-  border-bottom: none;
 }
