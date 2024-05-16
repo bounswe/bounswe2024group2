@@ -452,9 +452,18 @@ def director_api(request):
         return JsonResponse(directors_serializer.data, safe=False)
     elif request.method == 'POST':        
         directors_serializer = DirectorSerializer(data=request.data)
+        directors=[]
         if directors_serializer.is_valid():
             name = directors_serializer.validated_data['name']
             surname = directors_serializer.validated_data['surname']
             wikidata_api = WikidataAPI()
             results = wikidata_api.get_director(name, surname)
-            return Response(results)
+            print("haay",results)
+            for result in results['results']['bindings']:
+                director={
+                    'name':result['directorLabel']['value'],
+                    'surname':'',
+                    'id':result['director']['value']
+                }
+                directors.append(director)
+        return Response(directors)

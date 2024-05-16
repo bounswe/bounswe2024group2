@@ -317,15 +317,16 @@ class WikidataAPI:
         """
 
         query = f"""
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
         SELECT ?director ?directorLabel WHERE {{
-        ?director wdt:P106 wd:Q2526255.
-        SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
-        FILTER EXISTS {{
-            ?director rdfs:label ?directorLabel.
-            FILTER(CONTAINS(LCASE(?directorLabel), "{name.lower()}"))
-        }}
-        }} LIMIT 10
-        """
+            ?director wdt:P106 wd:Q2526255;
+                    rdfs:label ?directorLabel.
+            FILTER(LANG(?directorLabel) = "en" && CONTAINS(LCASE(?directorLabel), "{name.lower()}"))
+}} LIMIT 50
+"""
 
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0",
@@ -337,22 +338,12 @@ class WikidataAPI:
             "format": "json"
         }
 
-        try:
-            response = requests.get(endpoint_url, headers=headers, params=params)
-            response.raise_for_status()  # Raises an HTTPError for bad responses
-            data = response.json()
+        response=self.execute_query(query)
+        print(response)
 
-            # Extracting the films from the query results
-            directors = []
-            for item in data["results"]["bindings"]:
-                director_label = item["directorLabel"]["value"] if 'directorLabel' in item else "No label found"
-                directors.append(director_label)
+        return response
 
-            return directors
-        
-        except requests.exceptions.RequestException as e:
-            print(f"Request failed: {e}")
-            return []
+
     def get_cast_member(self,name):
 
         endpoint_url = "https://query.wikidata.org/sparql"
