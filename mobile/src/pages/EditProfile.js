@@ -46,7 +46,7 @@ export default function EditProfile({navigation}) {
               style={profilePhoto}
               source={require('../img/mockUserProfilePhoto.png')}
             />
-            <Text style={usernameText}>{username}</Text>
+            {/* <Text style={usernameText}>{username}</Text> */} 
           </View>
           <View style={midContainer}>
             <View style={sectionContainer}>

@@ -97,7 +97,7 @@ function Movies({navigation}){
  */
 
     const renderFilm = ({item}) =>{
-        console.log(item);
+        
         function handleMovie(){
           navigation.navigate("Movie", item);
         }

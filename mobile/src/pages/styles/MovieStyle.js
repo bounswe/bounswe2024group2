@@ -6,17 +6,18 @@ export default StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         flex:1,
-       
+        padding:5,
         backgroundColor:"white",
     },
     top_container: {
-        flex:1,
         marginBottom:10,
-        borderWidth:1
+        minHeight:300,
+        minWidth:100,
+       
     },
     image:{
-        height:370,
-        width:250,
+        height:500,
+        width:350,
         resizeMode:"contain"
     },
     bottom_container: {
@@ -54,7 +55,7 @@ export default StyleSheet.create({
     button_container:{
         flex:0.5,
         alignItems:"flex-end",
-     
+        marginTop:20,
         
     },
 });

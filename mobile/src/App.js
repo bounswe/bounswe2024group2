@@ -15,6 +15,7 @@ import Search from "./pages/Search"
 import EditProfile from "./pages/EditProfile"
 
 import Movie from "./pages/Movie"
+import CreatePost from "./pages/CreatePost"
 
 
 function App(){
@@ -36,11 +37,16 @@ function App(){
       <Stack.Navigator>
         <Stack.Screen name ="Movies" component={Movies} options={{headerShown:false}}/>
         <Stack.Screen name ="Movie" component={Movie} options={{headerShown:false}}/>
+        <Stack.Screen name ="CreatePost" component={CreatePost} options={{headerShadowVisible:false, headerTitle:""}}/>
+        <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
       </Stack.Navigator>
     )
   }
 
-  const TabPages = () => {
+  const TabPages = (params) => {
+    
+    const username = params.route.params;
+  
     return(
       <BottomTab.Navigator barStyle={{ backgroundColor: '#DC143C' }}
                             activeColor="white"
@@ -51,8 +57,11 @@ function App(){
                           options={{tabBarLabel:'Home', 
                                     tabBarIcon:() => (<MaterialCommunityIcons name="home" color="white" size={25} />),
                                     headerShown: false
-                                  }}/>
-        <BottomTab.Screen name ="Movies" 
+
+                                  }}
+                          initialParams={username}
+                          />
+        <BottomTab.Screen name ="MovieRelated" 
                           component={MovieRelated} 
                           options={{tabBarLabel:'Movies', 
                                     tabBarIcon:() => (<MaterialCommunityIcons name="movie-open" color="white" size={25} />),
@@ -78,7 +87,7 @@ function App(){
         <Stack.Screen name ="Search" component={Search} options={{headerShown:true, headerTitle:"Results", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
         <Stack.Screen name ="ForgotMain" component={ForgotMain} options={{headerShown:true, headerTitle:"", headerStyle:{backgroundColor:"white"}, headerShadowVisible:false}}/>
         <Stack.Screen name='EditProfile' component={EditProfile} options={{headerShown:false}}/>
-
+    
       </Stack.Navigator>
     </NavigationContainer>
     </>

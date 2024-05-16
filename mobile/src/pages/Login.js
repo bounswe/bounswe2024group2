@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles/LoginStyle';
+import config from '../config';
 
 function Login({navigation}) {
   const [username, setUsername] = useState('');
@@ -37,43 +38,49 @@ function Login({navigation}) {
   }
 
   // To be activated
-  // async function handleLogin() {
-  //   const loginURL = baseURL + '/login/';
+   async function handleLogin() {
+     const loginURL = baseURL + '/login/';
     
-  //   try {
-  //       // console.log(username, password);
-  //       const response = await fetch(loginURL, {
-  //           method: 'POST',
-  //           headers: {
-  //           'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify({
-  //           username:username,
-  //           password:password,
-  //           }),
-  //       });
+     try {
+         // console.log(username, password);
+         const response = await fetch(loginURL, {
+             method: 'POST',
+             headers: {
+             'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+             username:username,
+             password:password,
+             }),
+         });
+         const status = response.status;
 
-  //       console.log(response.headers);
-  //       console.log(response.status)
-  //       if (response.status == 200) {
-  //           navigation.navigate('TabPages');
-  //       } else {
-  //           console.log('response null');
-  //           Alert.alert('Wrong username or password');
-  //           navigation.navigate('TabPages');
-  //       }
-  //   } catch (error) {
-  //     console.log(error);
-  //     Alert.alert('Wrong username or password');
-  //   }
-  // }
+         
+         console.log(response.status)
+         if (status == 200) {
+             navigation.navigate('TabPages', {username: username});
+             console.log(username)
+             const data = await response.json();
+             config.token = data.access;
+             console.log(data.access)
+
+         } else {
+             console.log('response null');
+             Alert.alert('Wrong username or password');
+            
+         }
+     } catch (error) {
+       console.log(error);
+       Alert.alert('Wrong username or password');
+     }
+   }
 
 
 
-  // To be deleted
+/*   // To be deleted
   const handleLogin = () => {
     navigation.navigate('TabPages');
-  }
+  } */
 
   return (
     

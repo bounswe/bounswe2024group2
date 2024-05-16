@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Image, Text, View } from "react-native";
+import { Alert, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles/SearchStyle"
 
 function Search({navigation, route}) {
@@ -42,8 +42,11 @@ function Search({navigation, route}) {
     }, []);
 
     const renderFilm  = ({item}) => {
-
+        function handleMovie(){
+          navigation.navigate("Movie", item);
+        }
         return(
+          <TouchableOpacity onPress={handleMovie}>
             <View style={styles.item_container}>
                 <View style={styles.image_box}>
                     <Image source={require("./assets/movie.png")}
@@ -54,6 +57,7 @@ function Search({navigation, route}) {
                     <Text style={styles.item_title}> Rating: -/10 </Text>
                 </View>
             </View>
+          </TouchableOpacity>
         )
     }
 
