@@ -1,11 +1,9 @@
-from django.contrib.auth.models import User
-from app.models import Genre, Film, Director, Actor
+from app.models import Genre, Film, Director, Actor, User as User
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -18,13 +16,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'is_active')
+        fields = ('username', 'password', 'email')
         
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
-            email=validated_data['email'],
-            is_active=False
+            email=validated_data['email']
         )
 
         user.set_password(validated_data['password'])
