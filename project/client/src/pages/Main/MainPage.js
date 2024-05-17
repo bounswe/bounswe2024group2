@@ -5,6 +5,7 @@ import RecentPosts from './components/RecentPosts';
 import FilmList from './components/FilmList';
 import SearchPage from './SearchPage';
 import FilmDetailsPage from './FilmDetailsPage';
+import Post from '../Post/Post';
 import './MainPage.css';
 
 function MainPage({ isLoggedIn, setIsLoggedIn }) {
@@ -35,7 +36,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
   ];
 
   useEffect(() => {
-    fetch('http://localhost:8020/recently-release-films/', {
+    fetch('http://207.154.242.6:8020/recently-release-films/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
       .then((response) => response.json())
       .then((data) => {
         const fetchDetailsPromises = data.map((item) => {
-          return fetch('http://localhost:8020/get-film-details/', {
+          return fetch('http://207.154.242.6:8020/get-film-details/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -78,6 +79,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
       <Routes>
         <Route path="/search" element={<SearchPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/film/:id" element={<FilmDetailsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/create-post" element={<Post />} />
         <Route
           path="/"
           element={

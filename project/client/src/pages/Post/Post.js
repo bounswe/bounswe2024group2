@@ -1,62 +1,60 @@
-// post.js
-
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Post.css'; // Make sure to create Post.css for styling
 
 const Post = () => {
+  const { state } = useLocation();
+  const navigate = useNavigate();
   const [text, setText] = useState('');
   const [rating, setRating] = useState(0);
   const [filmTitle, setFilmTitle] = useState('');
+  const [poster, setPoster] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [entityId, setEntityId] = useState('')
   const maxRating = 10; // Maximum rating value
 
   useEffect(() => {
-    // Fetch film title from the API
-    fetchFilmTitle();
-  }, []);
-
-  // Function to fetch film title from the API
-  const fetchFilmTitle = async () => {
-    try {
-      const response = await fetch('http://207.154.242.6:8020/post/');
-      const data = await response.json();
-      // Assuming the film title is available in the response data
-      setFilmTitle(data.title);
-    } catch (error) {
-      console.error('Error fetching film title:', error);
+    if (state && state.filmDetails) {
+      setFilmTitle(state.filmDetails.label);
+      setEntityId(state.filmDetails.entity_id);
+      setPoster(state.filmDetails.poster);
     }
-  };
-
-  // Function to handle changes in text input
+  }, [state]);
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
 
-  // Function to handle rating selection
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
 
-  // Function to handle post submission
   const handlePost = async () => {
     try {
-      // POST request to post the data to the API
+      const csrfToken = localStorage.getItem('csrfToken'); // Get CSRF token from local storage
+      console.log('CSRF Token:', csrfToken);
+      // encodeURIComponent(filmTitle) is used to encode the film title to be used in the URL
       const response = await fetch('http://207.154.242.6:8020/post/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': 'gRq1e5V5s60cKi7AsEvvGM1hOrcBmXfY8B4zpQWLvc3OpOCgHu99tD6QLqgjK2aV', // Assuming the CSRF token is static
+          'Authorization': `Bearer ${csrfToken}`, // Include CSRF token in the headers
         },
         body: JSON.stringify({
-          title: filmTitle, // Sending the film title
+          title: filmTitle,
           content: text,
-          rating: rating,
+          film: filmTitle, // Replace entity_id with the actual entity ID of the film
         }),
       });
       const responseData = await response.json();
       console.log('Posted:', responseData);
-      // Clear input fields after posting
+      setSuccessMessage('Post successfully created!');
       setText('');
       setRating(0);
+
+      // Navigate back to film details page after 2 seconds
+      setTimeout(() => {
+        navigate(-1); // Go back to the previous page
+      }, 2000);
     } catch (error) {
       console.error('Error posting:', error);
     }
@@ -64,13 +62,10 @@ const Post = () => {
 
   return (
     <div className="post-container">
-      {/* Display the film title */}
       <h2>{filmTitle}</h2>
-      {/* Film poster section */}
       <div className="poster-section">
-        <img src="film_poster.jpg" alt="Film Poster" />
+        <img src={poster || 'film_poster.jpg'} alt="Film Poster" />
       </div>
-      {/* Text input section */}
       <div className="text-section">
         <textarea
           placeholder="Write your post here..."
@@ -78,10 +73,8 @@ const Post = () => {
           onChange={handleTextChange}
         ></textarea>
       </div>
-      {/* Rating section */}
       <div className="rating-section">
         <p>Rating:</p>
-        {/* Rendering stars */}
         {[...Array(maxRating)].map((_, index) => (
           <span
             key={index}
@@ -92,8 +85,8 @@ const Post = () => {
           </span>
         ))}
       </div>
-      {/* Post button */}
       <button onClick={handlePost}>Post</button>
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
 };

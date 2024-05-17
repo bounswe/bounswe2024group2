@@ -1,16 +1,16 @@
-// src/pages/Main/FilmDetailsPage.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import './FilmDetailsPage.css';
 
 const FilmDetailsPage = ({ isLoggedIn, setIsLoggedIn }) => {
-  const { id } = useParams(); // Assuming the film ID is passed as a URL parameter
+  const { id } = useParams();
   const decodedId = decodeURIComponent(id);
   const [filmDetails, setFilmDetails] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:8020/get-film-details/', {
+    fetch('http://207.154.242.6:8020/get-film-details/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,8 +19,8 @@ const FilmDetailsPage = ({ isLoggedIn, setIsLoggedIn }) => {
     })
       .then((response) => response.json())
       .then((details) => {
-        console.log('Film Details:', details[0]); // Log details
-        setFilmDetails(details[0]);
+        console.log('Film Details:', details[0]);
+        setFilmDetails(details[0], { entity_id: decodedId });
       })
       .catch((error) => {
         console.error('Error fetching film details:', error);
@@ -30,6 +30,10 @@ const FilmDetailsPage = ({ isLoggedIn, setIsLoggedIn }) => {
   if (!filmDetails) {
     return <div>Loading...</div>;
   }
+
+  const handleCreatePost = () => {
+    navigate('/create-post', { state: { filmDetails } });
+  };
 
   return (
     <div className="film-details-page">
@@ -42,7 +46,7 @@ const FilmDetailsPage = ({ isLoggedIn, setIsLoggedIn }) => {
             <h3 className="film-title">{filmDetails.label} <span className="film-rating">★★★★★</span></h3>
             <p className="film-genres">{filmDetails.genres.map(genre => genre.label).join(', ')}</p>
             <p className="film-description">{filmDetails.description}</p>
-            <button className="create-post-button">Create Post</button>
+            <button className="create-post-button" onClick={handleCreatePost}>Create Post</button>
           </div>
         </div>
       </div>
