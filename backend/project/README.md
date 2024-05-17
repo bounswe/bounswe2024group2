@@ -2,7 +2,11 @@
 
 Welcome !
 
-## Notes for developers 
+## Notes for developers, How we solved what 
+
+For error : Access denied for root@207.0.x.y.z error during deploying, run this command on network bash : 
+
+> GRANT ALL PRIVILEGES ON * TO 'root'@'%' WITH GRANT OPTION;
 
 ### Before run 
 Please first activate your virtual environment and then use 
