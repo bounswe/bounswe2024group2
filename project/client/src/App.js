@@ -8,6 +8,7 @@ import Profile from './pages/Main/Profile/Profile';
 import SearchPage from './pages/Main/SearchPage';
 import Post from './pages/Post/Post';
 import FilmDetailsPage from './pages/Main/FilmDetailsPage';
+import Posts from './pages/Main/components/Posts';
 
 
 
@@ -43,7 +44,7 @@ function App() {
         <Route path="/post" element={<Post />}/>
         {/* FilmDetailsPage */}
         <Route path="/film/:id" element={<FilmDetailsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-        {/* ...other routes */}
+        <Route path="/posts" element={<Posts />} />
       </Routes>
     </Router>
   );

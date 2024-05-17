@@ -16,7 +16,7 @@ function Login({ setIsLoggedIn }) {
     // send a request to backend (http://localhost:8020/docs/) to login
     // if login is successful, redirect to main page
     
-    fetch('http://localhost:8020/login/', {
+    fetch('http://207.154.242.6:8020/docs/login/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,6 +28,7 @@ function Login({ setIsLoggedIn }) {
           console.log('Login successful');
           setIsLoggedIn(true);
           localStorage.setItem('isLoggedIn', 'true'); // Persist login state
+          localStorage.setItem('username', username); 
           navigate('/main-page'); // replace '/main-page' with your main page's route
         } else {
           console.log('Login failed');

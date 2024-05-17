@@ -10,7 +10,7 @@ const FilmDetailsPage = ({ isLoggedIn, setIsLoggedIn }) => {
   const [filmDetails, setFilmDetails] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8020/get-film-details/', {
+    fetch('http://207.154.242.6:8020/docs/get-film-details/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

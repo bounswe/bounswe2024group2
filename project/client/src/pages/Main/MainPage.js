@@ -35,7 +35,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
   ];
 
   useEffect(() => {
-    fetch('http://localhost:8020/recently-release-films/', {
+    fetch('http://207.154.242.6:8020/docs/recently-release-films/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
       .then((response) => response.json())
       .then((data) => {
         const fetchDetailsPromises = data.map((item) => {
-          return fetch('http://localhost:8020/get-film-details/', {
+          return fetch('http://207.154.242.6:8020/docs/recently-release-films/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
