@@ -1,14 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import {  View,  Text,  TouchableOpacity,  TextInput,  Image,  Alert,  KeyboardAvoidingView,  Platform} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles/LoginStyle';
 import config from '../config';

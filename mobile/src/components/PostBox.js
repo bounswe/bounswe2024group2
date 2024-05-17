@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     title:{
         fontWeight:"bold",
         color:"black",
-        fontSize:17,
+        fontSize:15,
     }, 
     text:{
         fontWeight:"bold",
         color:"black",
-        fontSize:14,
+        fontSize:13,
     }
 
 })
