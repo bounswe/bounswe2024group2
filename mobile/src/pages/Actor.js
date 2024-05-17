@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Image, Text, FlatList, StyleSheet } from "react-native";
 import config from "../config";
 import styles from "./styles/ActorStyle"
-
+import { useFocusEffect } from '@react-navigation/native';
 
 function Actor({ route }) {
   const [actorInfo, setActorInfo] = useState({
@@ -11,7 +11,7 @@ function Actor({ route }) {
     image: "",
     films: [],
   });
-
+ 
   const actor = route.params;
   const entity_id = actor.id.split("/").pop();
   const baseURL = 'http://207.154.242.6:8020';
@@ -42,15 +42,16 @@ function Actor({ route }) {
     }
   }
 
-  useEffect(() => {
-    fetchActor();
-  }, []);
-
-  console.log(actorInfo);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchActor();
+    }, [])
+  );
+  
   return (
     <View style={styles.container}>
         {actorInfo.image ? 
-        <Image source={{ uri: actorInfo.image  }} style={styles.image} /> :
+        <Image src={ actorInfo.image } style={styles.image} /> :
         <Image source={require("./assets/male.png")} style={styles.image} /> }
       
       <View style={styles.infoContainer}>

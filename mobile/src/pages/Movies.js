@@ -24,6 +24,7 @@ function Movies({navigation}) {
     }
   }
 
+
   const baseURL = 'http://207.154.242.6:8020';
   async function fetchMoviesByGenre(genre) {
     const genreURL = baseURL + '/get-films-by-genre/';
@@ -32,7 +33,7 @@ function Movies({navigation}) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },
+          },
         body: JSON.stringify({
           name: genre,
         }),
@@ -46,6 +47,10 @@ function Movies({navigation}) {
       Alert.alert(error);
     }
   }
+
+    
+    
+        
   async function fetchRecentMovies() {
     const recentURL = baseURL + '/recently-release-films/';
 

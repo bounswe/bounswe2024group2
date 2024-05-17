@@ -46,7 +46,7 @@ function Director({ route }) {
     fetchDirector();
   }, []);
 
-  console.log(directorInfo);
+
   return (
     <View style={styles.container}>
         {directorInfo.image ? 

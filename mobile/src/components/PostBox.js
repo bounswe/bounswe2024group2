@@ -3,9 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 
 const PostBox = (props) => {
-    console.log("aaa")
-    console.log(props.post)
-
+   
     return(
         <View style={styles.container}>
             <View style={styles.top_container}>

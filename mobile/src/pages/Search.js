@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles/SearchStyle"
+import { useFocusEffect } from '@react-navigation/native';
 
 function Search({navigation, route}) {
     const {searchInput} = route.params;
     const limit = 10;
-    console.log(searchInput)
+   
 
     const [result, setResult] = useState(null);
 
@@ -29,7 +30,7 @@ function Search({navigation, route}) {
           .catch(error => console.error(error));
           
           
-          console.log(result);
+        /*   console.log(result); */
           
         } catch (error) {
           console.log(error);
@@ -37,9 +38,13 @@ function Search({navigation, route}) {
         }
       }
 
-    useEffect(() => {
-        fetchSearch();
-    }, []);
+
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchSearch();
+        }, [])
+      );
+
 
     const renderFilm  = ({item}) => {
         function handleMovie(){
@@ -61,48 +66,7 @@ function Search({navigation, route}) {
         )
     }
 
-    /* const a = [
-        {
-          "id": "http://www.wikidata.org/entity/Q121290006",
-          "label": "Alex/October"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q104876373",
-          "label": "Above the Knee"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q117475163",
-          "label": "Ang Tipo Kong Lalake"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q11354489",
-          "label": "A Tale of Archery at the Sanjusangendo"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q104876233",
-          "label": "A Gentleman's Game"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q110099675",
-          "label": "Armugan"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q116051203",
-          "label": "Autumn Beat"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q1129547",
-          "label": "And God Created Woman"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q123303460",
-          "label": "Awkward Customers"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q114220980",
-          "label": "A Woman from Cairo"
-        }
-      ]; */
+    
     return (
         <View style={styles.container}>
             <FlatList data={result}
