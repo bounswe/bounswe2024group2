@@ -9,7 +9,19 @@ function Posts() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://207.154.242.6:8020/docs/post');
+        const csrfToken = localStorage.getItem('csrfToken'); // Get CSRF token from local storage
+        const response = await fetch('http://207.154.242.6:8020/post/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${csrfToken}`, // Include CSRF token in the headers
+          },
+          // body: JSON.stringify({
+          //   title: "filmTitle",
+          //   content: "text",
+          //   film: "filmTitle", // Replace entity_id with the actual entity ID of the film
+          // }),
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

@@ -41,7 +41,7 @@ function App() {
         <Route path="/main-page" element={<MainPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/search" element={<SearchPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/post" element={<Post />}/>
+        <Route path="/create-post" element={<Post />}/>
         {/* FilmDetailsPage */}
         <Route path="/film/:id" element={<FilmDetailsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/posts" element={<Posts />} />
