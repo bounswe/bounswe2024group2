@@ -1,6 +1,6 @@
 // src/pages/Main/SearchPage.js
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import './components/NavBar.css';
 import './MainPage.css';
@@ -54,9 +54,10 @@ const SearchPage = ({ isLoggedIn, setIsLoggedIn }) => {
               .then((details) => {
                 console.log('Details for', item.id, ':', details[0]); // Log details
                 return {
-                  label: details[0].label ? details[0].label : '',
-                  poster: details[0].poster ? details[0].poster : './no_poster.png',
-                  description: details[0].description ? details[0].description : details[0].label,
+                  id: item.id,
+                  title: details[0].label,
+                  poster: details[0].poster || './no_poster.png',
+                  description: details[0].description,
                 };
               })
               .catch((error) => {
@@ -64,19 +65,16 @@ const SearchPage = ({ isLoggedIn, setIsLoggedIn }) => {
                 return result; // Return the initial result if there's an error
               });
           });
-          
 
           // Wait for all details fetch promises to resolve
           Promise.all(fetchDetailsPromises).then((resultsWithDetails) => {
             console.log('Results with details:', resultsWithDetails); // Log results with details
             setSearchResults(resultsWithDetails);
-            
           });
         })
         .catch((error) => {
           console.error('Error:', error);
         });
-        
     }
   }, [searchQuery]);
 
@@ -87,17 +85,13 @@ const SearchPage = ({ isLoggedIn, setIsLoggedIn }) => {
         <h2>Search Results</h2>
         <div className="search-results">
           {searchResults.map((film) => (
-            <div key={film.id} className="search-result-item">
-                {/* log the poster link */}
-                {console.log(film.poster)}
-
-
+            <Link to={`/film/${encodeURIComponent(film.id)}`} key={film.id} className="search-result-item">
               <img src={film.poster} alt={film.title} />
               <div>
                 <h3>{film.title}</h3>
                 <p>{film.description}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

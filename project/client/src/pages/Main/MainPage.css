@@ -104,6 +104,28 @@ h2 {
   margin-top: 10px; /* Space between the image and text */
 }
 
+ /* center */
+
+
+recent-posts {
+  display: flex;
+
+  gap: 20px auto;
+
+} 
+
+.recent-post-item {
+  background: black;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+  width: 250px;
+  text-align: center; /* Center-align text */
+}
+
+
+
 /* Adjustments for responsiveness */
 @media (max-width: 768px) {
   .film-container {

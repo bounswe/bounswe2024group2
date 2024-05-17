@@ -1,11 +1,11 @@
-// src/pages/Main/MainPage.js
 import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import RecentPosts from './components/RecentPosts';
 import FilmList from './components/FilmList';
-import './MainPage.css'; // Make sure this path is correct
-import { Routes, Route } from 'react-router-dom';
 import SearchPage from './SearchPage';
+import FilmDetailsPage from './FilmDetailsPage';
+import './MainPage.css';
 
 function MainPage({ isLoggedIn, setIsLoggedIn }) {
   const [recentFilms, setRecentFilms] = useState([]);
@@ -16,23 +16,22 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
       user: 'johndoe',
       title: 'Inception',
       content: 'Mind-blowing narrative and effects. A must-watch!',
-      rating: '★★★★☆'
+      rating: '★★★★☆',
     },
     {
       id: 2,
       user: 'janedoe',
       title: 'Parasite',
       content: 'A brilliant social satire that will keep you on the edge of your seat.',
-      rating: '★★★★★'
+      rating: '★★★★★',
     },
     {
       id: 3,
       user: 'smith',
       title: 'Interstellar',
       content: 'A visually stunning masterpiece with deep emotional resonance.',
-      rating: '★★★★☆'
+      rating: '★★★★☆',
     },
-    // Add more mock post data...
   ];
 
   useEffect(() => {
@@ -61,7 +60,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
             }))
             .catch((error) => {
               console.error('Error fetching details:', error);
-              return { id: item.id, title: item.label, poster: './no_poster.png' }; // Fallback in case of error
+              return { id: item.id, title: item.label, poster: './no_poster.png' };
             });
         });
 
@@ -78,15 +77,19 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
     <div className="main-page">
       <Routes>
         <Route path="/search" element={<SearchPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/" element={
-          <>
-            <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-            <RecentPosts posts={mockPosts} />
-            <FilmList title="Recently released" films={recentFilms} />
-            <FilmList title="Popular films" films={recentFilms} />
-            <FilmList title="Popular lists" films={recentFilms} />
-          </>
-        } />
+        <Route path="/film/:id" element={<FilmDetailsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route
+          path="/"
+          element={
+            <>
+              <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+              <RecentPosts posts={mockPosts} />
+              <FilmList title="Recently released" films={recentFilms} />
+              <FilmList title="Popular films" films={recentFilms} />
+              <FilmList title="Popular lists" films={recentFilms} />
+            </>
+          }
+        />
       </Routes>
     </div>
   );

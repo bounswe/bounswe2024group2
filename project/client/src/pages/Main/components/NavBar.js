@@ -68,5 +68,6 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
       </form>
     </div>
   );
+}
 
 export default NavBar;
