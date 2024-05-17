@@ -131,4 +131,3 @@ class TestGetFilmInfo(TestCase):
         self.assertIn('poster_url', response_data[0])
         self.assertIn('rating', response_data[0])
 
-

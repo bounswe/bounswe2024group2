@@ -1,8 +1,6 @@
-// src/pages/Main/components/NavBar.js
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css';
-
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,6 +40,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         <Link to="/">Home</Link>
         <Link to="/films">Films</Link>
         <Link to="/lists">Lists</Link>
+        <Link to="/posts">Posts</Link> {/* New Posts link */}
         <Link to="/search">Search</Link>
         {isLoggedIn ? (
           <>

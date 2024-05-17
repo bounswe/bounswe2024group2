@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Profile = ({ isLoggedIn, username }) => {
   const [profileData, setProfileData] = useState({
-    username: username || 'defaultUser',
+    username: localStorage.getItem('username') || 'defaultUser',
     followers: 0,
     following: 0,
     films: 0,
@@ -26,7 +26,7 @@ const Profile = ({ isLoggedIn, username }) => {
     // For demonstration, setting a timeout to simulate fetching data
     setTimeout(() => {
       setProfileData({
-        username: 'meowie',
+        username: localStorage.getItem('username') || 'defaultUser',
         followers: 58,
         following: 92,
         films: 118,

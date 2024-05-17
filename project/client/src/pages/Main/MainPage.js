@@ -36,7 +36,7 @@ function MainPage({ isLoggedIn, setIsLoggedIn }) {
   ];
 
   useEffect(() => {
-    fetch('http://207.154.242.6:8020//recently-release-films/', {
+    fetch('http://207.154.242.6:8020/recently-release-films/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
