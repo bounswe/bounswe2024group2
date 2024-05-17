@@ -63,7 +63,7 @@ function Signup({navigation}) {
                 first_name: "erkam",
                 last_name: "gokcepinar"
             }); */
-      console.log(response.status);
+      /* console.log(response.status); */
       if (response.status == 200 || response.status == 201 ) {
         navigation.navigate('Login');
         Alert.alert("Successful registeration, please verify your account from your email");
