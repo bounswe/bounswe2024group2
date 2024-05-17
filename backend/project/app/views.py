@@ -92,6 +92,8 @@ class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,) #to allow unauthenticated users to get token
     serializer_class = MyTokenObtainPairSerializer
 
+    
+
 
 class LogoutView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
