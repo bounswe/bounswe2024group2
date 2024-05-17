@@ -1,9 +1,11 @@
-from app.models import Genre, Film, Director, Actor, User as User
+from django.contrib.auth.models import User
+from app.models import Genre, Film, Director, Actor
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -16,12 +18,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')
+        fields = ('username', 'password', 'email', 'is_active')
         
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
-            email=validated_data['email']
+            email=validated_data['email'],
+            is_active=False
         )
 
         user.set_password(validated_data['password'])
@@ -62,7 +65,6 @@ class LogoutSerializer(serializers.Serializer):
          
          
 class GenreSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=100)  
     class Meta:
         model = Genre
         fields = ['name']

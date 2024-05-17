@@ -16,4 +16,3 @@ venv
 
 /keypair
 **/.env
-*.icloud

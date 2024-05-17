@@ -21,12 +21,12 @@ services:
       context: ./backend/project
       dockerfile: Dockerfile
     container_name: semanticflix_backend
-    command: sh -c "python backend/project/manage.py migrate --noinput && python backend/project/manage.py collectstatic --noinput && python backend/project/manage.py runserver 0.0.0.0:8020"
+    command: sh -c "python backend/project/manage.py migrate --noinput && python backend/project/manage.py collectstatic --noinput && python backend/project/manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
       - .:/app
     ports:
-      - "8020:8020"
+      - "8020:8000"
     env_file:
       - .env
     depends_on:

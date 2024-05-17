@@ -35,6 +35,7 @@ if DEBUG:
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Database
+
 """
 DATABASES = { #TODO : READ these from .env 
     'default': {
@@ -44,9 +45,11 @@ DATABASES = { #TODO : READ these from .env
         'PASSWORD': 'password',  # MySQL password
         'HOST': 'db',  # Host where MySQL is running (in this case, Docker container)
         'PORT': '3306',  # Port where MySQL is running (in this case, Docker container)
+
     }
 }
 """
+
 
 DATABASES = {
     'default': {
@@ -56,6 +59,7 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
+
     },
 }
 
@@ -68,10 +72,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
-    'post',
     'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +105,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 }
 
@@ -149,7 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'app.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
