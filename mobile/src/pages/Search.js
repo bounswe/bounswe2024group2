@@ -11,7 +11,7 @@ function Search({navigation, route}) {
     const [result, setResult] = useState(null);
 
     const baseURL = 'http://207.154.242.6:8020';
-    async function handleSearch() {
+    async function fetchSearch() {
         const searchURL = baseURL + '/query-film-pattern/';
         
         try {
@@ -38,11 +38,13 @@ function Search({navigation, route}) {
         }
       }
 
+
       useFocusEffect(
         React.useCallback(() => {
-          handleSearch();
+          fetchSearch();
         }, [])
       );
+
 
     const renderFilm  = ({item}) => {
         function handleMovie(){
@@ -64,48 +66,7 @@ function Search({navigation, route}) {
         )
     }
 
-    /* const a = [
-        {
-          "id": "http://www.wikidata.org/entity/Q121290006",
-          "label": "Alex/October"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q104876373",
-          "label": "Above the Knee"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q117475163",
-          "label": "Ang Tipo Kong Lalake"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q11354489",
-          "label": "A Tale of Archery at the Sanjusangendo"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q104876233",
-          "label": "A Gentleman's Game"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q110099675",
-          "label": "Armugan"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q116051203",
-          "label": "Autumn Beat"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q1129547",
-          "label": "And God Created Woman"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q123303460",
-          "label": "Awkward Customers"
-        },
-        {
-          "id": "http://www.wikidata.org/entity/Q114220980",
-          "label": "A Woman from Cairo"
-        }
-      ]; */
+    
     return (
         <View style={styles.container}>
             <FlatList data={result}
