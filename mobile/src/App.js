@@ -18,6 +18,7 @@ import Movie from "./pages/Movie"
 import CreatePost from "./pages/CreatePost"
 import Actor from "./pages/Actor"
 import Director from "./pages/Director"
+import { ApplicationProvider } from "@ui-kitten/components"
 
 
 function App(){
@@ -82,7 +83,6 @@ function App(){
   }
 
   return(
-    <>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name ="Login" component={Login} options={{headerShown:false}}/>
@@ -94,7 +94,6 @@ function App(){
     
       </Stack.Navigator>
     </NavigationContainer>
-    </>
   )
 }
 

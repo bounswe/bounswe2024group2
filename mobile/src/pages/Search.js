@@ -10,7 +10,7 @@ function Search({navigation, route}) {
     const [result, setResult] = useState(null);
 
     const baseURL = 'http://207.154.242.6:8020';
-    async function handleSearch() {
+    async function fetchSearch() {
         const searchURL = baseURL + '/query-film-pattern/';
         
         try {
@@ -38,7 +38,7 @@ function Search({navigation, route}) {
       }
 
     useEffect(() => {
-        handleSearch();
+        fetchSearch();
     }, []);
 
     const renderFilm  = ({item}) => {

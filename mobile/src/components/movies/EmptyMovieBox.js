@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 
-const FilmBox = (props) => {
+const FilmBox = ({name}) => {
 
     return(
         <View style={styles.container}>
@@ -13,7 +13,7 @@ const FilmBox = (props) => {
             </View>
             <View style={styles.text_box}>
                 <Text style={styles.title}>
-                    {props.film.label}
+                    {name}
                 </Text>
             </View>
                 
