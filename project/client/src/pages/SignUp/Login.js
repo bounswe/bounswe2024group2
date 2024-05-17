@@ -12,7 +12,9 @@ function Login({ setIsLoggedIn }) {
     event.preventDefault();
     console.log('Logging in', { username, password });
 
+
     fetch('http://207.154.242.6:8020/login/', {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,11 +23,13 @@ function Login({ setIsLoggedIn }) {
     })
       .then((response) => {
         if (response.ok) {
+
           console.log('Login successful');
           setIsLoggedIn(true);
           localStorage.setItem('isLoggedIn', 'true'); // Persist login state
           localStorage.setItem('username', username); 
           navigate('/main-page'); // replace '/main-page' with your main page's route
+          return response.json();
         } else {
           throw new Error('Login failed');
         }
