@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
-
+  Alert,
   TouchableOpacity,
   Pressable,
+  FlatList,
 
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,22 +18,84 @@ import {mockFilms, mockUsers} from '../fakeData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Movie from '../components/Movie';
 import RecentPost from '../components/RecentPost';
-
+import config from '../config';
 import styles from "./styles/MainStyle"
+import PostBox from '../components/PostBox';
+import { useFocusEffect } from '@react-navigation/native';
 
-function Main({navigation}) {
+
+function Main({navigation, route}) {
     const [searchInput, setSearchInput] = useState("");
-    console.log(mockFilms[0]);
+    const [posts, setPosts] = useState([]);
 
-    function handleSearch(){
-        navigation.navigate("Search", {searchInput: searchInput});
-    }
+
     
+    const username = route.params;
+  
+    function handleSearch(){
+        if(searchInput == ""){
+            Alert.alert("Please write what you want to search.")
+        }
+        else{
+            navigation.navigate("Search", {searchInput: searchInput});
+        }
+        
+    }
+
+    const baseURL = 'http://207.154.242.6:8020';
+    async function fetchPosts() {
+        const postURL = baseURL + '/post/';
+        
+        try {
+            const response = await fetch(postURL, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.token}`
+              },
+            });
+            /* console.log(response.status) */
+            if (response.ok) {
+              const json = await response.json();
+              setPosts(json); 
+            } else {
+              throw new Error('Network response was not ok.');
+            }
+          } catch (error) {
+            console.error(error);
+            Alert.alert('hata');
+          }
+      } 
+
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchPosts();
+        }, [])
+      );
+
+    
+
+
+    const itemSeparator = <View style={styles.seperator}/>
+    
+    const renderPost = ({item}) =>{
+        
+        return(
+            <View style={styles.movie_box}>
+                <PostBox post={item} />
+               
+            </View>
+            
+           
+            
+        )
+    }
 
     return (
     <SafeAreaView style={styles.safeAreaStyle}>
+        <ScrollView>
         <View style={styles.topContainer}>
-            <Text style={styles.nameText}>Hello {mockUsers[0].name}!</Text>
+            <Text style={styles.nameText}>Hello {username.username}!</Text>
             <View style={styles.profilePhotoContainer}>
                 <Pressable onPress={() => navigation.navigate('Profile')}>
                   <Image
@@ -50,7 +113,12 @@ function Main({navigation}) {
         </View>
         <View style={styles.midContainer}>
             <Text style={[styles.sectionHeaderText,{marginBottom:10}]}>Recent Posts</Text>
-            <RecentPost postData={mockFilms[1]}/>
+            <FlatList 
+                data={posts}
+                renderItem={renderPost}
+                ItemSeparatorComponent={itemSeparator}
+            />
+            {/* <RecentPost postData={mockFilms[1]}/> */}
         </View>
         <View style={styles.moviesContainer}>
             <Text style={styles.sectionHeaderText}>Popular Movies</Text>
@@ -66,6 +134,7 @@ function Main({navigation}) {
                 <Movie movieIndex={2} />
             </ScrollView>
         </View>
+        </ScrollView>
     </SafeAreaView>
 
 

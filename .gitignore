@@ -1,2 +1,18 @@
 
 .DS_Store
+.env
+/keypair
+.venv/**
+venv
+__pycache__/**
+*.pyc
+**/mydb/**
+mydb2/**
+*.sqlite3
+.venv
+venv
+/backend/project/staticfiles
+/backend/project/mydb
+
+/keypair
+**/.env

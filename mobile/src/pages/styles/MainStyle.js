@@ -40,7 +40,7 @@ export default StyleSheet.create({
         marginTop: 30,
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: 'rgba(9,33,74,0.5)',
+        borderColor: 'black',
         borderWidth: 1,
         paddingHorizontal: 10,
     },
@@ -63,8 +63,11 @@ export default StyleSheet.create({
     },
     midContainer: {
         marginTop: 50,
-        height: 200,
+        
         marginBottom: 20,
+    },
+    seperator:{
+        margin:4,
     },
     movie: {
         width: 150,

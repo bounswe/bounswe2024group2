@@ -24,30 +24,33 @@ export const mockPosts = [
   {
     id: 1,
     user: 'johndoe',
-    title: 'Inception',
+    title: 'Godfather',
     content: 'Mind-blowing narrative and effects. A must-watch!',
-    rating: '★★★★☆',
+    rating: 5,
     comment:50,
-    like:100
+    like:100,
+    poster: require('./img/godfatherPoster.jpg'),
   },
   {
     id: 2,
     user: 'janedoe',
-    title: 'Parasite',
+    title: 'The Dark Knight',
     content:
       'A brilliant social satire that will keep you on the edge of your seat.',
-    rating: '★★★★★',
+    rating: 4.5,
     comment:50,
-    like:100
+    like:100,
+    poster: require('./img/darkNightPoster.jpg'),
   },
   {
     id: 3,
-    user: 'smith',
-    title: 'Interstellar',
+    user: 'johndoe',
+    title: 'The Shawshank Redemption',
     content: 'A visually stunning masterpiece with deep emotional resonance.',
-    rating: '★★★★☆',
+    rating: 4.7,
     comment:50,
-    like:100
+    like:100,
+    poster: require('./img/shawshankPoster.jpg'),
   },
   // Add more mock post data...
 ];
