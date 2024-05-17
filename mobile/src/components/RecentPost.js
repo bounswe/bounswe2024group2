@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import {mockFilms} from '../fakeData';
 import {mockPosts} from '../fakeData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,8 +22,8 @@ const RecentPost = ({postData}) => {
     likeContainer,
     interactionAmount,
     profilePhoto,
+    upperContainer
   } = styles;
-
   return (
     <View style={container}>
       <View style={leftContainer}>
@@ -66,11 +66,11 @@ const RecentPost = ({postData}) => {
           />
         </View>
         <View style={commentContainer}>
-          <Text style={interactionAmount}>8.6k</Text>
+          <Text style={interactionAmount}>{postData.comment}</Text>
           <MaterialCommunityIcons name="comment-text-outline" size={30} color="white" />
         </View>
         <View style={likeContainer}>
-          <Text style={interactionAmount}>8.6k</Text>
+          <Text style={interactionAmount}>{postData.like}</Text>
           <MaterialCommunityIcons name="thumb-up-outline" size={30} color="white" />
         </View>
       </View>
@@ -79,19 +79,22 @@ const RecentPost = ({postData}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container:{
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'rgb(9,33,74)',
-    height: '100%',
     borderRadius: 12,
+    height: Dimensions.get('window').height / 5,
+    width: Dimensions.get('window').width - 40,
+    marginBottom: 10,
   },
   leftContainer: {
+    flexDirection: 'column',
     flex: 3,
     height: '100%',
-    flexDirection: 'column',
     width: '60%',
     display: 'flex',
+    // backgroundColor:'red',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 1,
     height: '100%',
+    flexDirection: 'column',
   },
   imageStyle: {
     height: 100,

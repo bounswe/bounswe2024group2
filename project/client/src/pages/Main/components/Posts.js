@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Posts.css';
+import NavBar from './NavBar';
 
-function Posts() {
+function Posts({ isLoggedIn, setIsLoggedIn }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,6 +43,7 @@ function Posts() {
 
   return (
     <div className="posts">
+      <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <h1>Posts</h1>
       <ul>
         {posts.map((post) => (

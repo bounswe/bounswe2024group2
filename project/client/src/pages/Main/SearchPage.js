@@ -43,7 +43,7 @@ const SearchPage = ({ isLoggedIn, setIsLoggedIn }) => {
             };
 
             // Fetch movie details
-            return fetch('http://207.154.242.6:8020//get-film-details/', {
+            return fetch('http://207.154.242.6:8020/get-film-details/', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
