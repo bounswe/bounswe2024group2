@@ -11,7 +11,7 @@ function CreatePost({navigation, route}){
 
     const title = route.params;
 
-    /* console.log(title); */
+  
     const baseURL = 'http://207.154.242.6:8020';
     async function postData() {
         const postData = {

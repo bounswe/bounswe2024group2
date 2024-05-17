@@ -4,6 +4,7 @@ import styles from "./styles/MovieStyle";
 import config from "../config";
 import FilmBox from "../components/movies/MovieBox";
 import CastBox from "../components/CastBox";
+import { useFocusEffect } from '@react-navigation/native';
 
 function Movie({navigation, route}){
     const [movieDetails, setMovieDetails] = useState([{
@@ -17,8 +18,7 @@ function Movie({navigation, route}){
     
     
     const movie = route.params;
-    /* console.log(route);
-    console.log(movie.id.split("/")[movie.id.split("/").length-1]); */
+  
     const entity_id = movie.id.split("/")[movie.id.split("/").length-1];
     const baseURL = 'http://207.154.242.6:8020';
 
@@ -49,18 +49,18 @@ function Movie({navigation, route}){
 
     }
 
-    console.log(movieDetails[0]["directors"]);
-    /* console.log(movieDetails[0]["description"]); */
+   
     const description = movieDetails[0]["description"];
-    /* const genres = movieDetails[0]["genres"][0]["label"]; */
+    
     const title = movieDetails[0]["label"];
     const directors = movieDetails[0]["directors"];
     const cast = movieDetails[0]["castMembers"];
 
-    useEffect(() => {
-        fetchMovie();
-    }, []);
-
+    useFocusEffect(
+        React.useCallback(() => {
+          fetchMovie();
+        }, [])
+      );
 
     function handleCreatePost(){
         navigation.navigate("CreatePost", title);
@@ -68,8 +68,7 @@ function Movie({navigation, route}){
     }
 
     const renderDirectors = ({item}) =>{
-        console.log(item);
-
+        
         function handleDirector(){
             navigation.navigate("Director", item);
         }
@@ -87,8 +86,7 @@ function Movie({navigation, route}){
         )
     }
     const renderCast = ({item}) =>{
-        console.log(item);
-
+       
         function handleActor(){
             navigation.navigate("Actor", item);
         }

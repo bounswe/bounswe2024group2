@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles/SearchStyle"
+import { useFocusEffect } from '@react-navigation/native';
 
 function Search({navigation, route}) {
     const {searchInput} = route.params;
     const limit = 10;
-    console.log(searchInput)
+   
 
     const [result, setResult] = useState(null);
 
@@ -29,7 +30,7 @@ function Search({navigation, route}) {
           .catch(error => console.error(error));
           
           
-          console.log(result);
+        /*   console.log(result); */
           
         } catch (error) {
           console.log(error);
@@ -37,9 +38,11 @@ function Search({navigation, route}) {
         }
       }
 
-    useEffect(() => {
-        handleSearch();
-    }, []);
+      useFocusEffect(
+        React.useCallback(() => {
+          handleSearch();
+        }, [])
+      );
 
     const renderFilm  = ({item}) => {
         function handleMovie(){

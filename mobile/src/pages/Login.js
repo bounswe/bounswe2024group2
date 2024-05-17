@@ -42,7 +42,7 @@ function Login({navigation}) {
      const loginURL = baseURL + '/login/';
     
      try {
-         // console.log(username, password);
+         
          const response = await fetch(loginURL, {
              method: 'POST',
              headers: {
@@ -56,14 +56,13 @@ function Login({navigation}) {
          const status = response.status;
 
          
-         console.log(response.status)
+        /*  console.log(response.status) */
          if (status == 200) {
-             navigation.navigate('TabPages', {username: username});
-             console.log(username)
-             const data = await response.json();
-             config.token = data.access;
-             console.log(data.access)
 
+              const data = await response.json();
+              config.token = data.access;
+             navigation.navigate('TabPages', {username: username});
+             
          } else {
              console.log('response null');
              Alert.alert('Wrong username or password');
@@ -76,11 +75,6 @@ function Login({navigation}) {
    }
 
 
-
-/*   // To be deleted
-  const handleLogin = () => {
-    navigation.navigate('TabPages');
-  } */
 
   return (
     

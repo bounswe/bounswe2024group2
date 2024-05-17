@@ -40,7 +40,7 @@ function Movies({navigation}){
           .catch(error => console.error(error));
           
           
-          console.log(recentMovies);
+      
           
         } catch (error) {
           console.log(error);

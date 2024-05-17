@@ -29,7 +29,7 @@ function Main({navigation, route}) {
     const [posts, setPosts] = useState([]);
 
 
-    // console.log(mockFilms[0]);
+    
     const username = route.params;
   
     function handleSearch(){
@@ -54,10 +54,10 @@ function Main({navigation, route}) {
                 'Authorization': `Bearer ${config.token}`
               },
             });
-            console.log(response.status)
+            /* console.log(response.status) */
             if (response.ok) {
               const json = await response.json();
-              setPosts(json); // Verileri güncelle
+              setPosts(json); 
             } else {
               throw new Error('Network response was not ok.');
             }
@@ -74,12 +74,12 @@ function Main({navigation, route}) {
       );
 
     
-    console.log(posts)
+
 
     const itemSeparator = <View style={styles.seperator}/>
     
     const renderPost = ({item}) =>{
-        console.log(item);
+        
         return(
             <View style={styles.movie_box}>
                 <PostBox post={item} />

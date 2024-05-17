@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 
 const CastBox = (props) => {
-
+    
 
     return(
         
