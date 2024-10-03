@@ -3,7 +3,7 @@ description: Certain sections of Wiki need to be revised
 title: "[Wiki Revision] XX"
 labels: ["wiki", "priority: medium", "workload: 2", "issue template"]
 assignees: []
-projects: ["bounswe/36"]
+projects: ["bounswe/70"]
 body:
   - type: textarea
     id: description
