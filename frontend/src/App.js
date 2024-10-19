@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/Login.js";
 import Dashboard from "./components/Dashboard.js";
 import NewsPage from './components/news/NewsPage.js';
