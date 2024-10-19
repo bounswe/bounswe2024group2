@@ -10,9 +10,9 @@ const mockNewsData = [
         description: "Recent reports indicate that GDP growth forecasts for major economies have been revised upwards.",
         rssUrl: "https://example.com/news1",
         category: "Global Economy",
-        publishedAt: "2 hours ago", // Time ago
+        publishedAt: "2 hours ago", 
         coverImageUrl: "https://www.thisiscolossal.com/wp-content/uploads/2024/10/jonk-1.jpg", 
-        source: "Economic Times", // Publishing source name
+        source: "Economic Times",
     },
     {
         id: 2,
@@ -95,26 +95,21 @@ const NewsPage = () => {
     const [newsData, setNewsData] = useState([]);
     const [rssNewsData, setRssNewsData] = useState([]);
     const all = 'All';
-    // Separate category states for both sections
     const [selectedCategory, setSelectedCategory] = useState(all);
     const [selectedRssCategory, setSelectedRssCategory] = useState(all);
 
     useEffect(() => {
-        // Set mock news data
         setNewsData(mockNewsData);
         setRssNewsData(mockRssFeedData);
     }, []);
 
-    // Extract unique categories for mock news and RSS feed news
     const newsCategories = [all, ...new Set(mockNewsData.map(news => news.category))];
     const rssCategories = [all, ...new Set(mockRssFeedData.map(news => news.category))];
 
-    // Filter logic for the first news section
     const filteredNews = newsData.filter((news) =>
         selectedCategory === all ? true : news.category === selectedCategory
     );
 
-    // Filter logic for the RSS feed news section
     const filteredRssNews = rssNewsData.filter((news) =>
         selectedRssCategory === all ? true : news.category === selectedRssCategory
     );
@@ -127,7 +122,6 @@ const NewsPage = () => {
             </div>
 
             <div className="news-content">
-                {/* Filter Buttons for Mock News Section */}
                 <h3 className="section-title">Mock Economic News Section</h3>
                 <div className="filter-buttons">
                     <FilterButtons categories={newsCategories} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />    
@@ -138,7 +132,6 @@ const NewsPage = () => {
                     ))}
                 </div>
 
-                {/* Filter Buttons for Mock RSS Feed News Section */}
                 <h3 className="section-title">Mock RSS Feed Economic News Section</h3>
                 <div className="filter-buttons">
                     <FilterButtons categories={rssCategories} setSelectedCategory={setSelectedRssCategory} selectedCategory={selectedRssCategory} />

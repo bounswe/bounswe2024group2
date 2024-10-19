@@ -155,17 +155,17 @@
 
 .card-icon {
     width: auto;
-    width: 25%;  /* Allow the icon to take up at most 20% of the card width */
+    width: 25%;
     height: auto;
-    aspect-ratio: 1 / 1; /* Keep it square */
-    border-radius: 12px; /* Rounded corners */
-    overflow: hidden; /* Crop image if it's too large */
-    margin-left: 10px; /* Space between text and icon */
-    flex-shrink: 0; /* Prevent shrinking smaller than its natural size */
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-left: 10px;
+    flex-shrink: 0;
 }
 
 .card-icon img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensure the image fits without stretching */
+    object-fit: cover; 
 }
