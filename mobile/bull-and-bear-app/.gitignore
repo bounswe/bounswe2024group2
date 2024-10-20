@@ -1,24 +1,3 @@
-
-.DS_Store
-.env
-/keypair
-.venv/**
-venv
-__pycache__/**
-*.pyc
-**/mydb/**
-mydb2/**
-*.sqlite3
-.venv
-venv
-/backend/project/staticfiles
-/backend/project/mydb
-
-/keypair
-**/.env
-*.icloud
-
-#mobile
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
@@ -46,6 +25,7 @@ yarn-debug.*
 yarn-error.*
 
 # macOS
+.DS_Store
 *.pem
 
 # local env files
@@ -53,5 +33,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-# macOS
