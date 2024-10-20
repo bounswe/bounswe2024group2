@@ -27,26 +27,26 @@ jobs:
       # Build the frontend image
       - name: Build frontend Docker image
         run: |
-          FRONTEND_IMAGE_TAG=${{ github.sha }}-frontend
-          docker build -t $DOCKER_USERNAME/frontend:$FRONTEND_IMAGE_TAG ./frontend
+          FRONTEND_IMAGE_TAG=${{ github.sha }}
+          docker build -t 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG ./frontend
 
       # Build the backend image
       - name: Build backend Docker image
         run: |
-          BACKEND_IMAGE_TAG=${{ github.sha }}-backend
-          docker build -t $DOCKER_USERNAME/backend:$BACKEND_IMAGE_TAG ./backend
+          BACKEND_IMAGE_TAG=${{ github.sha }}
+          docker build -t 24cmpe451group2/backend:$BACKEND_IMAGE_TAG ./backend
 
       # Push the frontend image to Docker Hub
       - name: Push frontend Docker image
         run: |
-          FRONTEND_IMAGE_TAG=${{ github.sha }}-frontend
-          docker push $DOCKER_USERNAME/frontend:$FRONTEND_IMAGE_TAG
+          FRONTEND_IMAGE_TAG=${{ github.sha }}
+          docker push 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG
 
       # Push the backend image to Docker Hub
       - name: Push backend Docker image
         run: |
-          BACKEND_IMAGE_TAG=${{ github.sha }}-backend
-          docker push $DOCKER_USERNAME/backend:$BACKEND_IMAGE_TAG
+          BACKEND_IMAGE_TAG=${{ github.sha }}
+          docker push 24cmpe451group2/backend:$BACKEND_IMAGE_TAG
 
       # Login to DigitalOcean Droplet and trigger deployment updates
       - name: Deploy to DigitalOcean
