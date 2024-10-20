@@ -1,0 +1,60 @@
+name: Deploy Dev to Docker Hub and DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DO_SSH_PASSWORD: ${{ secrets.DO_SSH_PASSWORD }}
+  DO_REMOTE: ${{ secrets.DO_REMOTE }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Log in to Docker Hub
+      - name: Docker Hub login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Build the frontend image
+      - name: Build frontend Docker image
+        run: |
+          FRONTEND_IMAGE_TAG=${{ github.sha }}-frontend
+          docker build -t $DOCKER_USERNAME/frontend:$FRONTEND_IMAGE_TAG ./frontend
+
+      # Build the backend image
+      - name: Build backend Docker image
+        run: |
+          BACKEND_IMAGE_TAG=${{ github.sha }}-backend
+          docker build -t $DOCKER_USERNAME/backend:$BACKEND_IMAGE_TAG ./backend
+
+      # Push the frontend image to Docker Hub
+      - name: Push frontend Docker image
+        run: |
+          FRONTEND_IMAGE_TAG=${{ github.sha }}-frontend
+          docker push $DOCKER_USERNAME/frontend:$FRONTEND_IMAGE_TAG
+
+      # Push the backend image to Docker Hub
+      - name: Push backend Docker image
+        run: |
+          BACKEND_IMAGE_TAG=${{ github.sha }}-backend
+          docker push $DOCKER_USERNAME/backend:$BACKEND_IMAGE_TAG
+
+      # Login to DigitalOcean Droplet and trigger deployment updates
+      - name: Deploy to DigitalOcean
+        run: |
+          sshpass -p "${{ secrets.DO_SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.DO_REMOTE }} << EOF
+            echo "Updating backend and frontend deployments"
+            kubectl set image deployment/frontend frontend=$DOCKER_USERNAME/frontend:${{ github.sha }}-frontend --namespace=default
+            kubectl set image deployment/backend backend=$DOCKER_USERNAME/backend:${{ github.sha }}-backend --namespace=default
+            kubectl rollout status deployment/frontend --namespace=default
+            kubectl rollout status deployment/backend --namespace=default
+          EOF
