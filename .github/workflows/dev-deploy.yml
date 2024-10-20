@@ -56,8 +56,7 @@ jobs:
             kubectl set image deployment/frontend frontend=24cmpe451group2/frontend:${{ github.sha }} --namespace=default
             kubectl set image deployment/backend backend=24cmpe451group2/backend:${{ github.sha }} --namespace=default
             kubectl rollout status deployment/frontend --timeout=5m --namespace=default
-            kubectl rollout status deployment/backend --timeout=5m --namespace=default
-           
+            kubectl rollout status deployment/backend --timeout=5m --namespace=default  
             echo "Checking the status of the frontend pods:"
             FRONTEND_PODS_STATUS=\$(kubectl get pods -l app=frontend --namespace=default -o jsonpath='{.items[*].status.phase}')
             echo "Frontend pods status: \$FRONTEND_PODS_STATUS"
@@ -69,7 +68,6 @@ jobs:
               echo "Error: Frontend pods are not running. Current status: \$FRONTEND_PODS_STATUS"
               exit 1
             fi
-            
             echo "Checking the status of the backend pods:"
             BACKEND_PODS_STATUS=\$(kubectl get pods -l app=backend --namespace=default -o jsonpath='{.items[*].status.phase}')
             echo "Backend pods status: \$BACKEND_PODS_STATUS"
@@ -81,6 +79,5 @@ jobs:
               echo "Error: Backend pods are not running. Current status: \$BACKEND_PODS_STATUS"
               exit 1
             fi
-            
             echo "Deployment successful: Both frontend and backend pods are running."          
           EOF
