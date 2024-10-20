@@ -57,6 +57,9 @@ jobs:
             kubectl set image deployment/backend backend=24cmpe451group2/backend:${{ github.sha }} --namespace=default
             kubectl rollout status deployment/frontend --timeout=5m --namespace=default
             kubectl rollout status deployment/backend --timeout=5m --namespace=default  
+            # Wait for a few moments to allow Kubernetes to stabilize
+            echo "Waiting for the pods to stabilize..."
+            sleep 30  # Wait for 30 seconds
             # Check frontend pods for any waiting reasons
             echo "Checking the status of the frontend pods:"
             FRONTEND_WAITING_REASONS=\$(kubectl get pods -l app=frontend --namespace=default -o jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}')
