@@ -59,18 +59,28 @@ jobs:
             kubectl rollout status deployment/backend --timeout=5m --namespace=default
            
             echo "Checking the status of the frontend pods:"
-            FRONTEND_PODS_STATUS=$(kubectl get pods -l app=frontend --namespace=default -o jsonpath='{.items[*].status.phase}')
-            echo "Frontend pods status: $FRONTEND_PODS_STATUS"
-            if [[ $FRONTEND_PODS_STATUS != *"Running"* ]]; then
-              echo "Error: Frontend pods are not running. Current status: $FRONTEND_PODS_STATUS"
+            FRONTEND_PODS_STATUS=\$(kubectl get pods -l app=frontend --namespace=default -o jsonpath='{.items[*].status.phase}')
+            echo "Frontend pods status: \$FRONTEND_PODS_STATUS"
+            if [[ -z "\$FRONTEND_PODS_STATUS" ]]; then
+              echo "Error: No frontend pods found."
               exit 1
             fi
+            if [[ "\$FRONTEND_PODS_STATUS" != *"Running"* ]]; then
+              echo "Error: Frontend pods are not running. Current status: \$FRONTEND_PODS_STATUS"
+              exit 1
+            fi
+            
             echo "Checking the status of the backend pods:"
-            BACKEND_PODS_STATUS=$(kubectl get pods -l app=backend --namespace=default -o jsonpath='{.items[*].status.phase}')
-            echo "Backend pods status: $BACKEND_PODS_STATUS"
-            if [[ $BACKEND_PODS_STATUS != *"Running"* ]]; then
-              echo "Error: Backend pods are not running. Current status: $BACKEND_PODS_STATUS"
+            BACKEND_PODS_STATUS=\$(kubectl get pods -l app=backend --namespace=default -o jsonpath='{.items[*].status.phase}')
+            echo "Backend pods status: \$BACKEND_PODS_STATUS"
+            if [[ -z "\$BACKEND_PODS_STATUS" ]]; then
+              echo "Error: No backend pods found."
               exit 1
             fi
+            if [[ "\$BACKEND_PODS_STATUS" != *"Running"* ]]; then
+              echo "Error: Backend pods are not running. Current status: \$BACKEND_PODS_STATUS"
+              exit 1
+            fi
+            
             echo "Deployment successful: Both frontend and backend pods are running."          
           EOF
