@@ -83,6 +83,73 @@ class VerifyEmail(generics.GenericAPIView):
         except jwt.exceptions.DecodeError as identifier:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
+class RequestPasswordResetEmail(generics.GenericAPIView):
+    serializer_class = ResetPasswordEmailRequestSerializer
+    
+    def post(self, request):
+        data = {'request': request, 'data': request.data}
+        serializer = self.serializer_class(data=data)
+        email = request.data['email']
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            uidb64 = urlsafe_base64_encode(force_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            
+            current_site = get_current_site(request=request).domain
+            relativeLink = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            
+            absurl = 'http://' + current_site + relativeLink + "?token=" + str(token)
+            email_template = Template("""
+                <html>
+                <body>
+                    <p><b>Hey,</b></p>
+                    <p>WYou can use the following link to reset your password/.</p>
+                    <p><a href="{{ absurl }}">Click here to reset your password.</a></p>
+                    <p>Thanks,<br>Team Bull&Bear</p>
+                </body>
+                </html>
+            """)
+            context = Context({'absurl': absurl})
+            html_message = email_template.render(context)
+            data = {
+                'html_message': html_message,
+                'to_email': user.email,
+                'email_subject': 'Hello! Reset Your Password for Bull&Bear!'
+                ''
+            }
+            
+            Util.send_email(data)
+        
+        return Response({'success': "Whe have sent you a link to reset your password", "token": token, 'uidb64': uidb64}, status=200)
+
+class PasswordTokenCheckAPI(generics.GenericAPIView):
+        def get(self, request, uidb64, token):
+           try:
+               id = force_str(urlsafe_base64_decode(uidb64))
+               user = User.objects.get(id=id)
+               
+            #    if not user.is_active:
+            #        raise AuthenticationFailed('User is not active')
+               
+               return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64,'token': token}, status=200)
+               
+               if not PasswordResetTokenGenerator().check_token(token, user):
+                   raise Response({'message': 'The reset link is invalid, please request a new one.'}, status=401)
+               
+               return Response({'message': 'Credentials are correct'}, status=200)
+           except DjangoUnicodeDecodeError as e:
+               if not PasswordResetTokenGenerator().check_token(token, user):
+                   raise Response({'message': 'The reset link is invalid, please request a new one.'}, status=401)
+        
+
+class  SetNewPasswordAPIView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+    
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Password reset success'}, status=200)
+        
 
 class MyObtainTokenPairView(TokenObtainPairView):
     permission_classes = (AllowAny,) #to allow unauthenticated users to get token
