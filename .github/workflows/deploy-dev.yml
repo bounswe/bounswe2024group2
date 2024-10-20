@@ -53,8 +53,8 @@ jobs:
         run: |
           sshpass -p "${{ secrets.DO_SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.DO_REMOTE }} << EOF
             echo "Updating backend and frontend deployments"
-            kubectl set image deployment/frontend frontend=$DOCKER_USERNAME/frontend:${{ github.sha }} --namespace=default
-            kubectl set image deployment/backend backend=$DOCKER_USERNAME/backend:${{ github.sha }} --namespace=default
+            kubectl set image deployment/frontend frontend=24cmpe451group2/frontend:${{ github.sha }} --namespace=default
+            kubectl set image deployment/backend backend=24cmpe451group2/backend:${{ github.sha }} --namespace=default
             kubectl rollout status deployment/frontend --namespace=default
             kubectl rollout status deployment/backend --namespace=default
           EOF
