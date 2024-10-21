@@ -1,4 +1,11 @@
 /* General Layout */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .login-container {
   display: flex;
   width: 100%;
@@ -14,8 +21,18 @@
   align-items: center;
 }
 
+.logo-container {
+  text-align: center;
+}
+
 .app-logo {
-  width: 150px;
+  width: 500px;
+}
+
+.app-name {
+  font-size: 64px;
+  color: #f9f9f9;
+  margin-top: 20px;
 }
 
 /* Right Side */

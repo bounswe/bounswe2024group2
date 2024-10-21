@@ -1,10 +1,20 @@
 import React from "react";
-import "../styles/Login.css";
+import "../../styles/Login.css";
+import bullBearIcon from "../../assets/icon-bare-700.png"; // Import the icon image
 
 function Login() {
   return (
     <div className="login-container">
-      <div className="left-side"></div>
+      <div className="left-side">
+        <div className="logo-container">
+          <img
+            src={bullBearIcon}
+            alt="Bull and Bear Icon"
+            className="app-logo"
+          />
+          <h1 className="app-name">Bull&Bear</h1>
+        </div>
+      </div>
       <div className="right-side">
         <form className="login-form">
           <div className="form-group">
