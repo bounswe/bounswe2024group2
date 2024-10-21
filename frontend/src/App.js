@@ -14,6 +14,7 @@ import MarketsPage from "./components/markets/MarketsPage.js";
 import PortfolioPage from "./components/portfolio/PortfolioPage.js";
 import NotFound from "./components/notfound/NotFound.js";
 import PostView from "./components/community/PostView.js";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
+        <ToastContainer />
       </div>
     </Router>
   );
