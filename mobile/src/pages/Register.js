@@ -180,9 +180,9 @@ const Register = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.linkContainer}>
          <Text > You have an account</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
             
-            <Text style={styles.linkText}> Sign in</Text>
+            <Text style={styles.linkText}>Already have an account? Sign in</Text>
           </TouchableOpacity>
         </View>
         
