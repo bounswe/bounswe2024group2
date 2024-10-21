@@ -1,68 +1,30 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Login from "./Login";
+import 'react-native-gesture-handler';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Login from './Login';
+import Register from './Register';
+import ForgotPassword from './ForgotPassword';
+import Home from './Home'
+
+const Stack = createStackNavigator();
 
 const App = () => {
-    const Sidebar = createDrawerNavigator();
-    const CustomHeader = ({ navigation, title }) => (
-        <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-              <Text>Icon</Text>
-                {/* <Ionicons name="menu" size={25} color="black" /> */}
-            </TouchableOpacity>
-            
-        </View>
-    );
-
-
-    return (
-        <NavigationContainer>
-          <Sidebar.Navigator>
-            {/* <Sidebar.Screen 
-              name="Home" 
-              component={Home} 
-              options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} title="Home" />,
-              })}
-            /> */}
-            <Sidebar.Screen 
-              name="Login" 
-              component={Login} 
-              options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} title="Login" />,
-              })}
-            />
-          </Sidebar.Navigator>
-        </NavigationContainer>
-      );
-
-}
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    header: {
-      height: 60,
-      backgroundColor: '#fff',
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 15,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
-      paddingTop: 18
-    },
-    headerTitle: {
-      marginLeft: 10,
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-});
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false, // Hide the header for all screens
+        }}
+      >
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="Home" component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export default App;
