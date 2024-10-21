@@ -41,12 +41,14 @@ jobs:
         run: |
           FRONTEND_IMAGE_TAG=${{ github.sha }}
           docker push 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG
+          docker push 24cmpe451group2/frontend:latest
 
       # Push the backend image to Docker Hub
       - name: Push backend Docker image
         run: |
           BACKEND_IMAGE_TAG=${{ github.sha }}
           docker push 24cmpe451group2/backend:$BACKEND_IMAGE_TAG
+          docker push 24cmpe451group2/backend:latest
 
       # Login to DigitalOcean Droplet and trigger deployment updates
       - name: Deploy to DigitalOcean
