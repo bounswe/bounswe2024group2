@@ -9,49 +9,84 @@ import {
   Alert,
 } from 'react-native';
 
-const Login = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+const Register = ({ navigation }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleLogin = async () => {
-    // Replace with your backend URL
-    const url = 'http://159.223.28.163:30002/login/';
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
 
-    // Login data
-    const loginData = {
+    // Backend URL for registration
+    const registerUrl = 'http://159.223.28.163:30002/register/';
+
+    // Registration data
+    const registerData = {
       username: username,
       password: password,
+      email: email,
     };
 
     try {
       // Make the POST request to the backend
-      const response = await fetch(url, {
+      const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
         },
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(registerData),
       });
 
       // Parse the JSON response
       const data = await response.json();
 
-      // Check for a successful login
+      // Check for a successful registration
       if (response.ok) {
-        // Handle successful login
-        Alert.alert('Login Successful', 'Welcome!');
-        navigation.navigate('Home')
+        Alert.alert(
+          'Registration Successful',
+          'Please check your email to verify your account before logging in.'
+        );
+        // Attempt email verification
+        await handleEmailVerification();
+        // Redirect to Login screen
+        navigation.navigate('Login');
       } else {
-        // Handle login failure
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        // Handle registration failure
+        Alert.alert('Registration Failed', data.error || 'An error occurred during registration');
       }
     } catch (error) {
       // Handle network or other errors
       Alert.alert('Error', 'An error occurred. Please try again later.');
-      console.error('Login error:', error);
+      console.error('Registration error:', error);
+    }
+  };
+
+  const handleEmailVerification = async () => {
+    // Backend URL for email verification
+    const verifyUrl = 'http://159.223.28.163:30002/email-verify/';
+
+    try {
+      // Make the GET request to verify the email
+      const response = await fetch(verifyUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': '*/*',
+          'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
+        },
+      });
+
+      // No need to parse the response if we are not showing any alerts based on it
+    } catch (error) {
+      // Log the error but don't show it to the user
+      console.error('Email verification error:', error);
     }
   };
 
@@ -62,10 +97,17 @@ const Login = ({ navigation }) => {
     }
   };
 
+  const handleConfirmPasswordChange = (text) => {
+    setConfirmPassword(text);
+    if (text.length === 0) {
+      setShowConfirmPassword(false); // Reset to hidden when input is cleared
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/IconKitchen-Output/icon-bare-700.png')}
+        source={require('../../assets/IconKitchen-Output/icon-bare-700.png')} // Update this path to your actual logo image
         style={styles.logo}
         resizeMode="contain"
       />
@@ -81,6 +123,16 @@ const Login = ({ navigation }) => {
           onChangeText={setUsername}
           autoCapitalize="none"
         />
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#999999"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
         <Text style={styles.label}>Password</Text>
         <View style={styles.passwordContainer}>
           <TextInput
@@ -89,7 +141,7 @@ const Login = ({ navigation }) => {
             placeholderTextColor="#999999"
             value={password}
             onChangeText={handlePasswordChange}
-            secureTextEntry={!showPassword} // Always start with hidden password
+            secureTextEntry={!showPassword}
           />
           {password.length > 0 && (
             <TouchableOpacity
@@ -102,23 +154,33 @@ const Login = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Sign In</Text>
+        <Text style={styles.label}>Confirm Password</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Confirm Password"
+            placeholderTextColor="#999999"
+            value={confirmPassword}
+            onChangeText={handleConfirmPasswordChange}
+            secureTextEntry={!showConfirmPassword}
+          />
+          {confirmPassword.length > 0 && (
+            <TouchableOpacity
+              style={styles.showPasswordButton}
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <Text style={styles.showPasswordText}>
+                {showConfirmPassword ? 'Hide' : 'Show'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
-      <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.linkText}>Register</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={styles.linkText}>Forgot password?</Text>
-        </TouchableOpacity>
       </View>
 
-      </View>
 
-      
-
-      
     </View>
   );
 };
@@ -164,17 +226,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#E0E0E0',
     color: '#000000',
-    width: '100%', // Ensure the input field takes the full width
+    marginBottom: 10,
+    width: '100%',
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    position: 'relative', // Ensure proper positioning of the button inside
+    position: 'relative',
     marginBottom: 10,
   },
   passwordInput: {
@@ -209,15 +271,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  linkContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  linkText: {
-    color: '#005AAB',
-    textDecorationLine: 'underline',
-  },
 });
 
-export default Login;
+export default Register;
