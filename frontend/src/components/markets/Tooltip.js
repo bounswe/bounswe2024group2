@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../styles/Tooltip.css"; // Import the tooltip styles
+import "../../styles/Tooltip.css"; 
 
 const Tooltip = ({ stock }) => {
     return (
@@ -18,7 +18,7 @@ const Tooltip = ({ stock }) => {
             </>
           ) : (
             <div className="empty-tooltip">
-              {/* Display placeholder or empty state */}
+              {}
               <span className="small-dot">Hover over a stock to see details</span>
             </div>
           )}
