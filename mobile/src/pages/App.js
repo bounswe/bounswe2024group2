@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -11,8 +11,21 @@ import ForgotPassword from './ForgotPassword';
 import Home from './Home'
 import Profile from './Profile';
 
+
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
+
+const CustomHeader = ({ navigation }) => (
+  <View style={styles.customHeader}>
+    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+      <MaterialIcons name="menu" size={30} color="white" />
+    </TouchableOpacity>
+    <Text style={styles.logoText}>Bull&Bear</Text>
+    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+      <MaterialIcons name="account-circle" size={30} color="white" />
+    </TouchableOpacity>
+  </View>
+);
 
 
 const App = () => {
@@ -42,10 +55,10 @@ const App = () => {
 
     const LoginRelated = () => {
       return (
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} options={{headerShown:false}}></Stack.Screen>
-          <Stack.Screen name="Register" component={Register} options={{headerShown:false}}></Stack.Screen>
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown:false}}></Stack.Screen>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={Login} ></Stack.Screen>
+          <Stack.Screen name="Register" component={Register} ></Stack.Screen>
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
         </Stack.Navigator>
       )
     }
@@ -54,27 +67,23 @@ const App = () => {
       const username = params.route;
       
       return(
-      <Sidebar.Navigator>
+      <Sidebar.Navigator
+        screenOptions={{
+          headerShown: true, // Enable the custom header globally
+          header: ({ navigation }) => <CustomHeader navigation={navigation} />, // Use CustomHeader for all screens
+        }}
+        >
             <Sidebar.Screen 
               name="Home" 
-              component={Home} 
-              options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} username={username} title="Home" />,
-              })}
+              component={Home}              
             />
             <Sidebar.Screen 
               name="Profile" 
-              component={Profile} 
-              options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} username={username} title="Profile" />,
-              })}
+              component={Profile}               
             />
             <Sidebar.Screen 
               name="Login&Register" 
               component={LoginRelated} 
-              options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} username={username}title="Login" />,
-              })}
             />
           </Sidebar.Navigator>
       )
@@ -86,38 +95,26 @@ const App = () => {
         </NavigationContainer>
       );
 };
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    height: 50,
+  customHeader: {
+    height: 60,
+    backgroundColor: '#0077B6', // Set to a solid color to make it fully visible
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    backgroundColor:"#0077B6",
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
-  headerTitle: {
-    marginLeft: 10,
+  headerButton: {
+    padding: 10,
+  },
+  logoText: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  logo:{
-    flexDirection:"row",
-    marginLeft:100,
-    marginRight:100,
-  },
-  logoText:{
-    fontSize:18,
-    fontWeight:"bold",
-    color:"white"
+    color: 'white',
+    textAlign: 'center',
+    flex: 1,
   },
 });
 
 export default App;
-
