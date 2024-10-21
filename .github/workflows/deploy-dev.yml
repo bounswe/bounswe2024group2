@@ -29,12 +29,14 @@ jobs:
         run: |
           FRONTEND_IMAGE_TAG=${{ github.sha }}
           docker build -t 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG ./frontend
+          docker tag 24cmpe451group2/frontend:${{ github.sha }} 24cmpe451group2/frontend:latest
 
       # Build the backend image
       - name: Build backend Docker image
         run: |
           BACKEND_IMAGE_TAG=${{ github.sha }}
           docker build -t 24cmpe451group2/backend:$BACKEND_IMAGE_TAG ./backend
+          docker tag 24cmpe451group2/backend:${{ github.sha }} 24cmpe451group2/backend:latest
 
       # Push the frontend image to Docker Hub
       - name: Push frontend Docker image
