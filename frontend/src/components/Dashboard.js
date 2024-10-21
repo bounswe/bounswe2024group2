@@ -7,13 +7,13 @@ import bullBearIcon from '../assets/icon-bare-700.png';
 const Dashboard = ({ user }) => {
     const navigate = useNavigate();
 
-    const handleSignIn = () => {
-        navigate("/login"); 
-    };
+  const handleSignIn = () => {
+    navigate("/login");
+  };
 
-    const handleRegister = () => {
-        navigate("/register"); 
-    };
+  const handleRegister = () => {
+    navigate("/register");
+  };
 
     const handleProfile = () => {
         navigate("/profile");
