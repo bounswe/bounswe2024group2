@@ -4,12 +4,12 @@
     left: 20px;
     background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 10px; /* Larger border-radius for a more modern look */
-    padding: 30px; /* Increased padding */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for better visibility */
+    border-radius: 10px; 
+    padding: 30px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
     z-index: 1000;
-    width: 900px; /* Increased width */
-    height: 500px; /* Fixed height for better structure */
+    width: 900px; 
+    height: 500px; 
     white-space: normal;
     display: flex;
     flex-direction: column;
@@ -18,24 +18,24 @@
 .tooltip-content {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align text to the left */
+    align-items: flex-start; 
 }
 
 .big-dot {
     color: #007bff;
-    font-size: 36px; /* Larger font size for the stock code */
+    font-size: 36px; 
     font-weight: bold;
-    margin-bottom: 20px; /* Space between stock code and details */
+    margin-bottom: 20px;
 }
 
 .small-dot {
     color: #333;
-    font-size: 18px; /* Slightly larger font size for details */
-    margin-top: 5px; /* Ensure some spacing between name and price */
+    font-size: 18px;
+    margin-top: 5px; 
 }
 
 .tooltip-details {
-    margin-top: 10px; /* Add space between the big code and details */
+    margin-top: 10px; 
     display: flex;
     flex-direction: column;
 }
