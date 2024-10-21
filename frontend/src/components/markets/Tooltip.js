@@ -1,19 +1,30 @@
-// Tooltip.js
 import React from 'react';
-import "../../styles/Tooltip.css"; // Create a CSS file for styling
+import "../../styles/Tooltip.css"; // Import the tooltip styles
 
-const Tooltip = ({ stock, position }) => {
+const Tooltip = ({ stock }) => {
     return (
-        <div className="tooltip" style={{ top: position.top, left: position.left }}>
-            <div className="tooltip-content">
-                <h3>{stock.code} <span className="big-dot">•</span></h3>
-                <div className="tooltip-details">
-                    <p><span className="small-dot">•</span> Name: {stock.name}</p>
-                    <p><span className="small-dot">•</span> Price: ${stock.price.toFixed(2)}</p>
-                </div>
+      <div className="tooltip">
+        <div className="tooltip-content">
+          {stock ? (
+            <>
+              <span className="big-dot">{stock.code}</span>
+              <div className="tooltip-details">
+                <span className="small-dot">Name: {stock.name}</span>
+                <span className="small-dot">Price: ${stock.price.toFixed(2)}</span>
+                {stock.about && (
+                  <span className="small-dot">About: {stock.about}</span>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="empty-tooltip">
+              {/* Display placeholder or empty state */}
+              <span className="small-dot">Hover over a stock to see details</span>
             </div>
+          )}
         </div>
+      </div>
     );
-};
-
-export default Tooltip;
+  };
+  
+  export default Tooltip;

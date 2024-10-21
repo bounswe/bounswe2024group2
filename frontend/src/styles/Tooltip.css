@@ -1,29 +1,50 @@
 .tooltip {
-    position: absolute; /* Keep it out of normal flow */
+    position: fixed;
+    top: 100px;
+    left: 20px;
     background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px; /* Larger border-radius for a more modern look */
+    padding: 30px; /* Increased padding */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow for better visibility */
     z-index: 1000;
-    white-space: nowrap; /* Prevents the tooltip from expanding in width and causing scrollbars */
+    width: 900px; /* Increased width */
+    height: 500px; /* Fixed height for better structure */
+    white-space: normal;
+    display: flex;
+    flex-direction: column;
 }
 
 .tooltip-content {
     display: flex;
     flex-direction: column;
+    align-items: flex-start; /* Align text to the left */
 }
 
 .big-dot {
     color: #007bff;
-    font-size: 24px;
+    font-size: 36px; /* Larger font size for the stock code */
+    font-weight: bold;
+    margin-bottom: 20px; /* Space between stock code and details */
 }
 
 .small-dot {
-    color: #666;
-    font-size: 16px;
+    color: #333;
+    font-size: 18px; /* Slightly larger font size for details */
+    margin-top: 5px; /* Ensure some spacing between name and price */
 }
 
 .tooltip-details {
-    margin-top: 5px;
+    margin-top: 10px; /* Add space between the big code and details */
+    display: flex;
+    flex-direction: column;
 }
+
+.empty-tooltip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 16px;
+    color: #888;
+  }
