@@ -1,0 +1,104 @@
+.post-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.post-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.post-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.post-meta {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.post-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.post-stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.likes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #e74c3c;
+}
+.comments-box{
+    display: flex;
+    font-weight: bold;
+    color: #3498db;
+}
+
+.likes .like-icon, .comments-box .comment-icon {
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+}
+
+.like-icon:hover, .comment-icon:hover {
+    transform: scale(1.2);
+}
+
+.view-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.view-button:hover {
+    background-color: #2980b9;
+}
+
+.post-tags {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.post-tag {
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+@media (min-width: 600px) {
+    .post-card {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 900px) {
+    .post-card {
+        max-width: 600px;
+    }
+}
