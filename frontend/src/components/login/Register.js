@@ -51,33 +51,33 @@ function Register() {
           },
         }
       );
+      navigate("/login");
+      // if (registerResponse.status === 201) {
+      //   toast.success("Registration successful!");
 
-      if (registerResponse.status === 201) {
-        toast.success("Registration successful!");
+      //   const loginData = {
+      //     username: username,
+      //     password: password,
+      //   };
 
-        const loginData = {
-          username: username,
-          password: password,
-        };
+      //   const loginResponse = await axios.post(
+      //     `${process.env.REACT_APP_API_BASE_URL}/login/`,
+      //     loginData,
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   );
 
-        const loginResponse = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/login/`,
-          loginData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+      //   const { access, refresh } = loginResponse.data;
 
-        const { access, refresh } = loginResponse.data;
+      //   localStorage.setItem("accessToken", access);
+      //   localStorage.setItem("refreshToken", refresh);
+      //   localStorage.setItem("userName", username);
 
-        localStorage.setItem("accessToken", access);
-        localStorage.setItem("refreshToken", refresh);
-        localStorage.setItem("userName", username);
-
-        navigate("/home");
-      }
+      //   navigate("/home");
+      // }
     } catch (error) {
       console.error("Registration failed!", error);
       if (error.response.status === 400 && error.response.data.email) {
