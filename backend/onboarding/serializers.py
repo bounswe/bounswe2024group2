@@ -54,3 +54,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'username', 'email']
         
+class LogoutSerializer(serializers.Serializer):
+    refreshToken = serializers.CharField(required=True, max_length=512)
+
+    def validate_refresh_token(self, value):
+        if not value:
+            raise serializers.ValidationError("Refresh token is required.")
+        return value
