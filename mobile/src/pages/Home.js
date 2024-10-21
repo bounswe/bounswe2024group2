@@ -10,8 +10,10 @@ import bist100 from "../../assets/stock-logos/bist-100.png";
 import bist30 from "../../assets/stock-logos/bist-30.png";
 import bist from "../../assets/stock-logos/bist.png";
 
+
 const Home = () => {
   const sections = [
+
     {
       title: 'Feed',
       data: [
@@ -44,9 +46,11 @@ const Home = () => {
     },
   ];
 
+
   const renderItem = ({ item }) => {
     if (item.type === 'post') {
       return (
+
         <View style={styles.postContainer}>
           <View style={styles.topContainer}>
             <Text style={styles.postTitle}>{item.title}</Text>
@@ -65,8 +69,10 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
+
       );
     } else {
+
       return (
         <View style={styles.itemContainer}>
           <Image source={item.logoPath} style={styles.logo} />
@@ -82,8 +88,10 @@ const Home = () => {
           </View>
         </View>
       );
+
     }
   };
+
 
   return (
     <SectionList

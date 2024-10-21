@@ -38,10 +38,26 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['username'] = user.username
         return token
-    
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        user = self.user
+        if not user.is_verified:
+            raise serializers.ValidationError("User is not verified. Please verify your account before logging in.")
+            
+        return data
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'username', 'email']
         
+class LogoutSerializer(serializers.Serializer):
+    refreshToken = serializers.CharField(required=True, max_length=512)
+
+    def validate_refresh_token(self, value):
+        if not value:
+            raise serializers.ValidationError("Refresh token is required.")
+        return value

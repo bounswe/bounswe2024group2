@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
       if (response.ok) {
         // Handle successful login
         Alert.alert('Login Successful', 'Welcome!');
-        navigation.navigate('Home')
+        navigation.navigate('TabBar', {username: username})
       } else {
         // Handle login failure
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
