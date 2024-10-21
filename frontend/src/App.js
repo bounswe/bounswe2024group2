@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/login/Login.js";
 import Register from "./components/login/Register.js";
 import ForgotPassword from "./components/login/ForgotPassword.js";
@@ -27,6 +27,8 @@ function App() {
             <Route path="markets" element={<MarketsPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="portfolio" element={<PortfolioPage />} />
+
+            <Route path="/" element={<Navigate to="/home" />} />
           </Route>
         </Routes>
       </div>
