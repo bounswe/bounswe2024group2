@@ -38,7 +38,8 @@
 
 .create-portfolio-button {
     padding: 10px 15px;
-    background-color: var(--color-secondary-500);
+    background-color: var(--color-secondary-900);
+    font-size: large;
     color: white;
     border: none;
     border-radius: 5px;
