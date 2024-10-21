@@ -99,18 +99,18 @@ const mockStocks = {
 ];
 
 const StocksPage = () => {
-  const { indexId } = useParams(); // Get the index ID from the URL
-  const stocks = mockStocks[indexId]; // Get stocks based on the index ID
+  const { indexId } = useParams(); 
+  const stocks = mockStocks[indexId]; 
   const indexName = mockIndices.find(index => index.id === parseInt(indexId))?.name || 'Unknown Index';
 
-  const [hoveredStock, setHoveredStock] = useState(null); // Track the hovered stock
+  const [hoveredStock, setHoveredStock] = useState(null); 
 
   const handleMouseEnter = (stock) => {
-    setHoveredStock(stock); // Set hovered stock when mouse enters
+    setHoveredStock(stock); 
   };
 
   const handleMouseLeave = () => {
-    setHoveredStock(null); // Reset stock when mouse leaves
+    setHoveredStock(null); 
   };
 
   return (
@@ -149,7 +149,7 @@ const StocksPage = () => {
           </table>
         </div>
       </div>
-      {/* Always render the tooltip, even when no stock is hovered */}
+      {}
       <Tooltip stock={hoveredStock} />
     </>
   );
