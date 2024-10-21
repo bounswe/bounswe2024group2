@@ -68,7 +68,9 @@ const Home = () => {
               <Text style={styles.actionText}>Comment</Text>
             </TouchableOpacity>
           </View>
+          
         </View>
+        
 
       );
     } else {
@@ -92,15 +94,29 @@ const Home = () => {
     }
   };
 
-
+  const renderSectionFooter = ({ section: { title } }) => {
+    return (
+      <View style={styles.footerContainer}>
+        <TouchableOpacity>
+          <Text style={styles.seeMore}>See More {title}</Text>
+        </TouchableOpacity>
+      </View>
+      
+    );
+  };
   return (
-    <SectionList
-      sections={sections}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderItem}
-      renderSectionHeader={({ section: { title } }) => <Text style={styles.header}>{title}</Text>}
-      contentContainerStyle={styles.container}
-    />
+    <View>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        renderSectionHeader={({ section: { title } }) => <Text style={styles.header}>{title}</Text>}
+        contentContainerStyle={styles.container}
+        renderSectionFooter={renderSectionFooter}
+      />
+    </View>
+    
+    
   );
 };
 
@@ -187,6 +203,16 @@ const styles = StyleSheet.create({
   actionText: {
     marginLeft: 5,
     color: 'black',
+  },
+  footerContainer:{
+    alignItems:"flex-end",
+
+  },
+  seeMore:{
+    alignSelf:"flex-end",
+    fontSize:15,
+    fontWeight:"bold",
+    color:"black"
   },
 });
 
