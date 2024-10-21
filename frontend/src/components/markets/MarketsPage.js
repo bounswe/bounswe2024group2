@@ -14,7 +14,6 @@ const MarketsPage = () => {
     const navigate = useNavigate();
 
     const handleIndexClick = (id) => {
-    // Navigate to the stocks page with the selected index ID
         navigate(`/stocks/${id}`);
     };
     return (
