@@ -9,14 +9,19 @@ import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home'
+import Profile from './Profile';
 
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
 
 
 const App = () => {
-  
-    const CustomHeader = ({ navigation, title }) => (
+
+    const navigateProfile = (navigation, username) => {
+      navigation.navigate("Profile", {username: username});
+    };
+    const CustomHeader = ({ navigation, username }) => (
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <MaterialIcons name="menu" size={30} color="white" />
@@ -29,7 +34,7 @@ const App = () => {
           /> */}
           <Text style={styles.logoText}> Bull&Bear </Text>
         </View>  
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        <TouchableOpacity onPress={() => navigateProfile(navigation, username)}>
           <MaterialIcons name="account-circle" size={30} color="white" />
         </TouchableOpacity>
       </View>
@@ -45,24 +50,39 @@ const App = () => {
       )
     }
 
-    return (
-        <NavigationContainer>
-          <Sidebar.Navigator>
+    const TabBar = (params) =>{
+      const username = params.route;
+      
+      return(
+      <Sidebar.Navigator>
             <Sidebar.Screen 
               name="Home" 
               component={Home} 
               options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} title="Home" />,
+                header: () => <CustomHeader navigation={navigation} username={username} title="Home" />,
               })}
             />
             <Sidebar.Screen 
-              name="Login" 
+              name="Profile" 
+              component={Profile} 
+              options={({ navigation }) => ({
+                header: () => <CustomHeader navigation={navigation} username={username} title="Profile" />,
+              })}
+            />
+            <Sidebar.Screen 
+              name="Login&Register" 
               component={LoginRelated} 
               options={({ navigation }) => ({
-                header: () => <CustomHeader navigation={navigation} title="Login" />,
+                header: () => <CustomHeader navigation={navigation} username={username}title="Login" />,
               })}
             />
           </Sidebar.Navigator>
+      )
+    }
+
+    return (
+        <NavigationContainer>
+          <TabBar></TabBar>
         </NavigationContainer>
       );
 };
