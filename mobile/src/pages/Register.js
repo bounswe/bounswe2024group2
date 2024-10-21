@@ -176,8 +176,16 @@ const Register = ({ navigation }) => {
           )}
         </View>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+        <View style={styles.linkContainer}>
+         <Text > You have an account</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            
+            <Text style={styles.linkText}> Sign in</Text>
+          </TouchableOpacity>
+        </View>
+        
       </View>
 
 
@@ -270,6 +278,15 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+  },
+  linkText: {
+    color: '#005AAB',
+    textDecorationLine: 'underline',
   },
 });
 
