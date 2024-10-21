@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Login from "./components/login/Login.js";
 import Register from "./components/login/Register.js";
 import ForgotPassword from "./components/login/ForgotPassword.js";
@@ -10,6 +15,7 @@ import CommunityPage from "./components/community/CommunityPage.js";
 import MarketsPage from "./components/markets/MarketsPage.js";
 import PortfolioPage from "./components/portfolio/PortfolioPage.js";
 import NotFound from "./components/notfound/NotFound.js";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
