@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  mysql-db:
+    image: mysql:latest
+    container_name: mysql-db
+    restart: always
+    volumes:
+      -  my-db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    networks:
+      - backend_network
+    healthcheck:
+      test: ['CMD', 'mysql-db', '-h', '$MYSQL_HOST', '-u', '$MYSQL_USER', '-p$MYSQL_PASSWORD', '-e', 'SELECT 1']
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    command: >
+      sh -c 'python3 manage.py makemigrations &&
+             python3 manage.py migrate --noinput &&
+             python3 manage.py collectstatic --noinput &&
+             gunicorn backend.wsgi:application --bind 0.0.0.0:8000'
+    restart: always
+    environment:
+      MYSQL_HOST: 'mysql-db'
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+    env_file:
+      ../.env
+    volumes:
+      - .:/backend
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mysql-db
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  my-db:
+  backend:
