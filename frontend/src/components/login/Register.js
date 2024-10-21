@@ -78,7 +78,15 @@ function Register() {
         navigate("/home");
       }
     } catch (error) {
-      toast.error("Registration failed! Please try again.");
+      console.error("Registration failed!", error);
+      if (error.response.status === 400 && error.response.data.email) {
+        toast.error("Email already exists! Please try again.");
+      }
+      if (error.response.status === 400 && error.response.data.username) {
+        toast.error("Username already exists! Please try again.");
+      } else {
+        toast.error("Registration failed! Please try again.");
+      }
     }
   };
 
