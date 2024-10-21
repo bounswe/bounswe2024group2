@@ -1,6 +1,6 @@
 import React from "react";
 import "../../styles/Login.css";
-import bullBearIcon from "../../assets/icon-bare-700.png"; // Import the icon image
+import bullBearIcon from "../../assets/icon-bare-700.png";
 
 function Login() {
   return (
