@@ -38,7 +38,7 @@ const ProfilePage = () => {
           source={require("../../assets/stock-logos/Profile.png")} // Replace with your profile image URL
           style={styles.profilePhoto}
         />
-        <Text style={styles.username}>@YourUsername</Text>
+        <Text style={styles.username}>@economistali</Text>
         <Text style={styles.followerCount}>Followers: 150</Text>
         <TouchableOpacity >
             <Text style={styles.seePost} > See posts</Text>
@@ -47,7 +47,7 @@ const ProfilePage = () => {
 
       {/* Badges Section */}
       <View style={styles.badgesContainer}>
-        <Text style={styles.sectionTitle}>Badges</Text>
+        <Text style={styles.sectionTitle}> Badges</Text>
         <FlatList
           data={badges}
           renderItem={({ item }) => (
@@ -65,7 +65,7 @@ const ProfilePage = () => {
       {/* Portfolio Section */}
       <ScrollView>
         <View style={styles.portfolioContainer}>
-            <Text style={styles.sectionTitle}>My Portfolios</Text>
+            <Text style={styles.sectionTitle}> Portfolios</Text>
             <FlatList
             data={portfolios}
             renderItem={({ item }) => (

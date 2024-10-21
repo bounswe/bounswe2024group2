@@ -15,13 +15,17 @@ import Profile from './Profile';
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
 
+
+const navigateProfile = (navigation, username) => {
+  navigation.navigate("Profile", {username: username});
+};
 const CustomHeader = ({ navigation }) => (
   <View style={styles.customHeader}>
     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
       <MaterialIcons name="menu" size={30} color="white" />
     </TouchableOpacity>
     <Text style={styles.logoText}>Bull&Bear</Text>
-    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+    <TouchableOpacity onPress={() => navigateProfile(navigation)} style={styles.headerButton}>
       <MaterialIcons name="account-circle" size={30} color="white" />
     </TouchableOpacity>
   </View>
@@ -29,30 +33,6 @@ const CustomHeader = ({ navigation }) => (
 
 
 const App = () => {
-
-    const navigateProfile = (navigation, username) => {
-      navigation.navigate("Profile", {username: username});
-    };
-    const CustomHeader = ({ navigation, username }) => (
-
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <MaterialIcons name="menu" size={30} color="white" />
-        </TouchableOpacity>
-        <View style={styles.logo}>
-          {/* <Image
-            source={require('../../assets/IconKitchen-Output/ios/AppIcon~ipad.png')}
-            
-            
-          /> */}
-          <Text style={styles.logoText}> Bull&Bear </Text>
-        </View>  
-        <TouchableOpacity onPress={() => navigateProfile(navigation, username)}>
-          <MaterialIcons name="account-circle" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
-    );
-
     const LoginRelated = () => {
       return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -63,11 +43,17 @@ const App = () => {
       )
     }
 
-    const TabBar = (params) =>{
+    /* const TabBar = (params) =>{ // This structure can be used after some point
       const username = params.route;
       
       return(
-      <Sidebar.Navigator
+      
+      )
+    } */
+
+    return (
+        <NavigationContainer>
+          <Sidebar.Navigator
         screenOptions={{
           headerShown: true, // Enable the custom header globally
           header: ({ navigation }) => <CustomHeader navigation={navigation} />, // Use CustomHeader for all screens
@@ -86,12 +72,6 @@ const App = () => {
               component={LoginRelated} 
             />
           </Sidebar.Navigator>
-      )
-    }
-
-    return (
-        <NavigationContainer>
-          <TabBar></TabBar>
         </NavigationContainer>
       );
 };
