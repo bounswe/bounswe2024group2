@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -34,9 +35,14 @@ function Login() {
 
       const { access, refresh } = response.data;
 
+      // console.log("token expiration", getTokenExpiration(access));
+
       // Storing tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
+
+      // Setting up token refresh timer
+      setRefreshTimer(access);
 
       // Display success toast
       toast.success("Login successful!");
@@ -47,9 +53,67 @@ function Login() {
       console.error("Login failed!", error);
       toast.error(
         "Login failed! Please ensure that your username and password are correct."
-      ); // Display error toast
+      );
     }
   };
+
+  // Decode JWT and get expiration time
+  function getTokenExpiration(token) {
+    const decodedToken = jwtDecode(token);
+    return decodedToken.exp * 1000; // Convert to milliseconds
+  }
+
+  // Set up a timer to refresh the token just before it expires
+  function setRefreshTimer(accessToken) {
+    const expirationTime = getTokenExpiration(accessToken);
+    const currentTime = new Date().getTime();
+    const timeToRefresh = expirationTime - currentTime - 60 * 1000; // Refresh 1 minute before expiry
+
+    if (timeToRefresh > 0) {
+      //console.log("Setting up token refresh in", timeToRefresh, "ms");
+      setTimeout(() => {
+        refreshAccessToken();
+      }, timeToRefresh);
+    } else {
+      //console.log("refreshing immediately");
+      refreshAccessToken();
+    }
+  }
+
+  // Refresh the access token using the refresh token
+  async function refreshAccessToken() {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+      console.error("No refresh token found");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/refresh/`,
+        { refresh: refreshToken },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const { access } = response.data;
+
+      // Store the new access token
+      localStorage.setItem("accessToken", access);
+
+      // Set a new timer for the refreshed token
+      setRefreshTimer(access);
+
+      toast.success("Access token refreshed!");
+    } catch (error) {
+      console.error("Failed to refresh token", error);
+      toast.error("Failed to refresh token. Please log in again.");
+      // Optionally, log the user out if refresh fails
+    }
+  }
 
   return (
     <div className="login-container">
