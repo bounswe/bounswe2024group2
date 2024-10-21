@@ -1,0 +1,80 @@
+.not-found-container {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.error-404 h1 {
+    font-size: 10rem;
+    margin: 0;
+    color: var(--color-error-500);
+}
+
+.error-message {
+    font-size: 1.5rem;
+    color: var(--color-neutral-600);
+    margin-top: -20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.notfoundbear {
+    position: relative;
+    margin: 50px auto;
+    width: 100px;
+}
+
+.notfoundbear-img {
+    width: 100%;
+    animation: float 3s ease-in-out infinite;
+}
+
+.back-home {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    color: var(--color-neutral-white);
+    background-color: var(--color-primary-500);
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.back-home:hover {
+    background-color: var(--color-primary-600);
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.animated-bounce {
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
