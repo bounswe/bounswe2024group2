@@ -1,6 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-// import mockStocks from '../../data/mockStocks';
+import "../../styles/StocksPage.css"
+import { useState } from 'react';
+import Tooltip from './Tooltip';
 
 const mockStocks = {
   1: [// BIST 30
@@ -91,34 +93,69 @@ const mockStocks = {
       { code: 'ADP', name: 'Automatic Data Processing, Inc.', price: 240.00 }],
   };
 
+  const mockIndices = [
+    { id: 1, name: "BIST30" },
+    { id: 2, name: 'S&P TOP 50' },
+];
+
 const StocksPage = () => {
   const { indexId } = useParams(); // Get the index ID from the URL
   const stocks = mockStocks[indexId]; // Get stocks based on the index ID
+  const indexName = mockIndices.find(index => index.id === parseInt(indexId))?.name || 'Unknown Index';
+
+  const [tooltip, setTooltip] = useState({ visible: false, stock: null, position: {} });
+
+  const handleMouseEnter = (stock, event) => {
+      const tooltipPosition = {
+          top: event.clientY + 10, // Offset to position tooltip below the mouse
+          left: event.clientX + 10,
+      };
+      setTooltip({ visible: true, stock, position: tooltipPosition });
+  };
+
+  const handleMouseLeave = () => {
+      setTooltip({ visible: false, stock: null, position: {} });
+  };
 
   return (
-    <div className="stocks-container">
-      <h2>Stocks in Index {indexId}</h2>
-      <div>
-        {stocks && stocks.length > 0 ? (
-          stocks.map(stock => (
-            <div key={stock.code} className="stock-item">
-              {/* Stock Code Circle */}
-              <div className="stock-code">
-                {stock.code}
+      <>
+          <div className="stocks-container">
+              <h2>Stocks in {indexName}</h2>
+              <div className="stocks-table">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Stock Code</th>
+                              <th>Stock Name</th>
+                              <th>Price</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {stocks && stocks.length > 0 ? (
+                              stocks.map(stock => (
+                                  <tr 
+                                      key={stock.code}
+                                      className="stock-row" 
+                                      onMouseEnter={(event) => handleMouseEnter(stock, event)}
+                                      onMouseLeave={handleMouseLeave}
+                                  >
+                                      <td>{stock.code}</td>
+                                      <td>{stock.name}</td>
+                                      <td>${stock.price.toFixed(2)}</td>
+                                  </tr>
+                              ))
+                          ) : (
+                              <tr>
+                                  <td colSpan="3">No stocks available for this index.</td>
+                              </tr>
+                          )}
+                      </tbody>
+                  </table>
               </div>
-
-              {/* Stock Info */}
-              <div className="stock-info">
-                <p>{stock.name}</p>
-                <p>Price: ${stock.price.toFixed(2)}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No stocks available for this index.</p>
-        )}
-      </div>
-    </div>
+          </div>
+          {/* Render Tooltip outside the stocks-container */}
+          {tooltip.visible && <Tooltip stock={tooltip.stock} position={tooltip.position} />}
+      </>
   );
 };
 

@@ -1,0 +1,29 @@
+.tooltip {
+    position: absolute; /* Keep it out of normal flow */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    white-space: nowrap; /* Prevents the tooltip from expanding in width and causing scrollbars */
+}
+
+.tooltip-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.big-dot {
+    color: #007bff;
+    font-size: 24px;
+}
+
+.small-dot {
+    color: #666;
+    font-size: 16px;
+}
+
+.tooltip-details {
+    margin-top: 5px;
+}
