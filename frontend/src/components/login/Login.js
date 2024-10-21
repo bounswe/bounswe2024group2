@@ -40,6 +40,7 @@ function Login() {
       // Storing tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
+      localStorage.setItem("userName", username);
 
       // Setting up token refresh timer
       setRefreshTimer(access);

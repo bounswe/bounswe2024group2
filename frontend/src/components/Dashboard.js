@@ -6,8 +6,8 @@ import bullBearIcon from "../assets/icon-bare-700.png";
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
-  const [userName, setUserName] = useState(""); // Manage user name state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,10 +15,10 @@ const Dashboard = () => {
     const accessToken = localStorage.getItem("accessToken");
 
     if (accessToken) {
-      setIsLoggedIn(true); // User is logged in
-      const storedUserName = localStorage.getItem("userName"); // Assuming the username is stored here
+      setIsLoggedIn(true);
+      const storedUserName = localStorage.getItem("userName");
       if (storedUserName) {
-        setUserName(storedUserName); // Set the username if available
+        setUserName(storedUserName);
       }
     } else {
       setIsLoggedIn(false); // User is not logged in

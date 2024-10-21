@@ -74,6 +74,7 @@ function Register() {
 
         localStorage.setItem("accessToken", access);
         localStorage.setItem("refreshToken", refresh);
+        localStorage.setItem("userName", username);
 
         navigate("/home");
       }
