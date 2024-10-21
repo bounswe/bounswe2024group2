@@ -8,7 +8,9 @@ import NewsPage from "./components/news/NewsPage.js";
 import HomePage from "./components/home/HomePage.js";
 import CommunityPage from "./components/community/CommunityPage.js";
 import MarketsPage from "./components/markets/MarketsPage.js";
+import StocksPage from "./components/markets/StocksPage.js";
 import PortfolioPage from "./components/portfolio/PortfolioPage.js";
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
             <Route path="home" element={<HomePage />} />
             <Route path="community" element={<CommunityPage />} />
             <Route path="markets" element={<MarketsPage />} />
+            <Route path="/stocks/:indexId" element={<StocksPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="portfolio" element={<PortfolioPage />} />
           </Route>
