@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -96,4 +96,35 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class LogoutView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = LogoutSerializer
     
+    def post(self, request):
+        requestData = request.data
+        serializer = self.get_serializer(data=requestData)
+        serializer.is_valid(raise_exception=True)
+        
+        refreshToken = requestData['refreshToken']
+        
+        header = request.META.get('HTTP_AUTHORIZATION') # to get access token
+        accessToken = header.split()[1]
+        
+        
+        if refreshToken:
+            token = RefreshToken(refreshToken)
+            token.blacklist()
+            
+            user = request.user  # to get user
+        
+            #  -> will be used if we want to define our blacklist tokens 
+            # BlacklistedToken.objects.create(token=token, user=user)
+            
+            # will forward user to homepage when its defined
+            # redirect("home")
+            return Response({"message": "Successfully logged out."}, status=status.HTTP_205_RESET_CONTENT)
+        
+        return Response({"error": "No Authorization Header"}, status=status.HTTP_400_BAD_REQUEST)
+
+        
