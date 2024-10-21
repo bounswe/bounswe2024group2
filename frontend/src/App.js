@@ -1,6 +1,8 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/login/Login.js";
+import Register from "./components/login/Register.js";
+import ForgotPassword from "./components/login/ForgotPassword.js";
 import Dashboard from "./components/Dashboard.js";
 import NewsPage from "./components/news/NewsPage.js";
 import HomePage from "./components/home/HomePage.js";
@@ -14,7 +16,12 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Dashboard /*user={{ name: "John Doe" }}*/ />}>
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/"
+            element={<Dashboard /*user={{ name: "John Doe" }}*/ />}
+          >
             <Route path="home" element={<HomePage />} />
             <Route path="community" element={<CommunityPage />} />
             <Route path="markets" element={<MarketsPage />} />
