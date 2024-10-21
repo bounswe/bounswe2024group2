@@ -9,6 +9,7 @@ import HomePage from "./components/home/HomePage.js";
 import CommunityPage from "./components/community/CommunityPage.js";
 import MarketsPage from "./components/markets/MarketsPage.js";
 import PortfolioPage from "./components/portfolio/PortfolioPage.js";
+import NotFound from "./components/notfound/NotFound.js";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="portfolio" element={<PortfolioPage />} />
 
             <Route path="/" element={<Navigate to="/home" />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </div>
