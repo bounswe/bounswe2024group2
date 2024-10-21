@@ -16,6 +16,9 @@ function Login() {
         </div>
       </div>
       <div className="right-side">
+        <div className="login-heading">
+          <h3>Continue to Bull&Bear</h3>
+        </div>
         <form className="login-form">
           <div className="form-group">
             <label>Email</label>
