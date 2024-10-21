@@ -12,8 +12,9 @@ import bist50 from "../../assets/stock-logos/bist-50.png";
 import bist30 from "../../assets/stock-logos/bist-30.png";
 import bist from "../../assets/stock-logos/bist.png";
 
-const Home = () => {
-    
+const Home = ({navigation, route}) => {
+  const username = route.params;  
+
   const posts = [
     {
       id: 1,
@@ -183,6 +184,8 @@ const Home = () => {
         },
     ];
 
+    
+
     const renderPost = ({ item }) => (
         <View style={styles.postContainer}>
           <View style={styles.topContainer}>
@@ -219,7 +222,9 @@ const Home = () => {
     );
     
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({ item }) => {
+     
+      return (
         <View style={styles.itemContainer}>
             <Image source={item.logoPath} style={styles.logo} />
             <View style={styles.infoContainer}>
@@ -238,7 +243,8 @@ const Home = () => {
                 </Text>
             </View>
         </View>
-    );
+      );
+    };
 
     return (
         <View>
