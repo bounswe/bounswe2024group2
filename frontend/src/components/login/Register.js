@@ -12,11 +12,26 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
+  const isPasswordValid = (password) => {
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return password.length >= minLength && hasUppercase && hasSpecialChar;
+  };
+
   const handleRegister = async (event) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match!");
+      return;
+    }
+
+    if (!isPasswordValid(password)) {
+      toast.error(
+        "Password must be at least 8 characters long, contain an uppercase letter, and a special symbol."
+      );
       return;
     }
 
@@ -27,7 +42,6 @@ function Register() {
     };
 
     try {
-      // Send registration request
       const registerResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/register/`,
         registerData,
@@ -38,16 +52,14 @@ function Register() {
         }
       );
 
-      // If registration is successful, send login request
       if (registerResponse.status === 201) {
         toast.success("Registration successful!");
 
         const loginData = {
-          username: username, // Use the same username for login
-          password: password, // Use the same password for login
+          username: username,
+          password: password,
         };
 
-        // Send login request
         const loginResponse = await axios.post(
           `${process.env.REACT_APP_API_BASE_URL}/login/`,
           loginData,
@@ -60,15 +72,12 @@ function Register() {
 
         const { access, refresh } = loginResponse.data;
 
-        // Storing tokens in localStorage
         localStorage.setItem("accessToken", access);
         localStorage.setItem("refreshToken", refresh);
 
-        // Navigate to home page after successful login
         navigate("/home");
       }
     } catch (error) {
-      console.error("Registration failed!", error);
       toast.error("Registration failed! Please try again.");
     }
   };
