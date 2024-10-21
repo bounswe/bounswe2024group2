@@ -94,7 +94,7 @@ const AssetList = ({ assets, setAssets }) => {
               ) : (
                 <>
                   <td>{asset.stockCode}</td>
-                  <td>{asset.stockPrice.toFixed(2)}</td>
+                  <td>{parseFloat(asset.stockPrice).toFixed(2)}</td>
                   <td>{asset.quantity}</td>
                   <td className={getProfitLossClass(asset)}>
                     {calculateProfitLoss(asset)}
