@@ -5,6 +5,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import Login from "./components/login/Login.js";
+import Register from "./components/login/Register.js";
 import ForgotPassword from "./components/login/ForgotPassword.js";
 import Dashboard from "./components/Dashboard.js";
 import NewsPage from "./components/news/NewsPage.js";
@@ -21,6 +23,8 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/"
