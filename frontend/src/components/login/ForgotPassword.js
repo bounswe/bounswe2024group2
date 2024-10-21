@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/Login.css";
 import bullBearIcon from "../../assets/icon-bare-700.png";
 
-function Login() {
+function ForgotPassword() {
   return (
     <div className="login-container">
       <div className="left-side">
@@ -16,21 +16,19 @@ function Login() {
         </div>
       </div>
       <div className="right-side">
+        <div className="login-heading">
+          <h3>Reset your password</h3>
+        </div>
         <form className="login-form">
           <div className="form-group">
             <label>Email</label>
             <input type="email" placeholder="Enter your email" />
           </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input type="password" placeholder="Enter your password" />
-          </div>
           <button type="submit" className="sign-in-button">
-            Sign In
+            Reset Password
           </button>
           <div className="links">
-            <a href="/register">Register</a>
-            <a href="/forgot-password">Forgot password?</a>
+            <a href="/login">Back to Sign In</a>
           </div>
         </form>
       </div>
@@ -38,4 +36,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;
