@@ -24,8 +24,7 @@ from rest_framework import generics
 from rest_framework import status
 from onboarding.utils import Util
 
-from backend.onboarding.serializers import ResetPasswordEmailRequestSerializer, SetNewPasswordSerializer, \
-    UserSerializer, MyTokenObtainPairSerializer, LogoutSerializer, RegisterSerializer
+from onboarding.serializers import ResetPasswordEmailRequestSerializer, SetNewPasswordSerializer, UserSerializer, MyTokenObtainPairSerializer, LogoutSerializer, RegisterSerializer
 
 
 class RegisterView(generics.CreateAPIView):

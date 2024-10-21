@@ -6,8 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from backend.onboarding.views import MyObtainTokenPairView, RegisterView, LogoutView, VerifyEmail, \
-    RequestPasswordResetEmail, PasswordTokenCheckAPI, SetNewPasswordAPIView
+from onboarding.views import MyObtainTokenPairView, RegisterView, LogoutView, VerifyEmail, RequestPasswordResetEmail, PasswordTokenCheckAPI, SetNewPasswordAPIView
 
 urlpatterns = [
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
