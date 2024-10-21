@@ -39,6 +39,13 @@ services:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
+      SECRET_KEY: 'django-insecure-wuc2#&nmhoqp7266)y639mfopdfwxzzx4jlux-f$k0c(+dhju*'
+      EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend' 
+      EMAIL_USE_TLS: False
+      EMAIL_HOST: 'mailhog'  
+      EMAIL_PORT: '1025'      
+      EMAIL_HOST_USER: 'test'  
+      EMAIL_HOST_PASSWORD: 'test'
     env_file:
       .env
     volumes:
@@ -69,6 +76,14 @@ services:
     networks:
       - backend_network
 
+  mailhog:
+      image: mailhog/mailhog
+      ports:
+        - 1025:1025  
+        - 8025:8025  
+      restart: unless-stopped
+      networks:
+        - backend_network
 networks:
   backend_network:
     driver: bridge
