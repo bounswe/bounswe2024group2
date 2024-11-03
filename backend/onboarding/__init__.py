@@ -1,1 +1,1 @@
-default_app_config = 'profiles.apps.ProfilesConfig'
+default_app_config = 'onboarding.apps.OnboardingConfig'

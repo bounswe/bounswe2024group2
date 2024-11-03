@@ -71,17 +71,35 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'profile_picture', 'badge', 'followers', 'following', 'bio', 'location']
+        fields = ['user', 'profile_picture', 'followers', 'following', 'bio', 'location']
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'POST':
+            self.fields['user'].required = True
+            self.fields['profile_picture'].required = False
+            self.fields['followers'].required = False
+            self.fields['following'].required = False
+            self.fields['bio'].required = False
+            self.fields['location'].required = False
+        elif request and request.method == 'PUT':
+            self.fields['user'].required = False
+            self.fields['profile_picture'].required = False
+            self.fields['followers'].required = False
+            self.fields['following'].required = False
+            self.fields['bio'].required = False
+            self.fields['location'].required = False
 
     def create(self, validated_data):
-        # Override create to ensure that the user is set from the request context
         request = self.context.get('request', None)
         if request and request.user.is_authenticated:
             validated_data['user'] = request.user
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        # Handle followers and following updates
         followers = validated_data.pop('followers', None)
         following = validated_data.pop('following', None)
         
