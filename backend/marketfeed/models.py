@@ -8,8 +8,6 @@ from onboarding.models import *
 class StockManager(models.Manager):
     def get_queryset(self):
         queryset = super().get_queryset()
-        for stock in query_set:
-            stock.price = stock.fetch_current_stock_price()
         return queryset
 
 
@@ -31,7 +29,7 @@ class Stock(models.Model):
     def price(self):
         return self.fetch_current_stock_price()
 
-    def fetch_current_stock_price():
+    def fetch_current_stock_price(self):
         #TODO: Stock fetching mechanism to be implemented
         return 10
 
