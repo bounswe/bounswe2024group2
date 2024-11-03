@@ -3,6 +3,7 @@ from .models import *
 from rest_framework import serializers
 from onboarding.models import User
 
+
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
@@ -32,12 +33,23 @@ class StockSerializer(serializers.ModelSerializer):
             self.fields['name'].required = False
             self.fields['symbol'].required = False
 
+
 class TagSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Tag
         fields = ['id', 'name', 'user_id']
+
+    def __init__(self, *args, **kwargs):
+        super(TagSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'PUT':
+            self.fields['name'].required = True
+            self.fields['user_id'].required = False
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
@@ -65,6 +77,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
             self.fields['user_id'].required = True
             self.fields['stocks'].required = False
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     post_id = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
@@ -87,14 +100,14 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    # author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     liked_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
     portfolios = serializers.PrimaryKeyRelatedField(queryset=Portfolio.objects.all(), many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'liked_by', 'tags', 'portfolios']
+        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'tags', 'portfolios']
 
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)
@@ -105,11 +118,10 @@ class PostSerializer(serializers.ModelSerializer):
             if request.method == 'PUT' or request.method == 'DELETE':
                 self.fields['title'].required = False
                 self.fields['content'].required = False
-
-            elif request.method == 'POST':
-                self.fields['title'].required = True
-                self.fields['content'].required = True
-
+                self.fields['liked_by'].required = False
+                self.fields['tags'].required = False
+                self.fields['portfolios'].required = False
+                self.fields['author'].required = False
 
     def create(self, validated_data):
         liked_by = validated_data.pop('liked_by', [])

@@ -39,6 +39,10 @@ class Tag(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, **kwargs):
+        self.name = self.name.lower()
+        return super().save(**kwargs)
+
 
 class Portfolio(models.Model):
     name = models.CharField(max_length=50)
