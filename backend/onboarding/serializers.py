@@ -1,4 +1,4 @@
-from onboarding.models import User as User
+from onboarding.models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
@@ -62,3 +62,32 @@ class LogoutSerializer(serializers.Serializer):
         if not value:
             raise serializers.ValidationError("Refresh token is required.")
         return value
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    followers = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all(), many=True, required=False)
+    following = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all(), many=True, required=False)
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'profile_picture', 'badge', 'followers', 'following', 'bio', 'location']
+
+    def create(self, validated_data):
+        # Override create to ensure that the user is set from the request context
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            validated_data['user'] = request.user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        # Handle followers and following updates
+        followers = validated_data.pop('followers', None)
+        following = validated_data.pop('following', None)
+        
+        if followers is not None:
+            instance.followers.set(followers)
+        if following is not None:
+            instance.following.set(following)
+
+        return super().update(instance, validated_data)

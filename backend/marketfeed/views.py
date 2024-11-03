@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import *
 
-# Create your views here.
 
 class CurrencyViewSet(viewsets.ModelViewSet):
     queryset = Currency.objects.all()
