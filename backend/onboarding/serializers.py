@@ -54,6 +54,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'username', 'email']
         
+        
 class LogoutSerializer(serializers.Serializer):
     refreshToken = serializers.CharField(required=True, max_length=512)
 
