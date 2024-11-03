@@ -44,7 +44,7 @@ class Portfolio(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length = 150)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True, auto_now=True)
     stocks = models.ManyToManyField(Stock, verbose_name="list of stocks in the portfolio")
 

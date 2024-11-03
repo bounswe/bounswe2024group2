@@ -46,8 +46,24 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portfolio
-        fields = ['id', 'name', 'description', 'user_id', 'stocks']
+        fields = ['id', 'name', 'description', 'user_id', 'created_at', 'updated_at', 'stocks']
+    
+    def __init__(self, *args, **kwargs):
+        super(PortfolioSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'PUT':
+            self.fields['name'].required = False
+            self.fields['description'].required = False
+            self.fields['user_id'].required = False
+            self.fields['stocks'].required = False
 
+        elif request and request.method == 'POST':
+            self.fields['name'].required = True
+            self.fields['description'].required = False
+            self.fields['user_id'].required = True
+            self.fields['stocks'].required = False
 
 class CommentSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
@@ -60,15 +76,12 @@ class CommentSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(CommentSerializer, self).__init__(*args, **kwargs)
         
-        # Get the request method if available
         request = self.context.get('request', None)
         
         if request and request.method == 'PUT':
-            # Make `post_id` and `user_id` optional for PUT requests
             self.fields['post_id'].required = False
             self.fields['user_id'].required = False
         elif request and request.method == 'POST':
-            # Ensure `post_id` and `user_id` are required for POST requests
             self.fields['post_id'].required = True
             self.fields['user_id'].required = True
 
@@ -86,7 +99,6 @@ class PostSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)
         
-        # Get the request method if available
         request = self.context.get('request', None)
         
         if request:
