@@ -21,7 +21,6 @@ def main():
             print("Db is ready")
             break
         except OperationalError as e:
-            print(e)
             print("Database not ready yet. Waiting...")
             time.sleep(5)
 
