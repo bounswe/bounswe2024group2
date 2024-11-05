@@ -40,3 +40,40 @@ The Web Annotation Data Model is a W3C (World Wide Web Consortium) standard that
 
 * Compatibility: The system must be compatible with existing web technologies and standards.
 * Performance: Annotations should load efficiently without degrading the performance of the app.
+
+
+### How it will be enforced in practice | Frontend
+
+**Which elements may be displayed by annotations?**
+
+- **News**: Highlights a brief summary of the specific news article on hover, allowing users to understand the context; clicking redirects to the full article page.
+- **Stocks**: Displays essential stock details on hover, offering quick insights; redirects to the stock's main page for deeper information.
+- **Tags**: Shows a tooltip like "See posts related to tag_name," enabling users to explore related discussions.
+- **Users**: Highlights key user info on hover, including follower count, like count, and badges, giving a snapshot of user influence; clicking redirects to the user’s profile.
+- **Badges**: Provides a description on hover of how the badge was obtained (e.g., "Achieved 100 followers"), offering recognition context without redirection.
+- **Portfolios**: Displays a pie chart of the user’s portfolio on hover, representing stock allocations; clicking redirects to the portfolio's page for further details.
+
+
+**Where in our applications may annotations appear?**
+- **Post page**  
+  On the post page, following annotations may appear:
+  -Stocks
+  -Tags
+  -Users
+  -Badges
+  -Portfolios
+  
+    A post consists of multiple blocks, such as graphs, text, and news items. Users can leave a comment for each part separately, allowing for targeted interaction with specific content segments.
+
+  
+- **Profile page**  
+  On the post page, following annotations may appear:
+  -Badges
+
+  
+
+**How to visualize annotations?**
+
+Annotations may be visually highlighed as: 
+- On hover, a panel will open, displaying short, highlighted information. 
+- On click, it will redirect to the page of the annotated element.
