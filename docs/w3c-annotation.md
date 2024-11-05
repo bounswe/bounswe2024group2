@@ -22,3 +22,21 @@ The Web Annotation Data Model is a W3C (World Wide Web Consortium) standard that
 
 * Modular Architecture: The standardized model allows for scalable implementation, accommodating future features and integrations.
 * Community Support: Utilizing a widely accepted standard provides access to community resources and updates.
+
+## Requirements of Following the Standard
+
+### Compliance with W3C Specifications
+
+* Data Structure: Annotations must conform to the JSON-LD format as specified by the Web Annotation Data Model.
+* URI Usage: Each annotation should have a unique identifier (URI) to ensure it can be individually referenced and accessed.
+* Types of Annotations: Support for various annotation types such as Tagging, and Linking must be implemented.
+
+### Annotation Properties
+
+* Target: The specific part of the content the annotation refers to (e.g., a paragraph in a news article).
+* Body: The content of the annotation itself, which could be text, links, or other media. r
+
+### Technical Implementation
+
+* Compatibility: The system must be compatible with existing web technologies and standards.
+* Performance: Annotations should load efficiently without degrading the performance of the app.
