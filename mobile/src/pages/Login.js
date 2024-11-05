@@ -1,139 +1,223 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import {
+  StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   TextInput,
+  TouchableOpacity,
   Image,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from './styles/LoginStyle';
 
-function Login({navigation}) {
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const baseURL = 'http://207.154.242.6:8020';
+  const [showPassword, setShowPassword] = useState(false);
 
-  console.log(username, password);
+  const handleLogin = async () => {
+    // Replace with your backend URL
+    const url = 'http://159.223.28.163:30002/login/';
 
-  function changeUsername(username) {
-    setUsername(username);
-  }
+    // Login data
+    const loginData = {
+      username: username,
+      password: password,
+    };
 
-    function handleSignup(){
-        navigation.navigate("Signup");
-    }
-    
-    function handleForgotPassword(){
-        navigation.navigate("ForgotMain");
-    }
-
-
-  function changePassword(password) {
-    setPassword(password);
-  }
-
-
-  async function handleLogin() {
-    const loginURL = baseURL + '/login/';
-    
     try {
-        console.log(username, password);
-        const response = await fetch(loginURL, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            username:username,
-            password:password,
-            }),
-        });
+      // Make the POST request to the backend
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
+        },
+        body: JSON.stringify(loginData),
+      });
 
-        console.log(response.headers);
-        console.log(response.status)
-        if (response.status == 200) {
-            navigation.navigate('Main');
-        } else {
-            console.log('response null');
-            Alert.alert('Wrong username or password');
-        }
+      // Parse the JSON response
+      const data = await response.json();
+
+      // Check for a successful login
+      if (response.ok) {
+        // Handle successful login
+        Alert.alert('Login Successful', 'Welcome!');
+        navigation.navigate('Home', {username: username})
+      } else {
+        // Handle login failure
+        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+      }
     } catch (error) {
-      console.log(error);
-      Alert.alert('Wrong username or password');
+      // Handle network or other errors
+      Alert.alert('Error', 'An error occurred. Please try again later.');
+      console.error('Login error:', error);
     }
-  }
+  };
 
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+    if (text.length === 0) {
+      setShowPassword(false); // Reset to hidden when input is cleared
+    }
+  };
 
   return (
-    
-      <View style={styles.container}>
-        <View style={styles.top_container}>
-        <Image
-          source={require('./assets/logo.png')}
-          style={{width: '70%', height: '70%', resizeMode: 'contain'}}
-        />
-        <Text style={styles.welcome}>Welcome!</Text>
-      </View>
-      {/* <View style={styles.mid_container}>
-            </View> */}
-      <View style={styles.bottom_container}>
-        <View style={styles.username_input_box}>
-          <View style={styles.icon_box}>
-            <MaterialCommunityIcons
-              name="account-outline"
-              color="black"
-              size={30}
-            />
-          </View>
-          <TextInput
-            style={styles.input_text}
-            placeholder="Username"
-            onChangeText={changeUsername}
-            value={username}
-          />
-        </View>
-        <View style={styles.password_input_box}>
-          <View style={styles.icon_box}>
-            <MaterialCommunityIcons
-              name="lock-outline"
-              color="black"
-              size={30}
-            />
-          </View>
-          <TextInput
-            style={styles.input_text}
-            placeholder="Password"
-            secureTextEntry={true}
-            onChangeText={changePassword}
-            value={password}
-          />
-        </View>
-        <View style={styles.chpass_view}>
-          <TouchableOpacity onPress={handleForgotPassword} style={styles.chpass_button}>
-            <Text style={styles.chpass_text}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.login_view}>
-          <TouchableOpacity onPress={handleLogin} style={styles.login_button}>
-            <Text style={styles.login_text}>Log In</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.signup_view}>
-          <Text style={styles.signup_text}>Don't have an account?</Text>
-          <TouchableOpacity onPress={handleSignup} style={styles.button}>
-            <Text style={styles.signup_text}>Sign Up</Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      <Image
+        source={require('../../assets/IconKitchen-Output/icon-bare-700.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      <Text style={styles.title}>BULL&BEAR</Text>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Username</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          placeholderTextColor="#999999"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
+        <Text style={styles.label}>Password</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor="#999999"
+            value={password}
+            onChangeText={handlePasswordChange}
+            secureTextEntry={!showPassword} // Always start with hidden password
+          />
+          {password.length > 0 && (
+            <TouchableOpacity
+              style={styles.showPasswordButton}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <Text style={styles.showPasswordText}>
+                {showPassword ? 'Hide' : 'Show'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Sign In</Text>
+      </TouchableOpacity>
+      <View style={styles.linkContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.linkText}>Register</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.linkText}>Forgot password?</Text>
+        </TouchableOpacity>
       </View>
-    
+
       </View>
+
       
+
+      
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F0F4F8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#005AAB',
+    marginBottom: 40,
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  label: {
+    fontSize: 14,
+    color: '#000000',
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    color: '#000000',
+    width: '100%', // Ensure the input field takes the full width
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    position: 'relative', // Ensure proper positioning of the button inside
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    color: '#000000',
+  },
+  showPasswordButton: {
+    position: 'absolute',
+    right: 15,
+    padding: 10,
+  },
+  showPasswordText: {
+    color: '#005AAB',
+    fontWeight: 'bold',
+  },
+  button: {
+    backgroundColor: '#0A2F44',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  linkText: {
+    color: '#005AAB',
+    textDecorationLine: 'underline',
+  },
+});
 
 export default Login;

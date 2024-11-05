@@ -1,220 +1,174 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  Platform,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {mockUsers} from '../fakeData';
-import Movie from '../components/Movie';
-import {useNavigation} from '@react-navigation/native';
-import RecentPost from '../components/RecentPost';
-import {mockFilms} from '../fakeData';
-const Profile = () => {
-  const {
-    topContainer,
-    nameText,
-    profilePhoto,
-    profilePhotoContainer,
-    safeAreaStyle,
-    moviesContainer,
-    sectionHeaderText,
-    buttonContainer,
-    buttonStyle,
-    buttonText,
-    profileDataContainer,
-    headerContainer,
-    statsContainer,
-    statContainer,
-    statText,
-    midContainer,
-  } = styles;
-  const navigation = useNavigation();
+import { View, Text, Image, StyleSheet, FlatList,ScrollView, TouchableOpacity } from 'react-native';
+
+
+const ProfilePage = () => {
+  const badges = [
+    { id: 1, title: 'Highliked' },
+    { id: 2, title: 'Cretagor' },
+    
+  ];
+
+  const portfolios = [
+    {
+        id: 1,
+        name: 'Tech Portfolio',
+        incrementRate: '15%',
+        stocks: ['ASELS', 'TUPRS', 'THYAO'], // Example Turkish stocks
+      },
+      {
+        id: 2,
+        name: 'Green Energy',
+        incrementRate: '10%',
+        stocks: ['ENKA', 'PETKM', 'SISE'],
+      },
+      {
+        id: 3,
+        name: 'Real Estate',
+        incrementRate: '5%',
+        stocks: ['GYO', 'EGEEN', 'KENT'],
+      },
+  ];
 
   return (
-    <SafeAreaView style={safeAreaStyle}>
-      <View style={topContainer}>
-        <View style={profileDataContainer}>
-          <View style={headerContainer}>
-            <Text style={nameText}>{mockUsers[0].name}</Text>
-          </View>
-          <View style={buttonContainer}>
-            <TouchableOpacity
-              style={[buttonStyle, {backgroundColor: 'rgb(234,61,83)'}]}>
-              <Text style={buttonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[buttonStyle, {backgroundColor: '#DC143C'}]}
-              onPress={() => {
-                navigation.navigate('Login');
-              }}>
-              <Text style={buttonText}>Log Out</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={profilePhotoContainer}>
-          <Image
-            style={profilePhoto}
-            source={require('../img/mockUserProfilePhoto.png')}
-          />
-        </View>
+    <View style={styles.container}>
+      {/* Profile Section */}
+      <View style={styles.profileContainer}>
+        <Image
+          source={require("../../assets/stock-logos/Profile.png")} // Replace with your profile image URL
+          style={styles.profilePhoto}
+        />
+        <Text style={styles.username}>@economistali</Text>
+        <Text style={styles.followerCount}>Followers: 150</Text>
+        <TouchableOpacity >
+            <Text style={styles.seePost} > See posts</Text>
+        </TouchableOpacity>
       </View>
-      <View style={statsContainer}>
-        <View style={statContainer}>
-          <Text style={statText}>99</Text>
-          <Text style={statText}>Followers</Text>
-        </View>
-        <View style={statContainer}>
-          <Text style={statText}>45</Text>
-          <Text style={statText}>Following</Text>
-        </View>
-        <View style={statContainer}>
-          <Text style={statText}>23</Text>
-          <Text style={statText}>Posts</Text>
-        </View>
-        <View style={statContainer}>
-          <Text style={statText}>30</Text>
-          <Text style={statText}>Lists</Text>
-        </View>
+
+      {/* Badges Section */}
+      <View style={styles.badgesContainer}>
+        <Text style={styles.sectionTitle}> Badges</Text>
+        <FlatList
+          data={badges}
+          renderItem={({ item }) => (
+            <View style={styles.badge}>
+              <Image source={require("../../assets/stock-logos/badge-60.png")} height={10} width={10} resizeMode="stretch"></Image>  
+              <Text style={styles.badgeText}>{item.title}</Text>
+            </View>
+          )}
+          keyExtractor={item => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={moviesContainer}>
-          <Text style={sectionHeaderText}>Favourite Films</Text>
-          <ScrollView
-            style={{marginTop: 10}}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            <Movie movieIndex={0} />
-            <Movie movieIndex={1} />
-            <Movie movieIndex={2} />
-            <Movie movieIndex={0} />
-            <Movie movieIndex={1} />
-            <Movie movieIndex={2} />
-          </ScrollView>
-        </View>
-        <View style={moviesContainer}>
-          <Text style={sectionHeaderText}>Recently Watched</Text>
-          <ScrollView
-            style={{marginTop: 10}}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}>
-            <Movie movieIndex={0} />
-            <Movie movieIndex={2} />
-            <Movie movieIndex={1} />
-            <Movie movieIndex={2} />
-            <Movie movieIndex={0} />
-            <Movie movieIndex={2} />
-          </ScrollView>
-        </View>
-        <View style={midContainer}>
-          <Text style={[sectionHeaderText, {marginBottom: 10}]}>
-            Recent Posts
-          </Text>
-          <RecentPost postData={mockFilms[1]} />
+
+      {/* Portfolio Section */}
+      <ScrollView>
+        <View style={styles.portfolioContainer}>
+            <Text style={styles.sectionTitle}> Portfolios</Text>
+            <FlatList
+            data={portfolios}
+            renderItem={({ item }) => (
+                <View style={styles.portfolioBox}>
+                <Text style={styles.portfolioName}>{item.name}</Text>
+                <View style={styles.incrementRateContainer}>
+                    <Text style={styles.incrementRate}>{item.incrementRate}</Text>
+                </View>
+                <Text style={styles.stocksTitle}>Stocks:</Text>
+                <View style={styles.stockList}>
+                    {item.stocks.map((stock, index) => (
+                    <Text key={index} style={styles.stockText}>{stock}</Text>
+                    ))}
+                </View>
+                </View>
+            )}
+            keyExtractor={item => item.id.toString()}
+            />
         </View>
       </ScrollView>
-    </SafeAreaView>
+      
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeAreaStyle: {
+  container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? 25 : 10,
-    paddingHorizontal: 20,
+    padding: 20,
+    backgroundColor: '#fff',
   },
-  topContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
+  profileContainer: {
+    alignItems: 'center',
     marginBottom: 20,
   },
-  nameText: {
-    color: 'rgb(9,33,74)',
-    fontSize: 24,
-    flex: 1,
-    fontWeight: 'bold',
-    alignSelf: 'flex-start',
-  },
   profilePhoto: {
-    width: 60,
-    height: '100%',
-    borderRadius: 100,
-    alignSelf: 'center',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
-  profilePhotoContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 100,
-    alignSelf: 'center',
-  },
-  sectionHeaderText: {
-    color: 'rgb(9,33,74)',
+  username: {
     fontSize: 20,
     fontWeight: 'bold',
   },
-  moviesContainer: {
-    marginTop: 30,
+  followerCount: {
+    fontSize: 16,
+    color: '#555',
+  },
+  badgesContainer: {
     marginBottom: 20,
   },
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 10,
   },
-  profileDataContainer: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    alignSelf: 'flex-start',
+  badge: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 10,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-  },
-  buttonStyle: {
-    borderRadius: 30,
-    height: 45,
-    width: 110,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
-  },
-  buttonText: {
-    color: 'white',
+  badgeText: {
     fontSize: 14,
-    fontWeight: '600',
   },
-  statsContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  portfolioContainer: {
     marginBottom: 20,
   },
-  statContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: '24%',
-    justifyContent: 'center',
-    backgroundColor: 'rgb(9,33,74)',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
+  portfolioBox: {
+    backgroundColor: '#f0f0f0',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 5,
   },
-  statText: {
-    color: 'white',
-    fontSize: 10,
+  portfolioName: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 5,
   },
-  midContainer: {
-    height: 200,
-    marginBottom: 20,
+  incrementRateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  incrementRate: {
+    fontSize: 14,
+    color: '#28a745', // Green color for increment rate
+  },
+  stocksTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  stockList: {
+    marginTop: 5,
+  },
+  stockText: {
+    fontSize: 12,
+    color: '#555',
+  },
+  seePost: {
+    color: '#005AAB',
+    textDecorationLine: 'underline',
   },
 });
-export default Profile;
+
+export default ProfilePage;
