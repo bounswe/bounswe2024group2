@@ -77,3 +77,24 @@ The Web Annotation Data Model is a W3C (World Wide Web Consortium) standard that
 Annotations may be visually highlighed as: 
 - On hover, a panel will open, displaying short, highlighted information. 
 - On click, it will redirect to the page of the annotated element.
+
+
+### How it will be enforced in practice. | Mobile
+
+**Which user actions will create annotations?**
+
+**Linking News:** Users can select a “Link News” option, which opens a searchable interface to add news articles directly related to their post.
+
+**Tagging:** Users can add tags to categorize posts, which appear prominently as annotations at the top of the post. This helps users filter and navigate relevant topics efficiently.
+
+**Linking Portfolios:** User can add their portfolios in the post creation page. It will provides other users to access the details of the linked portfolio.
+
+**Link Stocks to Portfolios:** Associate stocks with portfolios, adding relevant context to portfolio performance and enhancing transparency on holdings.
+
+**Add Annotations on Profiles:** Highlight accomplishments or relevant information on their profiles, which can help others gauge credibility.
+
+**How to visualize annotations in mobile app?**
+
+**Hover or Click Details:** Users can hover over or click on an annotation to view more information, such as the full text of the linked news article, details about tagged stocks, or further context on a related portfolio.
+
+**Sorting and Filtering:** Users can filter or sort posts based on annotations (e.g., posts linked to certain news, tagged with specific topics, or containing certain types of comments).
