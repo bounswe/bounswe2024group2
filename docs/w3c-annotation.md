@@ -1,0 +1,3 @@
+## Introduction
+
+The Web Annotation Data Model is a W3C (World Wide Web Consortium) standard that defines a structured format for creating and sharing annotations on digital resources. In our app, we will utilize this model to allow users to view and interact with news articles, portfolios, and stock information directly within posts through annotations. This integration aims to enhance user engagement and provide a richer exchange of information.
