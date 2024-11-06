@@ -27,24 +27,19 @@ const ProfilePage = () => {
         </div>
         <div className="profile-stats">
           <div className="stat-item">
-            <h2>{userProfile.followers}</h2>
-            <p>Followers</p>
+            <p>{userProfile.followers} Followers</p>
           </div>
           <div className="stat-item">
-            <h2>{userProfile.following}</h2>
-            <p>Following</p>
+            <p>{userProfile.following} Following</p>
           </div>
           <div className="stat-item">
-            <h2>{userProfile.posts}</h2>
-            <p>Posts</p>
+            <p>{userProfile.posts} Posts</p>
           </div>
           <div className="stat-item">
-            <h2>{userProfile.portfolios}</h2>
-            <p>Portfolios</p>
+            <p>{userProfile.portfolios} Portfolios</p>
           </div>
           <div className="stat-item">
-            <h2>{userProfile.comments}</h2>
-            <p>Comments</p>
+            <p>{userProfile.comments} Comments</p>
           </div>
         </div>
       </header>
