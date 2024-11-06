@@ -1,0 +1,58 @@
+.profile-page {
+    padding: 20px;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+  }
+  
+  .profile-details h1 {
+    margin: 0;
+  }
+  
+  .profile-badges {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .profile-stats {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .stat-item h2 {
+    margin: 0;
+  }
+  
+  .profile-nav {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .profile-content .posts-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
