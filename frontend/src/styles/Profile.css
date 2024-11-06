@@ -12,8 +12,8 @@
 }
 
 .profile-avatar {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   background-color: #ddd;
   border-radius: 50%;
   display: flex;
@@ -51,6 +51,7 @@
 .profile-info {
   display: flex;
   align-items: center;
+  margin-top: 15px;
   gap: 20px;
 }
 
