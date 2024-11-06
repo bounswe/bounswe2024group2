@@ -9,7 +9,11 @@ const userProfile = {
   following: 32,
   posts: 15,
   portfolios: 1,
-  comments: 12
+  comments: 12,
+  badges: [
+    { label: 'Highliked', icon: '🏅' },
+    { label: 'Creatager', icon: '🏅' }
+  ]
 };
 
 const ProfilePage = () => {
@@ -34,13 +38,23 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div className="profile-info">
-          <div className="profile-avatar">
-            <span>IMG</span>
+        <div className="profile-info-container">
+          <div className="profile-info">
+            <div className="profile-avatar">
+              <span>IMG</span>
+            </div>
+            <div className="profile-details">
+              <h1>{userProfile.name}</h1>
+              <p>{userProfile.username}</p>
+            </div>
           </div>
-          <div className="profile-details">
-            <h1>{userProfile.name}</h1>
-            <p>{userProfile.username}</p>
+          <div className="profile-badges">
+            {userProfile.badges.map((badge, index) => (
+              <div key={index} className="badge">
+                <span className="badge-icon">{badge.icon}</span>
+                <span className="badge-label">{badge.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </header>
