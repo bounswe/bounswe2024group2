@@ -4,6 +4,7 @@
   
   .profile-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 20px;
   }
@@ -36,8 +37,22 @@
   
   .profile-stats {
     display: flex;
-    gap: 20px;
+    gap: 10px;
   }
+  
+  .stat-item {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    min-width: 100px;
+    gap: 5px;
+  }
+  
   
   .stat-item {
     background-color: #4a90e2; 
@@ -53,10 +68,6 @@
     gap: 5px;
 }
 
-.stat-item h2 {
-    margin: 0;
-    font-size: 18px; 
-}
 
 .stat-item p {
     margin: 0;

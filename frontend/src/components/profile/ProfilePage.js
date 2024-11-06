@@ -16,15 +16,6 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <header className="profile-header">
-        <div className="profile-info">
-          <div className="profile-avatar">
-            <span>IMG</span>
-          </div>
-          <div className="profile-details">
-            <h1>{userProfile.name}</h1>
-            <p>{userProfile.username}</p>
-          </div>
-        </div>
         <div className="profile-stats">
           <div className="stat-item">
             <p>{userProfile.followers} Followers</p>
@@ -42,9 +33,17 @@ const ProfilePage = () => {
             <p>{userProfile.comments} Comments</p>
           </div>
         </div>
-      </header>
 
-      
+        <div className="profile-info">
+          <div className="profile-avatar">
+            <span>IMG</span>
+          </div>
+          <div className="profile-details">
+            <h1>{userProfile.name}</h1>
+            <p>{userProfile.username}</p>
+          </div>
+        </div>
+      </header>
     </div>
   );
 };
