@@ -1,16 +1,32 @@
 .profile-page {
   width: 100%;
   padding: 20px;
-  margin-top: 0; 
+  margin-top: 0;
   position: relative;
 }
 
-.profile-header {
-  width: 50%;
+.profile-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  background-color: #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3em;
+}
+
+.profile-right-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
 }
 
 .profile-stats {
@@ -19,39 +35,23 @@
 }
 
 .stat-item {
+  height: 30px;
   background-color: #4a90e2;
   color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 15px;
   text-align: center;
   display: flex;
   align-items: center;
-  font-size: 14px;
-  min-width: 100px;
-  gap: 5px;
-}
-
-.profile-info-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  font-size: 12px;
+  min-width: 80px;
 }
 
 .profile-info {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  background-color: #ddd;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2em;
+  gap: 20px;
 }
 
 .profile-details h1 {
@@ -74,7 +74,6 @@
 
 .badge-icon {
   font-size: 3em;
-  margin-right: 5px;
 }
 
 .badge-label {
