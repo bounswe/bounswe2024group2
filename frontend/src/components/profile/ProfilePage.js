@@ -59,7 +59,6 @@ const ProfilePage = () => {
         </div>
       </header>
 
-      {/* Profile Selector Section */}
       <nav className="profile-selector">
         <button className="selector-item">Posts</button>
         <button className="selector-item">Portfolios</button>
