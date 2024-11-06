@@ -2,6 +2,7 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .profile-header {
@@ -79,4 +80,32 @@
 .badge-label {
   font-size: 14px;
   color: #333;
+}
+
+.profile-selector {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.selector-item {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+.selector-item:hover {
+  color: #4a90e2;
+}
+
+.selector-item:focus {
+  color: #4a90e2;
+  border-bottom: 2px solid #4a90e2;
+  outline: none;
 }

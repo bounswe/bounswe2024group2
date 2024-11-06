@@ -58,6 +58,16 @@ const ProfilePage = () => {
           </div>
         </div>
       </header>
+
+      {/* Profile Selector Section */}
+      <nav className="profile-selector">
+        <button className="selector-item">Posts</button>
+        <button className="selector-item">Portfolios</button>
+        <button className="selector-item">Comments</button>
+        <button className="selector-item">Followers</button>
+        <button className="selector-item">Following</button>
+        <button className="selector-item">Settings</button>
+      </nav>
     </div>
   );
 };
