@@ -36,7 +36,7 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("", include("onboarding.urls")),
-    
+    path("", include("marketfeed.urls")),
 ]
 
 if settings.DEBUG:
