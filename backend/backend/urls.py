@@ -37,6 +37,7 @@ urlpatterns = [
     ),
     path("", include("onboarding.urls")),
     path("", include("marketfeed.urls")),
+    path("", include("news.urls")),
 ]
 
 if settings.DEBUG:

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'onboarding',
     'marketfeed',
+    'news',
     'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -80,9 +81,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("MYSQL_DATABASE"),  
-        'USER': os.getenv("MYSQL_USER"),  
-        'PASSWORD': os.getenv("MYSQL_PASSWORD"), 
-        'HOST': 'mysql-db',
+        # 'USER': os.getenv("MYSQL_USER"),  
+        # 'PASSWORD': os.getenv("MYSQL_PASSWORD"), 
+        'USER': 'root',  
+        'PASSWORD': 'password', 
+        'HOST': 'localhost',
+        # 'HOST': 'mysql-db',
         'PORT': '3306',
     }
 }
