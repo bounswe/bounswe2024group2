@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'onboarding',
     'marketfeed',
+    'news',
     'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt',
