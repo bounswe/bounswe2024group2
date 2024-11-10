@@ -4,7 +4,7 @@ import os
 import sys
 
 import time
-import mysql.connector
+# import mysql.connector
 import os
 from django.core.management import execute_from_command_line
 from django.db import connection, OperationalError
@@ -20,7 +20,7 @@ def main():
             connection.ensure_connection()
             print("Db is ready")
             break
-        except OperationalError:
+        except OperationalError as e:
             print("Database not ready yet. Waiting...")
             time.sleep(5)
 
