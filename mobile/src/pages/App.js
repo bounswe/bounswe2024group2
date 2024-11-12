@@ -11,6 +11,8 @@ import ForgotPassword from './ForgotPassword';
 import Home from './Home';
 import Profile from './Profile';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
+import { ThemeProvider } from '../themes/ThemeProvider';
+
 
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
@@ -33,6 +35,18 @@ const CustomHeader = ({ navigation }) => (
 
 const App = () => {
   const [loading, setLoading] = useState(true);
+    const LoginRelated = () => {
+      return (
+        <ThemeProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={Login} ></Stack.Screen>
+            <Stack.Screen name="Register" component={Register} ></Stack.Screen>
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
+          </Stack.Navigator>
+        </ThemeProvider>
+        
+      )
+    }
 
   useEffect(() => {
     const loadData = async () => {
@@ -45,36 +59,39 @@ const App = () => {
         setLoading(false); // Set loading to false once data is loaded
       }
     };
-
     loadData();
   }, []);
 
-  const LoginRelated = () => (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-    </Stack.Navigator>
-  );
 
   if (loading) {
     return <LoadingScreen message="Loading..." />; // Use LoadingScreen
   }
 
-  return (
-    <NavigationContainer>
-      <Sidebar.Navigator
+    return (
+      <ThemeProvider>
+        <NavigationContainer>
+          <Sidebar.Navigator
         screenOptions={{
           headerShown: true,
           header: ({ navigation }) => <CustomHeader navigation={navigation} />,
         }}
-      >
-        <Sidebar.Screen name="Home" component={Home} />
-        <Sidebar.Screen name="Profile" component={Profile} />
-        <Sidebar.Screen name="Login&Register" component={LoginRelated} />
-      </Sidebar.Navigator>
-    </NavigationContainer>
-  );
+        >
+            <Sidebar.Screen 
+              name="Home" 
+              component={Home}              
+            />
+            <Sidebar.Screen 
+              name="Profile" 
+              component={Profile}               
+            />
+            <Sidebar.Screen 
+              name="Login&Register" 
+              component={LoginRelated} 
+            />
+          </Sidebar.Navigator>
+        </NavigationContainer>
+        </ThemeProvider>
+      );
 };
 
 const styles = StyleSheet.create({
