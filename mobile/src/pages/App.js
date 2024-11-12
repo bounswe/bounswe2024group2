@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,17 +8,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
-import Home from './Home'
+import Home from './Home';
 import Profile from './Profile';
-
+import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
 
-
 const navigateProfile = (navigation, username) => {
-  navigation.navigate("Profile", {username: username});
+  navigation.navigate("Profile", { username });
 };
+
 const CustomHeader = ({ navigation }) => (
   <View style={styles.customHeader}>
     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
@@ -31,55 +31,56 @@ const CustomHeader = ({ navigation }) => (
   </View>
 );
 
-
 const App = () => {
-    const LoginRelated = () => {
-      return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={Login} ></Stack.Screen>
-          <Stack.Screen name="Register" component={Register} ></Stack.Screen>
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
-        </Stack.Navigator>
-      )
-    }
+  const [loading, setLoading] = useState(true);
 
-    /* const TabBar = (params) =>{ // This structure can be used after some point
-      const username = params.route;
-      
-      return(
-      
-      )
-    } */
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Replace with real data fetching logic
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false); // Set loading to false once data is loaded
+      }
+    };
 
-    return (
-        <NavigationContainer>
-          <Sidebar.Navigator
+    loadData();
+  }, []);
+
+  const LoginRelated = () => (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+    </Stack.Navigator>
+  );
+
+  if (loading) {
+    return <LoadingScreen message="Loading..." />; // Use LoadingScreen
+  }
+
+  return (
+    <NavigationContainer>
+      <Sidebar.Navigator
         screenOptions={{
-          headerShown: true, // Enable the custom header globally
-          header: ({ navigation }) => <CustomHeader navigation={navigation} />, // Use CustomHeader for all screens
+          headerShown: true,
+          header: ({ navigation }) => <CustomHeader navigation={navigation} />,
         }}
-        >
-            <Sidebar.Screen 
-              name="Home" 
-              component={Home}              
-            />
-            <Sidebar.Screen 
-              name="Profile" 
-              component={Profile}               
-            />
-            <Sidebar.Screen 
-              name="Login&Register" 
-              component={LoginRelated} 
-            />
-          </Sidebar.Navigator>
-        </NavigationContainer>
-      );
+      >
+        <Sidebar.Screen name="Home" component={Home} />
+        <Sidebar.Screen name="Profile" component={Profile} />
+        <Sidebar.Screen name="Login&Register" component={LoginRelated} />
+      </Sidebar.Navigator>
+    </NavigationContainer>
+  );
 };
 
 const styles = StyleSheet.create({
   customHeader: {
     height: 60,
-    backgroundColor: '#0077B6', // Set to a solid color to make it fully visible
+    backgroundColor: '#0077B6',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
