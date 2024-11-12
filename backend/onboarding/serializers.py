@@ -1,4 +1,4 @@
-from onboarding.models import User as User
+from onboarding.models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.validators import UniqueValidator
@@ -54,6 +54,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'username', 'email']
         
+        
 class LogoutSerializer(serializers.Serializer):
     refreshToken = serializers.CharField(required=True, max_length=512)
 
@@ -61,3 +62,50 @@ class LogoutSerializer(serializers.Serializer):
         if not value:
             raise serializers.ValidationError("Refresh token is required.")
         return value
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    followers = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all(), many=True, required=False)
+    following = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all(), many=True, required=False)
+
+    class Meta:
+        model = Profile
+        fields = ['user', 'profile_picture', 'followers', 'following', 'bio', 'location']
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'POST':
+            self.fields['user'].required = True
+            self.fields['profile_picture'].required = False
+            self.fields['followers'].required = False
+            self.fields['following'].required = False
+            self.fields['bio'].required = False
+            self.fields['location'].required = False
+        elif request and request.method == 'PUT':
+            self.fields['user'].required = False
+            self.fields['profile_picture'].required = False
+            self.fields['followers'].required = False
+            self.fields['following'].required = False
+            self.fields['bio'].required = False
+            self.fields['location'].required = False
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            validated_data['user'] = request.user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        followers = validated_data.pop('followers', None)
+        following = validated_data.pop('following', None)
+        
+        if followers is not None:
+            instance.followers.set(followers)
+        if following is not None:
+            instance.following.set(following)
+
+        return super().update(instance, validated_data)
