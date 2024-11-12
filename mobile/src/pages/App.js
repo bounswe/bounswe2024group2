@@ -10,6 +10,7 @@ import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home'
 import Profile from './Profile';
+import { ThemeProvider } from '../themes/ThemeProvider';
 
 
 const Stack = createStackNavigator();
@@ -35,11 +36,14 @@ const CustomHeader = ({ navigation }) => (
 const App = () => {
     const LoginRelated = () => {
       return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={Login} ></Stack.Screen>
-          <Stack.Screen name="Register" component={Register} ></Stack.Screen>
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
-        </Stack.Navigator>
+        <ThemeProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={Login} ></Stack.Screen>
+            <Stack.Screen name="Register" component={Register} ></Stack.Screen>
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
+          </Stack.Navigator>
+        </ThemeProvider>
+        
       )
     }
 
@@ -52,6 +56,7 @@ const App = () => {
     } */
 
     return (
+      <ThemeProvider>
         <NavigationContainer>
           <Sidebar.Navigator
         screenOptions={{
@@ -73,6 +78,7 @@ const App = () => {
             />
           </Sidebar.Navigator>
         </NavigationContainer>
+        </ThemeProvider>
       );
 };
 
