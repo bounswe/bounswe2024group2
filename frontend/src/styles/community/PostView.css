@@ -7,7 +7,7 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 32px;
-    background: var(--color-neutral-white);
+    background: var(--color-neutral-100); /* More neutral background */
     border-radius: 8px;
     box-shadow: 0 2px 10px var(--shadow-light);
     overflow-y: auto;
@@ -70,7 +70,7 @@ h1 {
 .timeline-content {
     flex: 1;
     padding: 10px;
-    background: var(--color-neutral-100);
+    background: var(--color-neutral-200); /* Similar neutral background for dark mode */
     border-radius: 8px;
     box-shadow: 0 1px 5px var(--shadow-light);
 }
@@ -80,7 +80,7 @@ h1 {
     border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px;
-    background: var(--color-neutral-100);
+    background: var(--color-neutral-200); /* Neutral background for compatibility */
 }
 
 .news a {
@@ -121,13 +121,13 @@ h1 {
     margin: 10px 0;
     padding: 15px;
     border-radius: 8px;
-    background: var(--color-neutral-100);
+    background: var(--color-neutral-200); /* More neutral color */
     box-shadow: 0 1px 3px var(--shadow-light);
     transition: background-color 0.2s ease;
 }
 
 .comment:hover {
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-neutral-300); /* Slightly darker for hover */
 }
 
 .comment-user {
