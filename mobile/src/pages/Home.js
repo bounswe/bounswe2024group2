@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Text, StyleSheet, Image, SectionList, TouchableOpacity } from 'react-native';
+import { ThemeContext } from '../themes/ThemeProvider';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import thyLogo from "../../assets/stock-logos/thy.png";
 import akbnkLogo from "../../assets/stock-logos/akbank.png";
@@ -11,7 +12,11 @@ import bist30 from "../../assets/stock-logos/bist-30.png";
 import bist from "../../assets/stock-logos/bist.png";
 
 
+
 const Home = () => {
+  const { theme, toggleTheme, isDarkMode } = useContext(ThemeContext);
+
+
   const sections = [
 
     {
@@ -105,18 +110,21 @@ const Home = () => {
     );
   };
   return (
-    <View>
+    <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+      <TouchableOpacity onPress={toggleTheme} style={styles.toggleButton}>
+        <Text style={{ color: theme.buttonColor }}>
+          {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        </Text>
+      </TouchableOpacity>
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        renderSectionHeader={({ section: { title } }) => <Text style={styles.header}>{title}</Text>}
-        contentContainerStyle={styles.container}
-        renderSectionFooter={renderSectionFooter}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={[styles.header, { color: theme.textColor }]}>{title}</Text>
+        )}
       />
     </View>
-    
-    
   );
 };
 

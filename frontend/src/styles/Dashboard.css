@@ -8,10 +8,11 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  
 }
 
 .navbar {
-  background-color: var(--color-primary-900);
+  background-color: #1a237e;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -38,7 +39,7 @@
 }
 
 .nav-links a:hover {
-  background-color: var(--color-primary-700);
+  background-color: #1a237e;
 }
 
 .auth-buttons {
@@ -85,7 +86,7 @@
 }
 
 .navbar {
-  background: linear-gradient(45deg, var(--color-primary-900), var(--color-primary-700));
+  background: linear-gradient(45deg, #0d47a1, #1976d2);
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -133,6 +134,28 @@
 .nav-links a:hover {
   background-color: var(--color-primary-500);
 }
+.custom-button {
+  color: var(--color-neutral-white);
+  background-color: var(--color-secondary-500);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  min-width: 150px;
+  text-align: center; 
+}
+
+.custom-button:hover {
+  background-color: var(--color-secondary-700);
+}
+
+
+.custom-button:hover {
+  background-color: var(--color-secondary-700);
+}
+
 
 .auth-section {
   display: flex;

@@ -8,24 +8,21 @@ import {
   Image,
   Alert,
 } from 'react-native';
+import LoadingScreen from './LoadingScreen'; // Import the LoadingScreen component
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleLogin = async () => {
-    // Replace with your backend URL
     const url = 'http://159.223.28.163:30002/login/';
+    const loginData = { username, password };
 
-    // Login data
-    const loginData = {
-      username: username,
-      password: password,
-    };
+    setLoading(true); // Start loading
 
     try {
-      // Make the POST request to the backend
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -36,22 +33,19 @@ const Login = ({ navigation }) => {
         body: JSON.stringify(loginData),
       });
 
-      // Parse the JSON response
       const data = await response.json();
 
-      // Check for a successful login
       if (response.ok) {
-        // Handle successful login
         Alert.alert('Login Successful', 'Welcome!');
-        navigation.navigate('Home', {username: username})
+        navigation.navigate('Home', { username });
       } else {
-        // Handle login failure
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
       }
     } catch (error) {
-      // Handle network or other errors
       Alert.alert('Error', 'An error occurred. Please try again later.');
       console.error('Login error:', error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -61,6 +55,11 @@ const Login = ({ navigation }) => {
       setShowPassword(false); // Reset to hidden when input is cleared
     }
   };
+
+  // Show loading screen if loading
+  if (loading) {
+    return <LoadingScreen message="Logging in..." />;
+  }
 
   return (
     <View style={styles.container}>
@@ -89,7 +88,7 @@ const Login = ({ navigation }) => {
             placeholderTextColor="#999999"
             value={password}
             onChangeText={handlePasswordChange}
-            secureTextEntry={!showPassword} // Always start with hidden password
+            secureTextEntry={!showPassword}
           />
           {password.length > 0 && (
             <TouchableOpacity
@@ -103,22 +102,17 @@ const Login = ({ navigation }) => {
           )}
         </View>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
-      <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.linkText}>Register</Text>
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-          <Text style={styles.linkText}>Forgot password?</Text>
-        </TouchableOpacity>
+        <View style={styles.linkContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={styles.linkText}>Register</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.linkText}>Forgot password?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      </View>
-
-      
-
-      
     </View>
   );
 };
@@ -168,13 +162,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
     color: '#000000',
-    width: '100%', // Ensure the input field takes the full width
+    width: '100%',
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    position: 'relative', // Ensure proper positioning of the button inside
     marginBottom: 10,
   },
   passwordInput: {

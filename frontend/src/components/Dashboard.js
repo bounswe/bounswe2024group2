@@ -9,6 +9,9 @@ const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+  const [darkMode, setDarkMode] = useState(false);
+
+
 
   useEffect(() => {
     // Check if access token exists in localStorage
@@ -47,6 +50,10 @@ const Dashboard = () => {
   const handleProfile = () => {
     navigate("/profile");
   };
+  const toggleDarkMode = () => {
+    document.body.classList.toggle('dark-mode', !darkMode);
+    setDarkMode(!darkMode);
+  };
 
   return (
     <div className="dashboard-container">
@@ -75,6 +82,11 @@ const Dashboard = () => {
           </li>
           <li>
             <Link to="/portfolio">Portfolio</Link>
+          </li>
+          <li>
+            <button onClick={toggleDarkMode} className="custom-button">
+              {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            </button>
           </li>
         </ul>
 

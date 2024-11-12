@@ -3,7 +3,6 @@
     width: 100%;
     flex-direction: column;
     flex: 1;
-    background-color: var(--color-neutral-white);
     overflow-y: auto;
     padding: 20px;
 }

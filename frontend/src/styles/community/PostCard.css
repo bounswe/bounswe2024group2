@@ -1,7 +1,7 @@
 .post-card {
-    background-color: #fff;
+    background-color: var(--color-neutral-100); /* Neutral card background adaptable for both themes */
     border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px var(--shadow-light); /* Light shadow */
     padding: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -12,18 +12,18 @@
 
 .post-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 24px var(--shadow-medium); /* Hover shadow */
 }
 
 .post-header h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--color-neutral-900); /* Header text color adaptable for both themes */
 }
 
 .post-meta {
     font-size: 0.9rem;
-    color: #888;
+    color: var(--color-neutral-700); /* Meta text color adaptable for both themes */
 }
 
 .post-info {
@@ -44,12 +44,13 @@
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    color: #e74c3c;
+    color: var(--color-error-500); /* Likes color */
 }
-.comments-box{
+
+.comments-box {
     display: flex;
     font-weight: bold;
-    color: #3498db;
+    color: var(--color-info-500); /* Comments color */
 }
 
 .likes .like-icon, .comments-box .comment-icon {
@@ -62,8 +63,8 @@
 }
 
 .view-button {
-    background-color: #3498db;
-    color: white;
+    background-color: var(--color-info-500); /* Button background adaptable for both themes */
+    color: var(--color-neutral-100); /* Button text color, more neutral */
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
@@ -73,7 +74,7 @@
 }
 
 .view-button:hover {
-    background-color: #2980b9;
+    background-color: var(--color-info-700); /* Button hover background */
 }
 
 .post-tags {
@@ -84,10 +85,11 @@
 }
 
 .post-tag {
-    color: #fff;
+    color: var(--color-neutral-100); /* Tag text color adaptable for both themes */
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
+    background-color: var(--color-accent-500); /* Tag background color */
     transition: background-color 0.3s ease;
 }
 

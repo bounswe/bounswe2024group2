@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: var(--color-neutral-white);
+    background-color: var(--color-neutral-100); /* Neutral background adaptable for both modes */
     overflow-y: auto;
     width: 100%;
 }
@@ -18,13 +18,13 @@
 .community-title {
     font-size: 3rem;
     margin: 0;
-    color: var(--color-primary-900);
+    color: var(--color-primary-800); /* Title color adaptable for both themes */
 }
 
 .community-subtitle {
     font-size: 1.6rem;
     margin: 10px 0;
-    color: var(--color-neutral-700);
+    color: var(--color-neutral-600); /* Subtitle color adaptable for both themes */
 }
 
 .community-content {
@@ -32,7 +32,7 @@
     width: 100%;
     padding: 20px 32px;
     text-align: left;
-    background-color: var(--color-neutral-white);
+    background-color: var(--color-neutral-200); /* Neutral content background adaptable for both themes */
     padding-bottom: 64px;
 }
 
@@ -43,13 +43,13 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: var(--color-secondary-900);
-    color: var(--color-neutral-white);
+    background-color: var(--color-secondary-800); /* Button background adaptable for both themes */
+    color: var(--color-neutral-100); /* Button text color adaptable for both themes */
     transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-secondary-600); /* Button hover color adaptable for both themes */
 }
 
 .search-bar {
@@ -64,24 +64,10 @@
     align-items: center;
 }
 
-@keyframes expand {
-    from {
-        width: 100px;
-    }
-    to {
-        width: 500px;
-    }
-}
-
-.search-container.active input {
-    width: 500px;
-    animation: expand 0.5s ease forwards; 
-}
-
 .search-container input {
     width: 100px;
     padding: 10px;
-    border: 1px solid var(--color-neutral-300);
+    border: 1px solid var(--border-medium); /* Input border color adaptable for both themes */
     border-radius: 5px;
     transition: width 0.5s ease;
 }
@@ -90,7 +76,7 @@
     margin-left: 10px;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid var(--color-neutral-300);
+    border: 1px solid var(--border-medium); /* Sort select border color adaptable for both themes */
 }
 
 .post-cards {
