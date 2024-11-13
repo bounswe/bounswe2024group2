@@ -7,7 +7,7 @@
     max-width: 1200px;
     margin: 20px auto;
     padding: 32px;
-    background: var(--color-neutral-100); /* More neutral background */
+    background: var(--color-neutral-100);
     border-radius: 8px;
     box-shadow: 0 2px 10px var(--shadow-light);
     overflow-y: auto;
@@ -32,7 +32,7 @@ h1 {
 }
 
 .tag {
-    background: var(--color-neutral-200);
+    background: var(--color-neutral-100);
     border-radius: 15px;
     padding: 5px 10px;
     margin: 5px;
@@ -54,7 +54,7 @@ h1 {
 .timeline-dot {
     height: 32px;
     width: 32px;
-    background-color: var(--color-primary-600);
+    background-color: var(--color-primary-500);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -70,7 +70,7 @@ h1 {
 .timeline-content {
     flex: 1;
     padding: 10px;
-    background: var(--color-neutral-200); /* Similar neutral background for dark mode */
+    background: var(--color-neutral-100);
     border-radius: 8px;
     box-shadow: 0 1px 5px var(--shadow-light);
 }
@@ -80,12 +80,12 @@ h1 {
     border: 1px solid var(--border-light);
     border-radius: 8px;
     padding: 10px;
-    background: var(--color-neutral-200); /* Neutral background for compatibility */
+    background: var(--color-neutral-100);
 }
 
 .news a {
     text-decoration: none;
-    color: var(--color-primary-600);
+    color: var(--color-primary-500);
 }
 
 .news a:hover {
@@ -121,29 +121,29 @@ h1 {
     margin: 10px 0;
     padding: 15px;
     border-radius: 8px;
-    background: var(--color-neutral-200); /* More neutral color */
+    background: var(--color-neutral-100);
     box-shadow: 0 1px 3px var(--shadow-light);
     transition: background-color 0.2s ease;
 }
 
 .comment:hover {
-    background-color: var(--color-neutral-300); /* Slightly darker for hover */
+    background-color: var(--color-neutral-300);
 }
 
 .comment-user {
     font-weight: bold;
-    color: var(--color-primary-600);
+    color: var(--color-primary-500);
     margin-bottom: 5px;
 }
 
 .comment-text {
-    color: var(--color-neutral-800);
+    color: var(--color-neutral-700);
     line-height: 1.5;
 }
 
 .footer-label {
     font-size: 0.85em;
-    color: var(--color-neutral-600);
+    color: var(--color-neutral-500);
     margin-top: 5px;
 }
 
@@ -164,7 +164,7 @@ h1 {
 }
 
 .like-button:hover, .comment-button:hover, .follow-button:hover {
-    background-color: var(--color-primary-400);
+    background-color: var(--color-primary-300);
 }
 
 .loading-comments {

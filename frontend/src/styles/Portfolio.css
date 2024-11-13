@@ -37,7 +37,7 @@
 
 .create-portfolio-button {
     padding: 10px 15px;
-    background-color: var(--color-secondary-900);
+    background-color: var(--color-primary-900);
     font-size: large;
     color: white;
     border: none;
@@ -47,7 +47,7 @@
 }
 
 .create-portfolio-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .empty-portfolio {
@@ -70,7 +70,7 @@
 
 .empty-assets button {
     padding: 10px 15px;
-    background-color: var(--color-secondary-500);
+    background-color: var(--color-primary-500);
     color: white;
     border: none;
     border-radius: 5px;
@@ -79,14 +79,14 @@
 }
 
 .empty-assets button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .section-title {
     font-size: 2rem;
     margin: 20px 0;
     text-align: left;
-    color: var(--color-primary-800);
+    color: var(--color-primary-700);
 }
 
 .asset-list {
@@ -127,7 +127,7 @@
 
 .asset-button {
     padding: 5px 10px;
-    background-color: var(--color-secondary-500);
+    background-color: var(--color-primary-500);
     color: white;
     border: none;
     border-radius: 5px;
@@ -136,7 +136,7 @@
 }
 
 .asset-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .modal-overlay {
@@ -191,17 +191,17 @@
 }
 
 .modal-submit-button {
-    background-color: var(--color-secondary-500);
+    background-color: var(--color-primary-500);
     color: white;
 }
 
 .modal-submit-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .modal-cancel-button {
-    background-color: var(--color-neutral-200);
-    color: var(--color-neutral-800);
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-700);
 }
 
 .modal-cancel-button:hover {
@@ -251,17 +251,17 @@
 }
 
 .asset-save-button {
-    background-color: var(--color-secondary-500);
+    background-color: var(--color-primary-500);
     color: white;
 }
 
 .asset-save-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .asset-edit-button {
-    background-color: var(--color-neutral-200);
-    color: var(--color-neutral-800);
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-700);
 }
 
 .asset-edit-button:hover {
@@ -301,7 +301,7 @@
 }
 
 .search-result-item:hover {
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-neutral-100);
 }
 
 .asset-list-container {

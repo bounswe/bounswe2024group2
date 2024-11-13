@@ -48,7 +48,7 @@
 
 .auth-button {
   color: var(--color-neutral-white);
-  background-color: var(--color-secondary-500);
+  background-color: var(--color-primary-500);
   border: none;
   border-radius: 5px;
   padding: 10px 15px;
@@ -58,7 +58,7 @@
 }
 
 .auth-button:hover {
-  background-color: var(--color-secondary-700);
+  background-color: var(--color-primary-700);
 }
 
 .content {
@@ -136,7 +136,7 @@
 }
 .custom-button {
   color: var(--color-neutral-white);
-  background-color: var(--color-secondary-500);
+  background-color: var(--color-primary-500);
   border: none;
   border-radius: 5px;
   padding: 10px 5px;
@@ -148,12 +148,12 @@
 }
 
 .custom-button:hover {
-  background-color: var(--color-secondary-700);
+  background-color: var(--color-primary-700);
 }
 
 
 .custom-button:hover {
-  background-color: var(--color-secondary-700);
+  background-color: var(--color-primary-700);
 }
 
 
@@ -178,7 +178,7 @@
 }
 
 .auth-button:hover {
-  background-color: var(--color-primary-400);
+  background-color: var(--color-primary-300);
 }
 
 .user-profile {

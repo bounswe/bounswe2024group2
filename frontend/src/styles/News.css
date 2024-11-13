@@ -9,7 +9,7 @@
 .news-header {
     flex: 0 0 auto;
     width: 100%;
-    background-color: var(--color-primary-200);
+    background-color: var(--color-primary-100);
     padding: 120px 0;
     border-bottom: 1px solid var(--border-medium);
     text-align: center;
@@ -18,13 +18,13 @@
 .news-title {
     font-size: 4rem;
     margin: 0;
-    color: var(--color-primary-800);
+    color: var(--color-primary-700);
 }
 
 .news-subtitle {
     font-size: 1.8rem;
     margin: 10px 0;
-    color: var(--color-neutral-600);
+    color: var(--color-neutral-500);
 }
 
 .news-content {
@@ -77,14 +77,14 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: var(--color-secondary-600);
+    background-color: var(--color-primary-500);
     color: var(--color-neutral-100);
     transition: background-color 0.3s ease;
 }
 
 .filter-buttons button:hover,
 .filter-buttons .filter-button:hover {
-    background-color: var(--color-secondary-700);
+    background-color: var(--color-primary-700);
 }
 
 .filter-buttons .filter-button.selected {
@@ -92,7 +92,7 @@
 }
 
 .filter-buttons .filter-button:hover {
-    background-color: var(--color-secondary-600);
+    background-color: var(--color-primary-500);
 }
 
 .card,
@@ -102,7 +102,7 @@
     padding: 20px;
     box-shadow: var(--shadow-medium);
     text-align: left;
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-neutral-100);
     transition: background-color 0.3s ease;
     cursor: pointer;
 }
@@ -125,7 +125,7 @@
 }
 
 .card-time {
-    color: var(--color-neutral-400);
+    color: var(--color-neutral-300);
 }
 
 .card-body {
@@ -146,7 +146,7 @@
 
 .card-description {
     font-size: 1rem;
-    color: var(--color-neutral-600);
+    color: var(--color-neutral-500);
 }
 
 .card-icon {
