@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
 import FilterButtons from './FilterButtons';
-import '../../styles/News.css';
+import '../../styles/news/News.css';
 
 const mockNewsData = [
     {
@@ -122,21 +122,21 @@ const NewsPage = () => {
             </div>
 
             <div className="news-content">
-                <h3 className="section-title">Mock Economic News Section</h3>
-                <div className="filter-buttons">
+                <h3 className="news-section-title">Mock Economic News Section</h3>
+                <div className="news-filter-buttons">
                     <FilterButtons categories={newsCategories} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />    
                 </div>
-                <div className="scrollable-section">
+                <div className="news-scrollable-section">
                     {filteredNews.map((news) => (
                         <NewsCard key={news.id} news={news} />
                     ))}
                 </div>
 
-                <h3 className="section-title">Mock RSS Feed Economic News Section</h3>
-                <div className="filter-buttons">
+                <h3 className="news-section-title">Mock RSS Feed Economic News Section</h3>
+                <div className="news-filter-buttons">
                     <FilterButtons categories={rssCategories} setSelectedCategory={setSelectedRssCategory} selectedCategory={selectedRssCategory} />
                 </div>
-                <div className="scrollable-section">
+                <div className="news-scrollable-section">
                     {filteredRssNews.map((news) => (
                         <NewsCard key={news.id} news={news} />
                     ))}

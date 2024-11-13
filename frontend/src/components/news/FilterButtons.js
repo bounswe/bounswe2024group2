@@ -1,6 +1,6 @@
-// FilterButtons.js
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../styles/news/News.css';
 
 const FilterButtons = ({ categories, setSelectedCategory, selectedCategory }) => {
     return (
@@ -21,7 +21,7 @@ const FilterButtons = ({ categories, setSelectedCategory, selectedCategory }) =>
 FilterButtons.propTypes = {
     categories: PropTypes.array.isRequired,
     setSelectedCategory: PropTypes.func.isRequired,
-    selectedCategory: PropTypes.string.isRequired, // Pass selectedCategory as a prop
+    selectedCategory: PropTypes.string.isRequired,
 };
 
 export default FilterButtons;
