@@ -33,12 +33,20 @@ h1, h2, h3, h4, h5, h6, p, a, span, div {
   --color-primary-700: #1976d2;
   --color-primary-900: #0d47a1;
 
-  /* Neutral colors */
+  /* Neutral colors | background */
   --color-neutral-100: #fafafa;
   --color-neutral-300: #eeeeee;
   --color-neutral-500: #bdbdbd;
   --color-neutral-700: #757575;
   --color-neutral-900: #424242;
+
+  /* Neutral colors | text */
+  --color-neutral-200: #e0e0e0;
+  --color-neutral-400: #9e9e9e;
+  --color-neutral-600: #616161;
+  --color-neutral-800: #424242;
+
+  /* Constants */
   --color-neutral-black: #212121;
   --color-neutral-white: #ffffff;
 
@@ -75,21 +83,30 @@ body.dark-mode {
 
   background-color: var(--color-neutral-300); /* Dark background */
   color: var(--color-neutral-white); /* Text color for dark mode */
+
   /* Primary colors */
   --color-primary-100: #1a237e;
   --color-primary-300: #303f9f;
   --color-primary-500: #3f51b5;
   --color-primary-700: #7986cb;
-  --color-primary-900: #c5cae9;
+  --color-primary-900: #1a237e;
 
-  /* Neutral colors */
+  /* Neutral colors | background */
   --color-neutral-100: #121212;
   --color-neutral-300: #2c2c2c;
   --color-neutral-500: #4f4f4f;
   --color-neutral-700: #8e8e8e;
   --color-neutral-900: #d0d0d0;
+  
+  /* Neutral colors | text */
+  --color-neutral-200: #424242;
+  --color-neutral-400: #616161;
+  --color-neutral-600: #9e9e9e;
+  --color-neutral-800: #b0b0b0;
+
+  /* Constants */
+  --color-neutral-black: #212121;
   --color-neutral-white: #ffffff;
-  --color-neutral-black: #000000;
 
   /* errror colors */
   --color-error-300: #ef9a9a;

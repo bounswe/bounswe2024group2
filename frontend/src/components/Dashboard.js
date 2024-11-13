@@ -83,11 +83,6 @@ const Dashboard = () => {
           <li>
             <Link to="/portfolio">Portfolio</Link>
           </li>
-          <li>
-            <button onClick={toggleDarkMode} className="custom-button">
-              {darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            </button>
-          </li>
         </ul>
 
         <div className="auth-section">
@@ -106,6 +101,9 @@ const Dashboard = () => {
               </button>
               <button onClick={handleRegister} className="auth-button">
                 Register
+              </button>
+              <button onClick={toggleDarkMode} className="custom-button">
+                {darkMode ? 'Dark' : 'Light'}
               </button>
             </div>
           )}
