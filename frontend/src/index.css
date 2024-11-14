@@ -68,12 +68,12 @@ h1, h2, h3, h4, h5, h6, p, a, span, div {
   --shadow-dark: rgba(0, 0, 0, 0.6);
 
   /* Borders */
-  --border-light: #e0e0e0;
+  --border-light: #d6d6d6;
   --border-medium: #9e9e9e;
   --border-dark: #424242;
 
   /* Gradients */
-  --primary-gradient: linear-gradient(45deg, #42a5f5, #1e88e5);
+  --primary-gradient: linear-gradient(45deg, #0d49a3, #1e88e5);
   --error-gradient: linear-gradient(45deg, #f44336, #d32f2f);
   --success-gradient: linear-gradient(45deg, #4caf50, #388e3c);
 }
@@ -109,16 +109,16 @@ body.dark-mode {
   --color-neutral-white: #ffffff;
 
   /* errror colors */
-  --color-error-300: #ef9a9a;
-  --color-error-500: #f44336;
-  --color-error-700: #d32f2f;
-  --color-error-900: #b71c1c;
+  --color-error-300: #f44336;
+  --color-error-500: #d32f2f;
+  --color-error-700: #b71c1c;
+  --color-error-900: #a70510;
 
   /* Success colors */
-  --color-success-300: #a5d6a7;
-  --color-success-500: #4caf50;
-  --color-success-700: #388e3c;
-  --color-success-900: #1b5e20;
+  --color-success-300: #388e3c;
+  --color-success-500: #1b5e20;
+  --color-success-700: #054e10;
+  --color-success-900: #013e01;
 
 
   /* Shadows */

@@ -13,10 +13,10 @@ const PostView = () => {
         const asciiValue = tag.charCodeAt(0);
         const colors = [
             '#3498db', 
-        '#e74c3c', 
-        '#2ecc71', 
-        '#f1c40f', 
-        '#9b59b6'  
+            '#e74c3c', 
+            '#2ecc71', 
+            '#f1c40f', 
+            '#9b59b6'  
         ];
         return colors[asciiValue % 5]; 
     };

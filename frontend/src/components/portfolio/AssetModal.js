@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/Portfolio.css';
+import '../../styles/portfolio/PortfolioModal.css';
 
 const AssetModal = ({ onClose, onSubmit, stockData }) => {
   const [stockCode, setStockCode] = useState('');

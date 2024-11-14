@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../../styles/news/News.css';
+import '../../styles/news/NewsPage.css';
 
 const FilterButtons = ({ categories, setSelectedCategory, selectedCategory }) => {
     return (

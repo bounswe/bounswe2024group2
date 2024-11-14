@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import mockPosts from '../../data/mockPosts';
 import { FaSearch } from 'react-icons/fa';
 import '../../styles/community/CommunityPage.css';
+import '../../styles/Page.css';
 import PostCard from './PostCard'; 
 
 const CommunityPage = () => {
@@ -20,13 +21,13 @@ const CommunityPage = () => {
     };
 
     return (
-        <div className="community-page">
-            <div className="community-header">
-                <h1 className="community-title">Explore Community</h1>
-                <h2 className="community-subtitle">Find out ideas, analysis on the finance world.</h2>
+        <div className="page">
+            <div className="page-header">
+                <h1 className="page-title">Explore Community</h1>
+                <h2 className="page-subtitle">Find out ideas, analysis on the finance world.</h2>
                 <button className="submit-button" onClick={handleSubmitPost}>Create A Post</button>
             </div>
-            <div className="community-content">
+            <div className="page-content">
                 <div className="search-bar">
                     <div className={`search-container ${searchActive ? 'active' : ''}`}>
                         <input

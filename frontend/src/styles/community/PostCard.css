@@ -23,7 +23,7 @@
 
 .post-card {
     background-color: var(--color-neutral-100);
-    border: 1px solid var(--color-neutral-300);
+     border: 1px solid var(--border-light);
     border-radius: 8px;
     box-shadow: var(--color-neutral-300);
     color: var(--color-neutral-600);

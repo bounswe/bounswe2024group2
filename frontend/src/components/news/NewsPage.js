@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import NewsCard from './NewsCard';
 import FilterButtons from './FilterButtons';
-import '../../styles/news/News.css';
+import '../../styles/news/NewsPage.css';
+import '../../styles/Page.css';
 
 const mockNewsData = [
     {
@@ -115,13 +116,13 @@ const NewsPage = () => {
     );
 
     return (
-        <div className="news-page">
-            <div className="news-header">
-                <h1 className="news-title">Economic News</h1>
-                <h2 className="news-subtitle">Your daily updates on economic trends</h2>
+        <div className="page">
+            <div className="page-header">
+                <h1 className="page-title">Economic News</h1>
+                <h2 className="page-subtitle">Your daily updates on economic trends</h2>
             </div>
 
-            <div className="news-content">
+            <div className="page-content">
                 <h3 className="news-section-title">Mock Economic News Section</h3>
                 <div className="news-filter-buttons">
                     <FilterButtons categories={newsCategories} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />    
