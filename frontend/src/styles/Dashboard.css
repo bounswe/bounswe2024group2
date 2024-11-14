@@ -44,20 +44,29 @@
 }
 
 .custom-button {
+  align-items: center;
   background-color: var(--color-primary-500);
   border: none;
-  border-radius: 5px;
-  color: var(--color-neutral-white);
+  border-radius: 50%;
   cursor: pointer;
+  display: flex;
   font-weight: bold;
+  height: 40px;
+  justify-content: center;
   margin-left: 15px;
-  padding: 10px 15px;
+  padding: 0px;
   text-align: center;
   transition: background-color 0.3s;
+  width: 40px;
 }
 
 .custom-button:hover {
   background-color: var(--color-primary-700);
+}
+
+.custom-button svg {
+  font-size: 1.2rem;
+  color: var(--color-neutral-100);
 }
 
 .dashboard-container {
