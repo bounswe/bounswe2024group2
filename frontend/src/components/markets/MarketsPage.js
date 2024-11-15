@@ -2,11 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/MarketsPage.css';
-
-const mockIndices = [
-    { id: 1, name: "BIST30" },
-    { id: 2, name: 'S%P TOP 50' },
-];
+import { mockIndices } from './MockData';
 
 const MarketsPage = () => {
     const [selectedIndex, setSelectedIndex] = useState(null);
