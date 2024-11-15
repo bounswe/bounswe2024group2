@@ -19,7 +19,6 @@ import NotFound from "./components/notfound/NotFound.js";
 import PostView from "./components/community/PostView.js";
 import { ToastContainer } from "react-toastify";
 
-
 function App() {
   return (
     <Router>

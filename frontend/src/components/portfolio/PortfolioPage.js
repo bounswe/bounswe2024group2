@@ -4,7 +4,8 @@ import AssetModal from './AssetModal';
 import AssetList from './AssetList';
 import PortfolioDetailsCard from './PortfolioDetailsCard';
 import { Chart } from 'react-google-charts';
-import '../../styles/Portfolio.css';
+import '../../styles/portfolio/PortfolioPage.css';
+import '../../styles/portfolio/AssetList.css';
 import mockStocks from '../../data/mockStocks';
 import '../../index.css';
 
@@ -160,83 +161,98 @@ const PortfolioPage = () => {
     pieHole: 0.4,
     chartArea: { width: '90%', height: '90%' },
     fontSize: 12,
+    backgroundColor: 'transparent',
   };
 
   return (
-    <div className="portfolio-page">
-      {portfolios.length === 0 ? (
-        <div className="empty-portfolio">
-          <button className="create-portfolio-button" onClick={() => setShowPortfolioModal(true)}>
-            Create Portfolio
-          </button>
-        </div>
-      ) : (
-        <div className="portfolio-section">
-          <div className="portfolio-bar">
-            {portfolios.map((portfolio, index) => (
-              <div
-                key={index}
-                className={`portfolio-tab ${portfolio.name === selectedPortfolio?.name ? 'selected' : ''}`}
-                onClick={() => handleSelectPortfolio(portfolio)}
-              >
-                {portfolio.name}
-              </div>
-            ))}
+
+    <div className="page">
+              {portfolios.length === 0 ? (
+      <div className="page-header">
+        <h1 className="page-title">You have no portfolios yet</h1>
+          <h2 className="page-subtitle">Create a new portfolio to get started</h2>
+        
+      </div>
+    ) : (<div></div>)}
+
+      <div className="page-content">
+
+        {portfolios.length === 0 ? (
+          <div className="empty-portfolio">
             <button className="create-portfolio-button" onClick={() => setShowPortfolioModal(true)}>
               Create Portfolio
             </button>
           </div>
-          <div className="portfolio-content">
-            {selectedPortfolio ? (
-              <div className="portfolio-layout">
-                <div className="asset-list-container card">
-                  <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
-                    Add Assets
-                  </button>
-                  {selectedPortfolio.assets.length > 0 && (
-                    <AssetList assets={selectedPortfolio.assets} setAssets={handleUpdateAssets} />
-                  )}
+        ) : (
+          <div className="portfolio-section">
+            <div className="portfolio-bar">
+              {portfolios.map((portfolio, index) => (
+                <div
+                  key={index}
+                  className={`portfolio-tab ${portfolio.name === selectedPortfolio?.name ? 'selected' : ''}`}
+                  onClick={() => handleSelectPortfolio(portfolio)}
+                >
+                  {portfolio.name}
                 </div>
-                <div className="portfolio-details card">
-                  <PortfolioDetailsCard
-                    numAssets={numAssets}
-                    totalValue={totalValue}
-                    totalProfit={totalProfit}
-                  />
-                  <div className="portfolio-chart">
-                    {selectedPortfolio.assets.length > 0 ? (
-                      <Chart
-                        chartType="PieChart"
-                        data={chartData}
-                        options={chartOptions}
-                        width={'100%'}
-                        height={'300px'}
-                      />
-                    ) : (
-                      <p>No assets to display</p>
+              ))}
+              <button className="create-portfolio-button" onClick={() => setShowPortfolioModal(true)}>
+                Create Portfolio
+              </button>
+            </div>
+            <div className="portfolio-content">
+              {selectedPortfolio ? (
+                <div className="portfolio-layout">
+                  <div className="asset-list-container portfolio-card">
+                    <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
+                      Add Assets
+                    </button>
+                    {selectedPortfolio.assets.length > 0 && (
+                      <AssetList assets={selectedPortfolio.assets} setAssets={handleUpdateAssets} />
                     )}
                   </div>
+                  <div className="portfolio-details portfolio-card">
+                    <PortfolioDetailsCard
+                      numAssets={numAssets}
+                      totalValue={totalValue}
+                      totalProfit={totalProfit}
+                    />
+                    <div className="portfolio-chart">
+                      {selectedPortfolio.assets.length > 0 ? (
+                        <Chart
+                          className='portfolio-chart'
+                          chartType="PieChart"
+                          data={chartData}
+                          options={chartOptions}
+                          width={'100%'}
+                          height={'300px'}
+                        />
+                      ) : (
+                        <p>No assets to display</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
-        </div>
-      )}
 
-      {showPortfolioModal && (
-        <PortfolioModal
-          onClose={() => setShowPortfolioModal(false)}
-          onSubmit={handleCreatePortfolio}
-        />
-      )}
+        )}
 
-      {showAssetModal && (
-        <AssetModal
-          onClose={() => setShowAssetModal(false)}
-          onSubmit={handleAddAsset}
-          stockData={mockStocks}
-        />
-      )}
+        {showPortfolioModal && (
+          <PortfolioModal
+            onClose={() => setShowPortfolioModal(false)}
+            onSubmit={handleCreatePortfolio}
+          />
+        )}
+
+        {showAssetModal && (
+          <AssetModal
+            onClose={() => setShowAssetModal(false)}
+            onSubmit={handleAddAsset}
+            stockData={mockStocks}
+          />
+        )}
+      </div>
     </div>
   );
 };

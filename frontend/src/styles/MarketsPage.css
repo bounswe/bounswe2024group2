@@ -14,11 +14,11 @@
 .index-item {
   cursor: pointer;
   padding: 20px;
-  border: 2px solid var(--color-neutral-800); /* Neutral adaptable border color */
+  border: 2px solid var(--color-neutral-700); /* Neutral adaptable border color */
   width: 150px;
   text-align: center;
   border-radius: 8px;
-  background-color: var(--color-neutral-200); /* Neutral background color adaptable for both themes */
+  background-color: var(--color-neutral-100); /* Neutral background color adaptable for both themes */
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
