@@ -12,6 +12,7 @@ import Home from './Home';
 import Profile from './Profile';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
+import Markets from './Markets';
 
 
 const Stack = createStackNavigator();
@@ -87,6 +88,10 @@ const App = () => {
             <Sidebar.Screen 
               name="Login&Register" 
               component={LoginRelated} 
+            />
+            <Sidebar.Screen
+              name="Markets"
+              component={Markets}
             />
           </Sidebar.Navigator>
         </NavigationContainer>
