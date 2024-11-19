@@ -1,4 +1,4 @@
-import 'react-native-gesture-handler';
+
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -12,7 +12,7 @@ import Home from './Home';
 import Profile from './Profile';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
-
+import 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 const Sidebar = createDrawerNavigator();
