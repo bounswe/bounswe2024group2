@@ -31,7 +31,6 @@ function Login() {
     }, 1000); 
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/login/`,
