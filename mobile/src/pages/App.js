@@ -13,6 +13,7 @@ import Profile from './Profile';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
 import Markets from './Markets';
+import Community from './Community';
 
 
 const Stack = createStackNavigator();
@@ -92,6 +93,10 @@ const App = () => {
             <Sidebar.Screen
               name="Markets"
               component={Markets}
+            />
+            <Sidebar.Screen
+              name="Community"
+              component={Community}
             />
           </Sidebar.Navigator>
         </NavigationContainer>
