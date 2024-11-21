@@ -85,10 +85,41 @@ export const mockStocks = {
         { code: 'LRCX', name: 'Lam Research Corporation', price: 600.00 },
         { code: 'FISV', name: 'FISV', price: 120.00 },
         { code: 'ADP', name: 'Automatic Data Processing, Inc.', price: 240.00 }],
-    };
+    3: [ // NASDAQ-100
+        { code: 'TSLA', name: 'Tesla, Inc.', price: 720.00, about: 'Tesla is a leading electric vehicle manufacturer, also involved in renewable energy and battery technology.' },
+        { code: 'NVDA', name: 'NVIDIA Corporation', price: 480.00, about: 'NVIDIA is a global leader in graphics processing units (GPUs) and AI computing technology.' },
+        { code: 'GOOGL', name: 'Alphabet Inc. (Class A)', price: 120.00, about: 'Alphabet is the parent company of Google, specializing in internet-related services and products.' },
+        { code: 'ADBE', name: 'Adobe Inc.', price: 550.00, about: 'Adobe is a software giant known for Photoshop, Illustrator, and its cloud-based document solutions.' },
+        { code: 'CMCSA', name: 'Comcast Corporation', price: 40.00, about: 'Comcast provides cable, internet, and broadcasting services in the US.' },
+        { code: 'PEP', name: 'PepsiCo, Inc.', price: 190.00, about: 'PepsiCo is a multinational food and beverage company, known for its snacks and beverages.' },
+        { code: 'PYPL', name: 'PayPal Holdings, Inc.', price: 80.00, about: 'PayPal is a global digital payments platform, allowing businesses and individuals to transact online securely.' },
+        { code: 'NFLX', name: 'Netflix, Inc.', price: 490.00, about: 'Netflix is the leading streaming service, producing and distributing movies and series globally.' },
+        { code: 'QCOM', name: 'QUALCOMM Incorporated', price: 120.00, about: 'QUALCOMM is a leader in wireless telecommunications products and semiconductors.' },
+    ],
+    4: [ // Dow Jones Industrial Average (DJIA)
+        { code: 'DIS', name: 'The Walt Disney Company', price: 120.00, about: 'Disney is a global entertainment conglomerate, known for its film studios, theme parks, and media networks.' },
+        { code: 'V', name: 'Visa Inc.', price: 250.00, about: 'Visa is a global payments technology company, facilitating electronic funds transfers worldwide.' },
+        { code: 'JNJ', name: 'Johnson & Johnson', price: 160.00, about: 'Johnson & Johnson is a multinational healthcare company, known for its pharmaceutical, medical device, and consumer health products.' },
+        { code: 'MMM', name: '3M Company', price: 170.00, about: '3M is a diversified technology company, producing adhesives, safety equipment, and medical products.' },
+        { code: 'CAT', name: 'Caterpillar Inc.', price: 260.00, about: 'Caterpillar designs and manufactures construction and mining equipment.' },
+        { code: 'KO', name: 'Coca-Cola Company', price: 65.00, about: 'Coca-Cola is the world’s largest beverage company, producing soft drinks and other beverages.' },
+        { code: 'BA', name: 'Boeing Company', price: 210.00, about: 'Boeing designs and manufactures commercial airplanes, defense systems, and space systems.' },
+        { code: 'GS', name: 'Goldman Sachs Group, Inc.', price: 380.00, about: 'Goldman Sachs is a leading global investment banking, securities, and investment management firm.' },
+        { code: 'INTC', name: 'Intel Corporation', price: 30.00, about: 'Intel is a leading semiconductor company, producing microprocessors and related hardware.' },
+    ],
+};
   
     export const mockIndices = [
-      { id: 1, name: "BIST30" },
-      { id: 2, name: 'S&P TOP 50' },
-  ];
+        { id: 1, name: "BIST30" },
+        { id: 2, name: "S&P TOP 50" },
+        { id: 3, name: "NASDAQ 100" },
+        { id: 4, name: "Dow Jones" },
+    ];
+    
+    export const biggestCompanies = [
+        { code: "ASELS", name: "Aselsan Elektronik Sanayi ve Ticaret A.Ş.", about: "Turkey’s leading defense electronics company." },
+        { code: "AAPL", name: "Apple Inc.", about: "Global leader in consumer electronics and software." },
+        { code: "EREGL", name: "Ereğli Demir ve Çelik Fabrikaları T.A.Ş.", about: "Major Turkish steel producer." },
+        { code: "MSFT", name: "Microsoft Corporation", about: "Pioneer in software and cloud services." },
+    ];
   
