@@ -1,29 +1,51 @@
 .markets-container {
-  padding: 20px;
+  zoom: inherit;
+  scale: inherit;
   position: absolute;
-  top: 30px;
-  left: 0;
+  top: 70px;
+  padding-top: 5rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  color: #333;
 }
 
-.indices {
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.indices, .stocks, .biggest-companies {
   display: flex;
-  gap: 20px;
   flex-wrap: wrap;
+  gap: 15px;
 }
 
-.index-item {
+.index-item, .stock-item, .company-item {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
   cursor: pointer;
-  padding: 20px;
-  border: 2px solid var(--color-neutral-800); /* Neutral adaptable border color */
-  width: 150px;
+  width: 200px;
   text-align: center;
-  border-radius: 8px;
-  background-color: var(--color-neutral-200); /* Neutral background color adaptable for both themes */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.index-item:hover {
-  background-color: var(--color-primary-500); /* Adaptable hover background color */
-  color: var(--color-neutral-100); /* Adaptable hover text color */
-  box-shadow: 0 4px 8px var(--shadow-medium); /* Adaptable shadow */
+.index-item:hover, .stock-item:hover, .company-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #222;
+  text-align: center;
 }
