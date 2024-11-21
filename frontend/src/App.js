@@ -35,7 +35,7 @@ function App() {
             <Route path="home" element={<HomePage />} />
             <Route path="community" element={<CommunityPage />} />
             <Route path="markets" element={<MarketsPage />} />
-            <Route path="stocks/?page=:indexId" element={<StocksPage />} />
+            <Route path="stocks/:indexId" element={<StocksPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="portfolio" element={<PortfolioPage />} />
 
