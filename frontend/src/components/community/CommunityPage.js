@@ -3,11 +3,13 @@ import mockPosts from '../../data/mockPosts';
 import { FaSearch } from 'react-icons/fa';
 import '../../styles/community/CommunityPage.css';
 import PostCard from './PostCard'; 
+import { useNavigate } from "react-router-dom";
 
 const CommunityPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOrder, setSortOrder] = useState('dsc');
     const [searchActive, setSearchActive] = useState(false);
+    const navigate = useNavigate();
 
     const filteredPosts = mockPosts
         .filter(post => post.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -16,7 +18,7 @@ const CommunityPage = () => {
         });
 
     const handleSubmitPost = () => {
-        alert("Submit Post clicked!");
+        navigate("/community/create-post");
     };
 
     return (
