@@ -14,7 +14,6 @@ const MarketsPage = () => {
         <div className="markets-container">
             <h1 className="section-title">Markets Overview</h1>
 
-            {/* Indices Section */}
             <div className="section">
                 <h2>Indices</h2>
                 <div className="indices">
@@ -30,7 +29,6 @@ const MarketsPage = () => {
                 </div>
             </div>
 
-            {/* Stocks Section - Turkey */}
             <div className="section">
                 <h2>Stocks - Turkey</h2>
                 <div className="stocks">
@@ -43,7 +41,6 @@ const MarketsPage = () => {
                 </div>
             </div>
 
-            {/* Stocks Section - USA */}
             <div className="section">
                 <h2>Stocks - USA</h2>
                 <div className="stocks">
@@ -56,7 +53,6 @@ const MarketsPage = () => {
                 </div>
             </div>
 
-            {/* Biggest Companies Section */}
             <div className="section">
                 <h2>Biggest Companies</h2>
                 <div className="biggest-companies">
