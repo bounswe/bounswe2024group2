@@ -1,31 +1,47 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Assuming React Router is used
 import "../../styles/community/CreatePostPage.css";
 
 const CreatePostPage = () => {
+  const navigate = useNavigate(); // To redirect if not logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [token, setToken] = useState(""); // Store token
   const [availableTags] = useState([
-    "Stock Analysis",
-    "BIST30",
-    "S&P",
-    "NASDAQ",
-    "Dow Jones",
-    "USA",
-    "Türkiye",
+    { id: 1, name: "Stock Analysis" },
+    { id: 2, name: "BIST30" },
+    { id: 3, name: "S&P" },
+    { id: 4, name: "NASDAQ" },
+    { id: 5, name: "Dow Jones" },
+    { id: 6, name: "USA" },
+    { id: 7, name: "Türkiye" },
   ]);
   const [filteredTags, setFilteredTags] = useState(availableTags);
   const [selectedTags, setSelectedTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
-  const [description, setDescription] = useState(""); // State for description
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const tagSearchRef = useRef(null); // Reference for the tag search container
+  const tagSearchRef = useRef(null);
 
-  // Update filteredTags when selected tags or search query changes
+  // Authentication check
   useEffect(() => {
-    // Filter out selected tags from available tags
+    const storedToken = localStorage.getItem("accessToken"); // Fetch token stored in localStorage
+    if (storedToken) {
+      setToken(storedToken);
+      setIsLoggedIn(true);
+    } else {
+      alert("You must be logged in to create a post.");
+      navigate("/login"); // Redirect to login page if not authenticated
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const availableTagsToShow = availableTags.filter(
       (tag) =>
         !selectedTags.includes(tag) &&
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
+        tag.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredTags(availableTagsToShow);
   }, [selectedTags, searchQuery]);
@@ -41,21 +57,20 @@ const CreatePostPage = () => {
       setSelectedTags([...selectedTags, tag]);
     }
     setSearchQuery("");
-    setShowTagSuggestions(false); // Close suggestions when tag is selected
+    setShowTagSuggestions(false);
   };
 
   const handleTagRemove = (tag) => {
-    setSelectedTags(selectedTags.filter((t) => t !== tag));
-    setShowTagSuggestions(false); // Close suggestions when a tag is removed
+    setSelectedTags(selectedTags.filter((t) => t.id !== tag.id));
+    setShowTagSuggestions(false);
   };
 
   const handleClickOutside = (event) => {
     if (tagSearchRef.current && !tagSearchRef.current.contains(event.target)) {
-      setShowTagSuggestions(false); // Close suggestions when clicking outside
+      setShowTagSuggestions(false);
     }
   };
 
-  // Add and clean up the event listener for clicks outside
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -63,24 +78,69 @@ const CreatePostPage = () => {
     };
   }, []);
 
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value); // Update description state
+  const handlePost = async () => {
+    if (!isLoggedIn) {
+      alert("You must be logged in to create a post.");
+      return;
+    }
+
+    const postData = {
+      title,
+      content: description,
+      author: 2, // Set correct author ID
+      liked_by: [], // Default empty array
+      tags: [], // Tag IDs
+      portfolios: [], // Default empty array
+    };
+
+    console.log("Payload:", postData); // Log payload for debugging
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Include token
+    };
+
+    try {
+      const response = await axios.post(
+        "http://159.223.28.163:30002/posts/",
+        postData,
+        { headers }
+      );
+      console.log("Post created successfully:", response.data);
+      alert("Post created successfully!");
+      navigate("/community");
+    } catch (error) {
+      // Updated error handling starts here
+      console.error("Error creating post:", error);
+
+      if (error.response) {
+        console.error("Server responded with error:", error.response.data);
+        const errorMessage =
+          error.response.data.message || JSON.stringify(error.response.data);
+        alert(`Failed to create the post. Error: ${errorMessage}`);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        alert("Failed to create the post. No response from the server.");
+      } else {
+        console.error("Error setting up the request:", error.message);
+        alert(`Failed to create the post. Error: ${error.message}`);
+      }
+    }
   };
 
   return (
     <div className="create-post-container">
-      {/* Left Section */}
       <div className="left-section">
-        {/* Title Section */}
         <div className="title-section">
           <input
             type="text"
             className="post-title-input"
             placeholder="Enter post title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
-        {/* Tag Selection Section */}
         <div className="tag-selection-section">
           <div className="tag-search-container" ref={tagSearchRef}>
             <input
@@ -91,27 +151,25 @@ const CreatePostPage = () => {
               onChange={handleSearchChange}
               onFocus={() => setShowTagSuggestions(true)}
             />
-            {/* Tag Suggestions Box */}
             {showTagSuggestions && (
               <div className="tag-suggestions-box">
                 {filteredTags.map((tag, index) => (
                   <button
-                    key={tag}
+                    key={tag.id}
                     className={`tag-suggestion color-${index % 4}`}
                     onClick={() => handleTagSelect(tag)}
                   >
-                    {tag}
+                    {tag.name}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Selected Tags */}
           <div className="selected-tags">
             {selectedTags.map((tag, index) => (
-              <span key={tag} className={`selected-tag color-${index % 4}`}>
-                {tag}
+              <span key={tag.id} className={`selected-tag color-${index % 4}`}>
+                {tag.name}
                 <span
                   className="tag-remove"
                   onClick={() => handleTagRemove(tag)}
@@ -123,30 +181,28 @@ const CreatePostPage = () => {
           </div>
         </div>
 
-        {/* Description Section */}
         <div className="description-section">
           <textarea
             className="description-textarea"
             placeholder="Enter description..."
             value={description}
-            onChange={handleDescriptionChange}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Right Section (Tools or other content) */}
       <div className="right-section">
-        <h3>Tools</h3>
-        <div className="tools-container">
-          <div className="tool-item">Graph</div>
-          <div className="tool-item">Portfolio</div>
-          <div className="tool-item">News</div>
-          <div className="tool-item">Image</div>
-        </div>
         <div className="action-buttons">
-          <button className="cancel-button">Cancel</button>
+          <button
+            className="cancel-button"
+            onClick={() => navigate("/home")} // Cancel redirects to home
+          >
+            Cancel
+          </button>
           <button className="preview-button">Preview</button>
-          <button className="post-button">Post</button>
+          <button className="post-button" onClick={handlePost}>
+            Post
+          </button>
         </div>
       </div>
     </div>
