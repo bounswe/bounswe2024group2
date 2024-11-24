@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -9,62 +9,69 @@ import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
-import Profile from './Profile';
+import Profile from './ProfilePage';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
 import Markets from './Markets';
 import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
 
 
 const Stack = createStackNavigator();
-const Sidebar = createDrawerNavigator();
+const Drawer = createDrawerNavigator();
 
-const navigateProfile = (navigation, username) => {
-  navigation.navigate("Profile", { username });
+// Custom Header
+const CustomHeader = ({ navigation }) => {
+  const { user } = useAuth();
+
+  const handleProfileNavigation = () => {
+    if (user) {
+      navigation.navigate('Profile', { username: user.username });
+    } else {
+      navigation.navigate('Login&Register');
+    }
+  };
+
+  return (
+    <View style={styles.customHeader}>
+      <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+        <MaterialIcons name="menu" size={30} color="white" />
+      </TouchableOpacity>
+      <Text style={styles.logoText}>Bull&Bear</Text>
+      <TouchableOpacity onPress={handleProfileNavigation} style={styles.headerButton}>
+        <MaterialIcons name="account-circle" size={30} color="white" />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-const CustomHeader = ({ navigation }) => (
-  <View style={styles.customHeader}>
-    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
-      <MaterialIcons name="menu" size={30} color="white" />
-    </TouchableOpacity>
-    <Text style={styles.logoText}>Bull&Bear</Text>
-    <TouchableOpacity onPress={() => navigateProfile(navigation)} style={styles.headerButton}>
-      <MaterialIcons name="account-circle" size={30} color="white" />
-    </TouchableOpacity>
-  </View>
+// Login & Register Stack Navigator
+const LoginStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Register" component={Register} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+  </Stack.Navigator>
 );
 
-const App = () => {
+const PostStack = () => {
+  return (
+    <ThemeProvider>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
+        <Stack.Screen name="Post" component={Post} ></Stack.Screen>
+        <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
+      </Stack.Navigator>
+    </ThemeProvider>
+    
+  )
+}
+const DrawerNavigator = () => {
   const [loading, setLoading] = useState(true);
-    const LoginRelated = () => {
-      return (
-        <ThemeProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Login" component={Login} ></Stack.Screen>
-            <Stack.Screen name="Register" component={Register} ></Stack.Screen>
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
-          </Stack.Navigator>
-        </ThemeProvider>
-        
-      )
-    }
-
-    const PostRelated = () => {
-      return (
-        <ThemeProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
-            <Stack.Screen name="Post" component={Post} ></Stack.Screen>
-            <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
-          </Stack.Navigator>
-        </ThemeProvider>
-        
-      )
-    }
-
+  const { user } = useAuth();
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -85,39 +92,50 @@ const App = () => {
   }
 
     return (
-      <ThemeProvider>
-        <NavigationContainer>
-          <Sidebar.Navigator
+        <Drawer.Navigator
         screenOptions={{
           headerShown: true,
           header: ({ navigation }) => <CustomHeader navigation={navigation} />,
         }}
         >
-            <Sidebar.Screen 
+            <Drawer.Screen 
               name="Home" 
               component={Home}              
             />
-            <Sidebar.Screen 
-              name="Profile" 
-              component={Profile}               
-            />
-            <Sidebar.Screen 
-              name="Login&Register" 
-              component={LoginRelated} 
-            />
-            <Sidebar.Screen
+            { user  ? (
+              <Drawer.Screen 
+                name="Profile" 
+                component={Profile} 
+              />
+              ) : (
+              <Drawer.Screen 
+                name="Login&Register" 
+                component={LoginStack} 
+              />
+            )}
+            <Drawer.Screen
               name="Markets"
               component={Markets}
             />
-            <Sidebar.Screen
+            <Drawer.Screen
               name="Community"
-              component={PostRelated}
+              component={PostStack}
             />
             
-          </Sidebar.Navigator>
-        </NavigationContainer>
-        </ThemeProvider>
+          </Drawer.Navigator>
       );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <NavigationContainer>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </ThemeProvider>
+    </AuthProvider>
+  );
 };
 
 const styles = StyleSheet.create({
