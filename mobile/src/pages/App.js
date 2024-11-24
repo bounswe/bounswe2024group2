@@ -14,6 +14,8 @@ import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
 import Markets from './Markets';
 import Community from './Community';
+import Post from './Post';
+import CreatePost from './CreatePost';
 
 
 const Stack = createStackNavigator();
@@ -44,6 +46,19 @@ const App = () => {
             <Stack.Screen name="Login" component={Login} ></Stack.Screen>
             <Stack.Screen name="Register" component={Register} ></Stack.Screen>
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
+          </Stack.Navigator>
+        </ThemeProvider>
+        
+      )
+    }
+
+    const PostRelated = () => {
+      return (
+        <ThemeProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
+            <Stack.Screen name="Post" component={Post} ></Stack.Screen>
+            <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
           </Stack.Navigator>
         </ThemeProvider>
         
@@ -96,8 +111,9 @@ const App = () => {
             />
             <Sidebar.Screen
               name="Community"
-              component={Community}
+              component={PostRelated}
             />
+            
           </Sidebar.Navigator>
         </NavigationContainer>
         </ThemeProvider>

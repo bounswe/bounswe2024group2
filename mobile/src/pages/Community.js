@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
 
-const Community = () => {
+const Community = ({navigation}) => {
     const posts = [
         {
             id: 1,
@@ -27,10 +27,21 @@ const Community = () => {
         }
     ];
 
+    const handleViewPost = () => {
+        navigation.navigate('Post');
+    }
+
+    const handleCreatePost = () => {
+        navigation.navigate('CreatePost');
+    }
+
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.header}>Community</Text>
-            <TouchableOpacity style={styles.createPostButton}>
+            <TouchableOpacity 
+                style={styles.createPostButton} 
+                onPress={() => handleCreatePost()}
+            >
                 <Text style={styles.createPostButtonText}>Create A Post</Text>
             </TouchableOpacity>
             <TextInput
@@ -59,7 +70,10 @@ const Community = () => {
                         <TouchableOpacity style={styles.actionButton}>
                             <Text>💬 {post.comments}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.viewPostButton}>
+                        <TouchableOpacity 
+                            style={styles.viewPostButton}
+                            onPress={() => handleViewPost()}
+                        >
                             <Text style={styles.viewPostButtonText}>View Post</Text>
                         </TouchableOpacity>
                     </View>
