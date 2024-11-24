@@ -1,7 +1,8 @@
 from django.db import models
 from onboarding.models import *
 import yfinance as yf
-
+from datetime import timedelta
+from django.utils.timezone import now
 
 # Models for market feed such as post, portfolio, stock, comment
 
@@ -24,6 +25,8 @@ class Stock(models.Model):
     name = models.CharField(max_length=250)
     symbol = models.CharField(max_length=250, unique=True)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    last_price = models.FloatField(null=True, blank=True)
+    last_updated = models.DateTimeField(auto_now=True, null=True)
     objects = StockManager()
     @property
     def price(self):
@@ -32,6 +35,10 @@ class Stock(models.Model):
     def fetch_current_stock_price(self):
         ticker = self.symbol
         currency = self.currency
+        if self.last_updated:
+            # if updated in less than 1 min, query last update price, don't request api
+            if self.last_price and now() - self.last_updated < timedelta(minutes=1):
+                return self.last_price
         
         if currency.code == 'TRY':
             ticker = ticker + '.IS'
@@ -43,6 +50,9 @@ class Stock(models.Model):
                 price = round(price,2)
         else:
             price = -1
+            
+        self.last_price = price
+        self.save(update_fields=['last_price', 'last_updated'])
         return price
 
 
