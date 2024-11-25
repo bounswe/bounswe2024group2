@@ -2,9 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from './context/AuthContext'; // Import AuthContext
 
-
-const Profile = ({ navigation }) => {
-
+const ProfilePage = ({navigation}) => {
   const { user, logout } = useAuth(); // Access user and logout function from AuthContext
 
 
@@ -199,4 +197,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default ProfilePage;

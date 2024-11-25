@@ -1,85 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, Text, StyleSheet, View, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 
-const Post = ({route}) => {
-    const { postId } = route.params;
-    const [post, setPost] = useState(null);
-    const [user, setUser] = useState({});
-    
-
-
-    const fetchPost = async () => {
-        const baseURL = 'http://159.223.28.163:30002';
-        const postURL = `${baseURL}/posts/${postId}/`;
-    
-        try {
-            const response = await fetch(postURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
-                },
-            });
-            if (response.ok) {
-                const postData = await response.json();
-                setPost(postData);
-    
-                // Kullanıcı bilgisi çekme
-                const authorId = postData.author;
-                fetchUser(authorId);
-            } else {
-                console.error('Error fetching post:', response.status);
-            }
-        } catch (error) {
-            console.error('Error fetching post:', error.message, error.stack);
-        }
-    };
-    
-    const fetchUser = async (authorId) => {
-        const baseURL = 'http://159.223.28.163:30002';
-        const userURL = `${baseURL}/users/${authorId}/`;
-    
-        try {
-            const response = await fetch(userURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
-                },
-            });
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-            } else {
-                console.log('Error fetching user:', response);
-                console.error('Error fetching user:', response.status);
-            }
-        } catch (error) {
-            console.error('Error fetching user:', error.message, error.stack);
-        }
-    };
-    
-
-    useEffect(() => {
-        fetchPost();
-        
-    }, []);
-    
-    if (!post) {
-        return <Text>Loading...</Text>;
-    }
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{post.title}</Text>
-            <Text style={styles.author}>{user.username}</Text>
-            <Text style={styles.date}>{post.created_at}</Text>
-            <Text style={styles.content}>{post.content}</Text>
-        </View>
-    );
-
-    
+const Post = () => {
     // Sample stock data (Replace this with dynamic data)
     const stockData = [142, 145, 143, 141, 144, 140, 138, 139]; // Closing prices
     const [tooltip, setTooltip] = useState(null); // State for tooltip info

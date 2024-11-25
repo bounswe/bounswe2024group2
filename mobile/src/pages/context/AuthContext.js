@@ -1,19 +1,15 @@
-
   import React, { createContext, useState, useContext } from 'react';
 
   const AuthContext = createContext();
 
   export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Store logged-in user
-    const [accessToken, setAccessToken] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
+    const [refreshToken, setRefreshToken] = useState(null);// Store refresh token
 
 
-
-    const login = (username, access, refresh) => {
+    const login = (username, token) => {
       setUser({ username });
-      setAccessToken(access);
-      setRefreshToken(refresh);
+      setRefreshToken({'refreshToken': token});
 
     };
 
@@ -42,4 +38,3 @@
   };
 
   export const useAuth = () => useContext(AuthContext);
-

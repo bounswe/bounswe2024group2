@@ -1,25 +1,21 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect, useContext } from 'react';
+import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
-import { ThemeProvider } from '../themes/ThemeProvider';
-
-import Profile from './ProfilePage';
+import Profile from './Profile';
 import News from './News';
-
 import Markets from './Markets';
 import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
-import { AuthProvider, useAuth } from './context/AuthContext';
-
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,7 +24,6 @@ const Drawer = createDrawerNavigator();
 const CustomHeader = ({ navigation }) => {
   const { user } = useAuth();
 
-
   const handleProfileNavigation = () => {
     if (user) {
       navigation.navigate('Profile', { username: user.username });
@@ -36,8 +31,7 @@ const CustomHeader = ({ navigation }) => {
       navigation.navigate('Login&Register');
     }
   };
-
-  return (
+    return (
     <View style={styles.customHeader}>
       <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
         <MaterialIcons name="menu" size={30} color="white" />
@@ -50,89 +44,66 @@ const CustomHeader = ({ navigation }) => {
   );
 };
 
+    const PostRelated = () => {
+      return (
+        <ThemeProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
+            <Stack.Screen name="Post" component={Post} ></Stack.Screen>
+            <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
+          </Stack.Navigator>
+        </ThemeProvider>
+        
+      )
+    }
+
+
 // Login & Register Stack Navigator
 const LoginStack = () => (
-  <Stack.Navigator >
-    <Stack.Screen name="Login" component={Login} options={{header: ({ navigation }) => <CustomHeader navigation={navigation} />}} />
-    <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Register" component={Register} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
   </Stack.Navigator>
 );
-
-const PostStack = () => {
-  return (
-    <ThemeProvider>
-      <Stack.Navigator>
-        <Stack.Screen name="CommunityPage" component={Community} options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} />, }}></Stack.Screen>
-        <Stack.Screen name="Post" component={Post} options={{ headerShown: true }} ></Stack.Screen>
-        <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: true, title:"Create a post" }}></Stack.Screen>
-      </Stack.Navigator>
-    </ThemeProvider>
-    
-  )
-}
 const DrawerNavigator = () => {
+  
   const { user } = useAuth();
-
-
-
-    return (
-        <Drawer.Navigator
-        
-        screenOptions={{
-          header: ({ navigation }) => <CustomHeader navigation={navigation} />
-        }}
-          
+  
+  return (
+  <Drawer.Navigator
+          screenOptions={{
+            headerShown: true,
+            header: ({ navigation }) => <CustomHeader navigation={navigation} />,
+          }}
         >
-            <Drawer.Screen 
-              name="Home" 
-              component={Home}  
-                       
-            />
-            { user  ? (
-              <Drawer.Screen 
-                name="Profile" 
-                component={Profile} 
-                
-              />
-              ) : (
-              <Drawer.Screen 
-                name="Login&Register" 
-                component={LoginStack} 
-                options={{ headerShown: false }}   
-              />
-            )}
-            <Drawer.Screen
-              name="Markets"
-              component={Markets}
-              
-            />
-            <Drawer.Screen
+
+          <Drawer.Screen name="Home" component={Home} />
+          { user  ? (
+            <Drawer.Screen name="Profile" component={Profile} />
+          ) : (
+            <Drawer.Screen name="Login&Register" component={LoginStack} />
+          )}
+          <Drawer.Screen name="News" component={News} />
+          <Drawer.Screen name="Markets" component={Markets} />
+          <Drawer.Screen
               name="Community"
-              component={PostStack}
-              options={{ headerShown: false }}   
+              component={PostRelated}
             />
-            <Drawer.Screen
-              name="News"
-              component={News}
-              options={{ headerShown: false }}   
-            />
-            
-          </Drawer.Navigator>
-      );
-
+        </Drawer.Navigator>
+  );
 };
-
 const App = () => {
+   // Access authentication state
+
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <NavigationContainer>
-          <DrawerNavigator />
-        </NavigationContainer>
-      </ThemeProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
     </AuthProvider>
   );
+
 };
 
 const styles = StyleSheet.create({
