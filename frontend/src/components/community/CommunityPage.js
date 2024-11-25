@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import mockPosts from "../../data/mockPosts";
 import { FaSearch } from "react-icons/fa";
 import "../../styles/community/CommunityPage.css";
@@ -11,10 +11,10 @@ const CommunityPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("dsc");
   const [searchActive, setSearchActive] = useState(false);
-  const [posts, setPosts] = useState([]); // State to store fetched posts
+  const [posts, setPosts] = useState([]);
+  s;
   const navigate = useNavigate();
 
-  // Fetch real posts from the API
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -23,25 +23,25 @@ const CommunityPage = () => {
         );
         const transformedPosts = response.data.map((post) => ({
           "post-id": post.id,
-          user: post.author.username || "Unknown", // Default if author is not found
+          user: post.author.username || "Unknown",
           title: post.title,
           content: [{ type: "plain-text", "plain-text": post.content }],
-          comments: [], // No comments yet
-          likes: post.liked_by.length, // Assuming likes are in liked_by
-          tags: post.tags, // You might need to map tags to a human-readable format
-          "publication-date": new Date(post.created_at).toLocaleDateString(), // Formatting the date
+          comments: [],
+          likes: post.liked_by.length,
+          tags: post.tags,
+          "publication-date": new Date(post.created_at).toLocaleDateString(),
         }));
         setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setPosts(mockPosts); // Fall back to mock data if API fails
+        setPosts(mockPosts);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const filteredPosts = [...mockPosts, ...posts] // Combine mock and real posts
+  const filteredPosts = [...mockPosts, ...posts]
     .filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
     )

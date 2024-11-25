@@ -230,7 +230,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   outline: none;
-  resize: vertical; /* Allows resizing vertically */
+  resize: vertical;
   background-color: #f9f9f9;
 }
 

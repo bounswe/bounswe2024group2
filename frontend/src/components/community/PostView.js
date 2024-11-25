@@ -24,16 +24,14 @@ const PostView = () => {
   };
 
   useEffect(() => {
-    // Simulate fetching from the backend
     const fetchBackendPost = async () => {
       try {
         const response = await fetch(
           `${process.env.REACT_APP_API_BASE_URL}/${postId}/`
-        ); // Replace with your endpoint
+        );
         if (!response.ok) throw new Error("Failed to fetch post");
         const backendPost = await response.json();
 
-        // Normalize backend post
         const normalizedPost = {
           "post-id": backendPost.id,
           user: backendPost.author.username || "Unknown",
@@ -52,7 +50,6 @@ const PostView = () => {
       }
     };
 
-    // Find post in mock data or fetch from backend
     const mockPost = mockPosts.find(
       (post) => post["post-id"] === parseInt(postId)
     );

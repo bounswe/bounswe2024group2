@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Assuming React Router is used
+import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
 
 const CreatePostPage = () => {
-  const navigate = useNavigate(); // To redirect if not logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  const [token, setToken] = useState(""); // Store token
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
   const [availableTags] = useState([
     { id: 1, name: "Stock Analysis" },
     { id: 2, name: "BIST30" },
@@ -25,15 +25,14 @@ const CreatePostPage = () => {
 
   const tagSearchRef = useRef(null);
 
-  // Authentication check
   useEffect(() => {
-    const storedToken = localStorage.getItem("accessToken"); // Fetch token stored in localStorage
+    const storedToken = localStorage.getItem("accessToken");
     if (storedToken) {
       setToken(storedToken);
       setIsLoggedIn(true);
     } else {
       alert("You must be logged in to create a post.");
-      navigate("/login"); // Redirect to login page if not authenticated
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -87,17 +86,17 @@ const CreatePostPage = () => {
     const postData = {
       title,
       content: description,
-      author: 2, // Set correct author ID
-      liked_by: [], // Default empty array
-      tags: [], // Tag IDs
-      portfolios: [], // Default empty array
+      author: 2,
+      liked_by: [],
+      tags: [],
+      portfolios: [],
     };
 
-    console.log("Payload:", postData); // Log payload for debugging
+    console.log("Payload:", postData);
 
     const headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Include token
+      Authorization: `Bearer ${token}`,
     };
 
     try {
@@ -110,7 +109,6 @@ const CreatePostPage = () => {
       alert("Post created successfully!");
       navigate("/community");
     } catch (error) {
-      // Updated error handling starts here
       console.error("Error creating post:", error);
 
       if (error.response) {
@@ -193,10 +191,7 @@ const CreatePostPage = () => {
 
       <div className="right-section">
         <div className="action-buttons">
-          <button
-            className="cancel-button"
-            onClick={() => navigate("/home")} // Cancel redirects to home
-          >
+          <button className="cancel-button" onClick={() => navigate("/home")}>
             Cancel
           </button>
           <button className="preview-button">Preview</button>
