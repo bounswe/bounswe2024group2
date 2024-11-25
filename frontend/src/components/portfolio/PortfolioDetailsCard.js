@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown, faClipboardList, faDollarSign } from '@fortawesome/free-solid-svg-icons';
-import '../../styles/Portfolio.css';
+import '../../styles/portfolio/PortfolioDetailsCard.css';
 
 const PortfolioDetailsCard = ({ numAssets, totalValue, totalProfit }) => {
   return (

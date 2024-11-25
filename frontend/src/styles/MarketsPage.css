@@ -10,7 +10,6 @@
   color: #333;
 }
 
-
 .section {
   margin-bottom: 30px;
 }
@@ -21,24 +20,36 @@
   color: #444;
 }
 
-.indices, .stocks, .biggest-companies {
+.indices,
+.stocks,
+.biggest-companies {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
 }
 
-.index-item, .stock-item, .company-item {
+.index-item,
+.stock-item,
+.company-item {
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: white;
   cursor: pointer;
-  width: 200px;
+  padding: 20px;
+  border: 2px solid var(--color-neutral-700); /* Neutral adaptable border color */
+  width: 150px;
   text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  background-color: var(
+    --color-neutral-200
+  ); /* Neutral background color adaptable for both themes */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.index-item:hover, .stock-item:hover, .company-item:hover {
+.index-item:hover,
+.stock-item:hover,
+.company-item:hover {
   transform: scale(1.05);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }

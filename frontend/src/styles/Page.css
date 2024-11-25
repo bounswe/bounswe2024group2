@@ -1,0 +1,36 @@
+
+.page-content {
+    background-color: var(--color-neutral-100);
+    flex: 1;
+    padding: 20px 32px;
+    padding-bottom: 64px;
+    text-align: left;
+    width: 100%;
+}
+
+.page-header {
+    background-color: var(--color-neutral-100);
+    padding: 120px 0;
+    text-align: center;
+}
+
+.page {
+    background-color: var(--color-neutral-100);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.page-subtitle {
+    color: var(--color-neutral-800);
+    font-size: 1.6rem;
+    margin: 10px 0;
+}
+
+.page-title {
+    color: var(--color-neutral-800);
+    font-size: 3rem;
+    margin: 0;
+}

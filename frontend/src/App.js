@@ -20,7 +20,6 @@ import PostView from "./components/community/PostView.js";
 import CreatePostPage from "./components/community/CreatePostPage.js";
 import { ToastContainer } from "react-toastify";
 
-
 function App() {
   return (
     <Router>
