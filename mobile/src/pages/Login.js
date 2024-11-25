@@ -16,6 +16,7 @@ const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
   const [loading, setLoading] = useState(false); // State for loading spinner
   const { login } = useAuth(); // Access the login function from AuthContext
 
@@ -23,13 +24,16 @@ const Login = ({ navigation }) => {
 
     const url = 'http://159.223.28.163:30002/login/';
 
+
     // Login data
     const loginData = {
       username: username,
       password: password,
     };
 
+
     setLoading(true); // Show loading spinner
+
 
     try {
       // Make the POST request to the backend
@@ -48,8 +52,10 @@ const Login = ({ navigation }) => {
       // Check for a successful login
       if (response.ok) {
         // Handle successful login
-        login(username, data.refresh); // Update the authentication state
-        setPassword(''); // Clear the password
+
+        const { access, refresh } = data;
+        login(username, access, refresh);
+
         Alert.alert('Login Successful', 'Welcome!');
         navigation.navigate('Home'); // Navigate to the Home screen
       } else {
@@ -58,10 +64,12 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       // Handle network or other errors
+
       console.error('Login error:', error.message || error);
       Alert.alert('Error', 'An error occurred. Please try again later.');
     } finally {
       setLoading(false); // Hide loading spinner
+
     }
   };
 
