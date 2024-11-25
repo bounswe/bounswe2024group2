@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../styles/Login.css";
 import bullBearIcon from "../../assets/icon-bare-700.png";
 import axios from "axios";
@@ -6,35 +6,45 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode";
+import CircleAnimation from "../CircleAnimation";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const loadingTimeout = useRef(null);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
+    setLoading(false);
 
     const loginData = {
       username: username,
       password: password,
     };
 
+    loadingTimeout.current = setTimeout(() => {
+      setLoading(true);
+    }, 1000); 
+
     try {
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/login/`,
         loginData,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { 
+            "Content-Type": "application/json" },
         }
       );
 
-      const { access, refresh } = response.data;
+      clearTimeout(loadingTimeout.current);
+      setLoading(false);
 
+      const { access, refresh } = response.data;
       // console.log("token expiration", getTokenExpiration(access));
 
       // Storing tokens in localStorage
@@ -47,10 +57,12 @@ function Login() {
 
       // Display success toast
       toast.success("Login successful!");
-
+      
       // Navigating to the home page if login successful
       navigate("/home");
     } catch (error) {
+      clearTimeout(loadingTimeout.current);
+      setLoading(false);
       console.error("Login failed!", error);
       toast.error(
         "Login failed! Please ensure that your username and password are correct."
@@ -113,18 +125,23 @@ function Login() {
       console.error("Failed to refresh token", error);
       toast.error("Failed to refresh token. Please log in again.");
       // Optionally, log the user out if refresh fails
+
+      clearTimeout(loadingTimeout.current);
+      setLoading(false);
+
+      toast.error("Login failed! Please ensure that your username and password are correct.");
     }
-  }
+  };
 
   return (
     <div className="login-container">
+      {loading && <CircleAnimation />} {}
       <div className="left-side">
         <div className="logo-container">
-          <img
+          <img 
             src={bullBearIcon}
-            alt="Bull and Bear Icon"
-            className="app-logo"
-          />
+            alt="Bull and Bear Icon" 
+            className="app-logo" />
           <h1 className="app-name">Bull&Bear</h1>
         </div>
       </div>

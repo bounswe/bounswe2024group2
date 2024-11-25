@@ -19,6 +19,7 @@ from onboarding.serializers import *
 from rest_framework import generics
 from rest_framework import status
 from onboarding.utils import Util
+from rest_framework.decorators import action
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -95,7 +96,46 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (AllowAny,)
+
+    def list(self, request):
+        currencies = self.get_queryset()
+        serializer = self.get_serializer(currencies, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        currency = self.get_object()
+        currency.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'], url_path='(?P<username>[^/.]+)')
+    def get_by_username(self, request, username=None):
+        try:
+            user = self.get_queryset().get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -127,4 +167,36 @@ class LogoutView(generics.GenericAPIView):
         
         return Response({"error": "No Authorization Header"}, status=status.HTTP_400_BAD_REQUEST)
 
-        
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request):
+        currencies = self.get_queryset()
+        serializer = self.get_serializer(currencies, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        currency = self.get_object()
+        currency.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

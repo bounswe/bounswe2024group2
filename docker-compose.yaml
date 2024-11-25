@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   mysql-db:
     image: mysql:latest
@@ -46,8 +44,6 @@ services:
       EMAIL_PORT: '1025'      
       EMAIL_HOST_USER: 'test'  
       EMAIL_HOST_PASSWORD: 'test'
-    env_file:
-      .env
     volumes:
       - ./backend:/backend
     ports:
@@ -65,8 +61,6 @@ services:
     container_name: frontend
     command: sh -c "npm start"
     restart: always
-    env_file:
-      .env
     environment:
       REACT_APP_API_BASE_URL: 'http://0.0.0.0:8000'
     ports:

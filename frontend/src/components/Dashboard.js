@@ -4,11 +4,15 @@ import "../styles/Dashboard.css";
 import { FaUserCircle } from "react-icons/fa";
 import bullBearIcon from "../assets/icon-bare-700.png";
 import { toast } from "react-toastify";
+import { FaMoon, FaSun } from "react-icons/fa";
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+  const [darkMode, setDarkMode] = useState(false);
+
+
 
   useEffect(() => {
     // Check if access token exists in localStorage
@@ -23,6 +27,12 @@ const Dashboard = () => {
     } else {
       setIsLoggedIn(false); // User is not logged in
     }
+
+    const storedDarkMode = localStorage.getItem("darkMode");
+    const isDarkMode = storedDarkMode === "true";
+    setDarkMode(isDarkMode);
+    document.body.classList.toggle("dark-mode", isDarkMode);
+    
   }, []);
 
   const handleSignIn = () => {
@@ -46,6 +56,13 @@ const Dashboard = () => {
 
   const handleProfile = () => {
     navigate("/profile");
+  };
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    document.body.classList.toggle("dark-mode", newDarkMode);
+    localStorage.setItem("darkMode", newDarkMode); // Save preference in localStorage
   };
 
   return (
@@ -86,6 +103,9 @@ const Dashboard = () => {
               <button onClick={handleSignOut} className="auth-button">
                 Sign Out
               </button>
+              <button onClick={toggleDarkMode} className="custom-button">
+                {darkMode ? <FaMoon /> : <FaSun />}
+              </button>
             </div>
           ) : (
             <div className="auth-buttons">
@@ -94,6 +114,9 @@ const Dashboard = () => {
               </button>
               <button onClick={handleRegister} className="auth-button">
                 Register
+              </button>
+              <button onClick={toggleDarkMode} className="custom-button">
+              {darkMode ? <FaMoon /> : <FaSun />}
               </button>
             </div>
           )}

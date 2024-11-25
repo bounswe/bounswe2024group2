@@ -1,0 +1,135 @@
+.add-assets-button {
+    background-color: var(--color-primary-500);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-neutral-white);
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.add-assets-button:hover {
+    background-color: var(--color-primary-700);
+}
+
+.create-portfolio-button {
+    background-color: var(--color-primary-900);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-neutral-white);
+    cursor: pointer;
+    font-size: large;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.create-portfolio-button:hover {
+    background-color: var(--color-primary-700);
+}
+
+.empty-assets {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
+.empty-assets button {
+    background-color: var(--color-primary-500);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-neutral-white);
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.empty-assets button:hover {
+    background-color: var(--color-primary-700);
+}
+
+.empty-portfolio {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.green {
+    background-color: var(--color-success-300);
+}
+
+.portfolio-bar {
+    align-items: center;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.portfolio-card {
+    background-color: var(--color-neutral-100);
+     border: 1px solid var(--border-light);
+    border-radius: 8px;
+    color: var(--color-neutral-800);
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.portfolio-chart {
+    background-color: var(--color-neutral-100);
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.portfolio-content {
+    background-color: var(--color-neutral-white);
+    border-radius: 8px;
+}
+
+.portfolio-layout {
+    background-color: var(--color-neutral-100);
+    display: flex;
+    width: 100%;
+}
+
+.portfolio-page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px;
+    width: 100%;
+}
+
+.portfolio-section {
+    background-color: var(--color-neutral-100);
+    flex: 1;
+    padding: 20px 32px;
+    width: 100%;
+}
+
+.portfolio-tab {
+    background-color: var(--color-neutral-100);
+     border: 1px solid var(--border-light);
+    border-radius: 5px;
+    color: var(--color-neutral-800);
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.portfolio-tab.selected {
+    background-color: var(--color-neutral-300);
+     border: 1px solid var(--border-light);
+    color: var(--color-neutral-800);
+}
+
+.red {
+    background-color: var(--color-error-300);
+}
+
+.section-title {
+    color: var(--color-primary-700);
+    font-size: 2rem;
+    margin: 20px 0;
+    text-align: left;
+}
