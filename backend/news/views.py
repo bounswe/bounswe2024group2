@@ -27,7 +27,7 @@ class NewsView(generics.CreateAPIView):
         feed = feedparser.parse(url)
 
         response = []
-        for entry in feed.entries:
+        for entry in feed.get("entries"):
             response_entry = {
                     "title": entry.get("title", "No title available"),
                     "link": entry.get("link", "#"),
