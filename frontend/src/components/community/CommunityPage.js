@@ -18,7 +18,9 @@ const CommunityPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("http://159.223.28.163:30002/posts"); // Replace with your API endpoint
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/posts`
+        );
         const transformedPosts = response.data.map((post) => ({
           "post-id": post.id,
           user: post.author.username || "Unknown", // Default if author is not found

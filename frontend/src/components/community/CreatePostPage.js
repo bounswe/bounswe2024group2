@@ -102,7 +102,7 @@ const CreatePostPage = () => {
 
     try {
       const response = await axios.post(
-        "http://159.223.28.163:30002/posts/",
+        `${process.env.REACT_APP_API_BASE_URL}/posts/`,
         postData,
         { headers }
       );
