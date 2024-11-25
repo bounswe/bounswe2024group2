@@ -95,7 +95,36 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (AllowAny,)
+
+    def list(self, request):
+        currencies = self.get_queryset()
+        serializer = self.get_serializer(currencies, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk=None):
+        currency = self.get_object()
+        serializer = self.get_serializer(currency, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        currency = self.get_object()
+        currency.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)

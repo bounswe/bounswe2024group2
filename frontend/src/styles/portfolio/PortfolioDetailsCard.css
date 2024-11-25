@@ -1,0 +1,45 @@
+.detail-icon {
+    margin: 0 5px
+}
+
+.detail-item {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.detail-value {
+    flex: 1;
+    font-weight: bold;
+    margin-left: 10px;
+    text-align: right;
+}
+
+.loss {
+    background-color: var(--color-error-300);
+}
+
+.portfolio-detail {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.portfolio-details {
+    border-radius: 8px;
+    padding: 20px;
+    width: 50%;
+}
+
+.portfolio-details-card {
+    background-color: var(--color-neutral-100);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.profit {
+    background-color: var(--color-success-300);
+}
