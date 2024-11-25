@@ -3,6 +3,7 @@ import NewsCard from './NewsCard';
 import FilterButtons from './FilterButtons';
 import '../../styles/news/NewsPage.css';
 import '../../styles/Page.css';
+import { fetchNews } from '../../service/newsService';
 
 const mockNewsData = [
     {
@@ -92,16 +93,40 @@ const mockRssFeedData = [
 ];
 
 
+
 const NewsPage = () => {
+
     const [newsData, setNewsData] = useState([]);
     const [rssNewsData, setRssNewsData] = useState([]);
     const all = 'All';
     const [selectedCategory, setSelectedCategory] = useState(all);
     const [selectedRssCategory, setSelectedRssCategory] = useState(all);
+    const displayLimit = 12; // Limit number of news items to display
 
     useEffect(() => {
-        setNewsData(mockNewsData);
-        setRssNewsData(mockRssFeedData);
+        const loadNews = async () => {
+            try {
+                const data = await fetchNews('cryptocurrency'); // Pass the desired feed_name
+                setNewsData(data);
+            } catch (err) {
+                console.error('Error fetching news:', err);
+                setNewsData(mockNewsData);
+            }
+        };
+        loadNews();
+    }, []);
+
+    useEffect(() => {
+        const loadNews = async () => {
+            try {
+                const data = await fetchNews('financial times'); // Pass the desired feed_name
+                setRssNewsData(data);
+            } catch (err) {
+                console.error('Error fetching news:', err);
+                setRssNewsData(mockNewsData);
+            }
+        };
+        loadNews();
     }, []);
 
     const newsCategories = [all, ...new Set(mockNewsData.map(news => news.category))];
@@ -109,11 +134,11 @@ const NewsPage = () => {
 
     const filteredNews = newsData.filter((news) =>
         selectedCategory === all ? true : news.category === selectedCategory
-    );
+    ).slice(0, displayLimit);
 
     const filteredRssNews = rssNewsData.filter((news) =>
         selectedRssCategory === all ? true : news.category === selectedRssCategory
-    );
+    ).slice(0, displayLimit);
 
     return (
         <div className="page">
@@ -123,7 +148,7 @@ const NewsPage = () => {
             </div>
 
             <div className="page-content">
-                <h3 className="news-section-title">Mock Economic News Section</h3>
+                <h3 className="news-section-title">Cryptocurrency Section</h3>
                 <div className="news-filter-buttons">
                     <FilterButtons categories={newsCategories} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory} />    
                 </div>
@@ -133,7 +158,7 @@ const NewsPage = () => {
                     ))}
                 </div>
 
-                <h3 className="news-section-title">Mock RSS Feed Economic News Section</h3>
+                <h3 className="news-section-title">Financial Section</h3>
                 <div className="news-filter-buttons">
                     <FilterButtons categories={rssCategories} setSelectedCategory={setSelectedRssCategory} selectedCategory={selectedRssCategory} />
                 </div>

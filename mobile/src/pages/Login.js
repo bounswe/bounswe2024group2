@@ -7,18 +7,23 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useAuth } from './context/AuthContext'; // Import AuthContext
+
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false); // State for loading spinner
   const { login } = useAuth(); // Access the login function from AuthContext
 
   const handleLogin = async () => {
-    // Replace with your backend URL
+
     const url = 'http://159.223.28.163:30002/login/';
+
 
     // Login data
     const loginData = {
@@ -26,12 +31,16 @@ const Login = ({ navigation }) => {
       password: password,
     };
 
+
+    setLoading(true); // Show loading spinner
+
+
     try {
       // Make the POST request to the backend
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
@@ -43,8 +52,10 @@ const Login = ({ navigation }) => {
       // Check for a successful login
       if (response.ok) {
         // Handle successful login
+
         const { access, refresh } = data;
         login(username, access, refresh);
+
         Alert.alert('Login Successful', 'Welcome!');
         navigation.navigate('Home'); // Navigate to the Home screen
       } else {
@@ -53,8 +64,12 @@ const Login = ({ navigation }) => {
       }
     } catch (error) {
       // Handle network or other errors
+
+      console.error('Login error:', error.message || error);
       Alert.alert('Error', 'An error occurred. Please try again later.');
-      console.error('Login error:', error);
+    } finally {
+      setLoading(false); // Hide loading spinner
+
     }
   };
 
@@ -105,9 +120,13 @@ const Login = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
+        {loading ? ( // Show spinner when loading
+          <ActivityIndicator size="large" color="#005AAB" style={styles.spinner} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.linkContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.linkText}>Register</Text>
@@ -193,6 +212,9 @@ const styles = StyleSheet.create({
   showPasswordText: {
     color: '#005AAB',
     fontWeight: 'bold',
+  },
+  spinner: {
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#0A2F44',

@@ -9,15 +9,16 @@ import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
-import Profile from './ProfilePage';
-import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
+
+import Profile from './ProfilePage';
+import News from './News';
+
 import Markets from './Markets';
 import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
 import { AuthProvider, useAuth } from './context/AuthContext';
-
 
 
 const Stack = createStackNavigator();
@@ -26,6 +27,7 @@ const Drawer = createDrawerNavigator();
 // Custom Header
 const CustomHeader = ({ navigation }) => {
   const { user } = useAuth();
+
 
   const handleProfileNavigation = () => {
     if (user) {
@@ -70,26 +72,9 @@ const PostStack = () => {
   )
 }
 const DrawerNavigator = () => {
-  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Replace with real data fetching logic
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false); // Set loading to false once data is loaded
-      }
-    };
-    loadData();
-  }, []);
 
 
-  if (loading) {
-    return <LoadingScreen message="Loading..." />; // Use LoadingScreen
-  }
 
     return (
         <Drawer.Navigator
@@ -127,9 +112,15 @@ const DrawerNavigator = () => {
               component={PostStack}
               options={{ headerShown: false }}   
             />
+            <Drawer.Screen
+              name="News"
+              component={News}
+              options={{ headerShown: false }}   
+            />
             
           </Drawer.Navigator>
       );
+
 };
 
 const App = () => {

@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from './context/AuthContext'; // Import AuthContext
 
-const ProfilePage = ({ navigation }) => {
+
+const Profile = ({ navigation }) => {
+
   const { user, logout } = useAuth(); // Access user and logout function from AuthContext
 
 
@@ -37,7 +39,7 @@ const ProfilePage = ({ navigation }) => {
     try {
       await logout(); // Call the logout function
       Alert.alert('Logged Out', 'You have been successfully logged out.');
-      navigation.navigate('Login&Register'); // Redirect to Login screen
+      navigation.navigate('Home'); // Redirect to Login screen
     } catch (error) {
       Alert.alert('Logout Failed', 'An error occurred during logout. Please try again.');
     }
@@ -197,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfilePage;
+export default Profile;
