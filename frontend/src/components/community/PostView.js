@@ -16,7 +16,7 @@ import {
 const PostView = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
-  const [commentText, setCommentText] = useState(""); // State for the new comment
+  const [commentText, setCommentText] = useState("");
 
   const getColorForTag = (tag) => {
     const asciiValue = tag.charCodeAt(0);
@@ -66,15 +66,15 @@ const PostView = () => {
   const handleSubmitComment = () => {
     if (commentText.trim()) {
       const newComment = {
-        "comment-id": Date.now(), // Generate unique id for the new comment
-        user: "Current User", // You can replace with actual user info
+        "comment-id": Date.now(),
+        user: "Current User",
         comment: commentText,
       };
       setPost((prevPost) => ({
         ...prevPost,
         comments: [...prevPost.comments, newComment],
       }));
-      setCommentText(""); // Clear the comment box after submission
+      setCommentText("");
     }
   };
 
@@ -157,7 +157,6 @@ const PostView = () => {
             <p className="comment-text">{comment.comment}</p>
           </div>
         ))}
-        {/* Comment box and button */}
         <div className="comment-box">
           <textarea
             value={commentText}
