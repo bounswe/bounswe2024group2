@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import log from '../utils/logger';
 
 const transformNewsItem = (newsItem) => {
     return {
@@ -21,7 +22,7 @@ export const fetchNews = async (feedName) => {
         const transformedNews = rawNews.map(transformNewsItem);
         return transformedNews;
     } catch (error) {
-        console.error('Error fetching news:', error);
+        log.error('Error fetching news:', error);
         throw error;
     }
 };
