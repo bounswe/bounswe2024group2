@@ -50,20 +50,20 @@ const CustomHeader = ({ navigation }) => {
 
 // Login & Register Stack Navigator
 const LoginStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Login" component={Login} />
-    <Stack.Screen name="Register" component={Register} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+  <Stack.Navigator >
+    <Stack.Screen name="Login" component={Login} options={{header: ({ navigation }) => <CustomHeader navigation={navigation} />}} />
+    <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
 
 const PostStack = () => {
   return (
     <ThemeProvider>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
-        <Stack.Screen name="Post" component={Post} ></Stack.Screen>
-        <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
+      <Stack.Navigator>
+        <Stack.Screen name="CommunityPage" component={Community} options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} />, }}></Stack.Screen>
+        <Stack.Screen name="Post" component={Post} options={{ headerShown: true }} ></Stack.Screen>
+        <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: true, title:"Create a post" }}></Stack.Screen>
       </Stack.Navigator>
     </ThemeProvider>
     
@@ -93,33 +93,39 @@ const DrawerNavigator = () => {
 
     return (
         <Drawer.Navigator
+        
         screenOptions={{
-          headerShown: true,
-          header: ({ navigation }) => <CustomHeader navigation={navigation} />,
+          header: ({ navigation }) => <CustomHeader navigation={navigation} />
         }}
+          
         >
             <Drawer.Screen 
               name="Home" 
-              component={Home}              
+              component={Home}  
+                       
             />
             { user  ? (
               <Drawer.Screen 
                 name="Profile" 
                 component={Profile} 
+                
               />
               ) : (
               <Drawer.Screen 
                 name="Login&Register" 
                 component={LoginStack} 
+                options={{ headerShown: false }}   
               />
             )}
             <Drawer.Screen
               name="Markets"
               component={Markets}
+              
             />
             <Drawer.Screen
               name="Community"
               component={PostStack}
+              options={{ headerShown: false }}   
             />
             
           </Drawer.Navigator>
