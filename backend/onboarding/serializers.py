@@ -52,7 +52,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email']
+        fields = ['id', 'url', 'username', 'email']
         
         
 class LogoutSerializer(serializers.Serializer):

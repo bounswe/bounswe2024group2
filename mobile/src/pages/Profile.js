@@ -1,62 +1,80 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList,ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useAuth } from './context/AuthContext'; // Import AuthContext
+
+const ProfilePage = ({navigation}) => {
+  const { user, logout } = useAuth(); // Access user and logout function from AuthContext
 
 
-const ProfilePage = () => {
+
   const badges = [
     { id: 1, title: 'Highliked' },
     { id: 2, title: 'Cretagor' },
-    
   ];
 
   const portfolios = [
     {
-        id: 1,
-        name: 'Tech Portfolio',
-        incrementRate: '15%',
-        stocks: ['ASELS', 'TUPRS', 'THYAO'], // Example Turkish stocks
-      },
-      {
-        id: 2,
-        name: 'Green Energy',
-        incrementRate: '10%',
-        stocks: ['ENKA', 'PETKM', 'SISE'],
-      },
-      {
-        id: 3,
-        name: 'Real Estate',
-        incrementRate: '5%',
-        stocks: ['GYO', 'EGEEN', 'KENT'],
-      },
+      id: 1,
+      name: 'Tech Portfolio',
+      incrementRate: '15%',
+      stocks: ['ASELS', 'TUPRS', 'THYAO'],
+    },
+    {
+      id: 2,
+      name: 'Green Energy',
+      incrementRate: '10%',
+      stocks: ['ENKA', 'PETKM', 'SISE'],
+    },
+    {
+      id: 3,
+      name: 'Real Estate',
+      incrementRate: '5%',
+      stocks: ['GYO', 'EGEEN', 'KENT'],
+    },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Call the logout function
+      Alert.alert('Logged Out', 'You have been successfully logged out.');
+      navigation.navigate('Home'); // Redirect to Login screen
+    } catch (error) {
+      Alert.alert('Logout Failed', 'An error occurred during logout. Please try again.');
+    }
+  };
 
   return (
     <View style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <Image
-          source={require("../../assets/stock-logos/Profile.png")} // Replace with your profile image URL
+          source={require('../../assets/stock-logos/Profile.png')}
           style={styles.profilePhoto}
         />
-        <Text style={styles.username}>@economistali</Text>
-        <Text style={styles.followerCount}>Followers: 150</Text>
-        <TouchableOpacity >
-            <Text style={styles.seePost} > See posts</Text>
+        <Text style={styles.username}>@{user.username}</Text>
+        <Text style={styles.followerCount}>
+          Followers: {user.followers || '0'} {/* Follower count should be rendered properly */}
+        </Text>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
 
       {/* Badges Section */}
       <View style={styles.badgesContainer}>
-        <Text style={styles.sectionTitle}> Badges</Text>
+        <Text style={styles.sectionTitle}>Badges</Text>
         <FlatList
           data={badges}
           renderItem={({ item }) => (
             <View style={styles.badge}>
-              <Image source={require("../../assets/stock-logos/badge-60.png")} height={10} width={10} resizeMode="stretch"></Image>  
+              <Image
+                source={require('../../assets/stock-logos/badge-60.png')}
+                style={styles.badgeImage}
+              />
               <Text style={styles.badgeText}>{item.title}</Text>
             </View>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
         />
@@ -65,28 +83,29 @@ const ProfilePage = () => {
       {/* Portfolio Section */}
       <ScrollView>
         <View style={styles.portfolioContainer}>
-            <Text style={styles.sectionTitle}> Portfolios</Text>
-            <FlatList
+          <Text style={styles.sectionTitle}>Portfolios</Text>
+          <FlatList
             data={portfolios}
             renderItem={({ item }) => (
-                <View style={styles.portfolioBox}>
+              <View style={styles.portfolioBox}>
                 <Text style={styles.portfolioName}>{item.name}</Text>
                 <View style={styles.incrementRateContainer}>
-                    <Text style={styles.incrementRate}>{item.incrementRate}</Text>
+                  <Text style={styles.incrementRate}>{item.incrementRate}</Text>
                 </View>
                 <Text style={styles.stocksTitle}>Stocks:</Text>
                 <View style={styles.stockList}>
-                    {item.stocks.map((stock, index) => (
-                    <Text key={index} style={styles.stockText}>{stock}</Text>
-                    ))}
+                  {item.stocks.map((stock, index) => (
+                    <Text key={index} style={styles.stockText}>
+                      {stock}
+                    </Text>
+                  ))}
                 </View>
-                </View>
+              </View>
             )}
-            keyExtractor={item => item.id.toString()}
-            />
+            keyExtractor={(item) => item.id.toString()}
+          />
         </View>
       </ScrollView>
-      
     </View>
   );
 };
@@ -115,6 +134,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
   },
+  logoutText: {
+    color: '#FF0000',
+    textDecorationLine: 'underline',
+    marginTop: 10,
+  },
   badgesContainer: {
     marginBottom: 20,
   },
@@ -128,6 +152,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginRight: 10,
+    alignItems: 'center',
+  },
+  badgeImage: {
+    width: 30,
+    height: 30,
+    marginBottom: 5,
   },
   badgeText: {
     fontSize: 14,
@@ -151,7 +181,7 @@ const styles = StyleSheet.create({
   },
   incrementRate: {
     fontSize: 14,
-    color: '#28a745', // Green color for increment rate
+    color: '#28a745',
   },
   stocksTitle: {
     fontSize: 14,
@@ -164,10 +194,6 @@ const styles = StyleSheet.create({
   stockText: {
     fontSize: 12,
     color: '#555',
-  },
-  seePost: {
-    color: '#005AAB',
-    textDecorationLine: 'underline',
   },
 });
 
