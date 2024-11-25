@@ -18,8 +18,8 @@ import PortfolioPage from "./components/portfolio/PortfolioPage.js";
 import ProfilePage from "./components/profile/ProfilePage.js";
 import NotFound from "./components/notfound/NotFound.js";
 import PostView from "./components/community/PostView.js";
+import CreatePostPage from "./components/community/CreatePostPage.js";
 import { ToastContainer } from "react-toastify";
-
 
 function App() {
   return (
@@ -35,8 +35,9 @@ function App() {
           >
             <Route path="home" element={<HomePage />} />
             <Route path="community" element={<CommunityPage />} />
+            <Route path="community/create-post" element={<CreatePostPage />}  />
             <Route path="markets" element={<MarketsPage />} />
-            <Route path="/stocks/:indexId" element={<StocksPage />} />
+            <Route path="stocks/:indexId" element={<StocksPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="portfolio" element={<PortfolioPage />} />
             <Route path="Profile" element={<ProfilePage />} />

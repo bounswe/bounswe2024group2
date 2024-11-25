@@ -158,17 +158,16 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):  
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()  # Retrieves the post instance based on the URL parameter (e.g., post ID)
+        instance = self.get_object()  
         serializer = self.get_serializer(instance)
         
-        # Customize the response to include detailed information for related fields
         data = serializer.data
         data['author'] = instance.author.id
         data['liked_by'] = [user.id for user in instance.liked_by.all()]

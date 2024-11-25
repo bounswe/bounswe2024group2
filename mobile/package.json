@@ -16,12 +16,19 @@
     "@react-navigation/stack": "^6.4.1",
     "react": "18.3.1",
     "react-native": "0.75.4",
-    "react-native-gesture-handler": "^2.12.0",
-    "react-native-reanimated": "^3.0.0-rc.3",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-charts-wrapper": "^0.6.0",
+    "react-native-gesture-handler": "^2.21.2",
+    "react-native-haptic-feedback": "^2.3.3",
+    "react-native-paper": "^5.12.5",
+    "react-native-reanimated": "^3.16.2",
     "react-native-safe-area-context": "^4.7.1",
     "react-native-screens": "^3.23.0",
-    "react-native-svg": "^15.8.0",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-svg": "^15.9.0",
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-wagmi-charts": "^2.6.0",
+    "react-native-webview": "^13.12.4",
+    "victory-native": "^41.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

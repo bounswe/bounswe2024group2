@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/Portfolio.css';
+import '../../styles/portfolio/AssetList.css';
 import mockStocks from '../../data/mockStocks';
 
 const AssetList = ({ assets, setAssets }) => {
