@@ -12,7 +12,6 @@ const CommunityPage = () => {
   const [sortOrder, setSortOrder] = useState("dsc");
   const [searchActive, setSearchActive] = useState(false);
   const [posts, setPosts] = useState([]);
-  s;
   const navigate = useNavigate();
 
   useEffect(() => {
