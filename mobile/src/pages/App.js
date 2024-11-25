@@ -12,6 +12,7 @@ import ForgotPassword from './ForgotPassword';
 import Home from './Home';
 import Profile from './Profile';
 import News from './News';
+import Markets from './Markets';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -67,6 +68,7 @@ const DrawerNavigator = () => {
             <Drawer.Screen name="Login&Register" component={LoginStack} />
           )}
           <Drawer.Screen name="News" component={News} />
+          <Drawer.Screen name="Markets" component={Markets} />
         </Drawer.Navigator>
   );
 };
