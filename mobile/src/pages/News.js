@@ -70,8 +70,8 @@ const fetchNews = async (feedName) => {
           published: publishedDate, // Include the published date for sorting
           title: decodeHtmlEntities(item.title),
           category: feedName.toLowerCase(), // Normalize category to lowercase
-          description: item.link, // Use link as description or adapt based on needs
-          imageUrl: 'https://via.placeholder.com/150', // Placeholder image
+          description: item.description, // Use link as description or adapt based on needs
+          imageUrl: item.image, // Placeholder image
         };
       })
       .sort((a, b) => b.published - a.published); // Sort by published date (newest first)

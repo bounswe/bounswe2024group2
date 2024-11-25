@@ -115,7 +115,7 @@ const DrawerNavigator = () => {
             <Drawer.Screen
               name="News"
               component={News}
-              options={{ headerShown: false }}   
+               
             />
             
           </Drawer.Navigator>
