@@ -1,7 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const Community = ({navigation}) => {
+    /*
     const posts = [
         {
             id: 1,
@@ -26,21 +30,94 @@ const Community = ({navigation}) => {
             comments: 8
         }
     ];
+*/
+    const [posts, setPosts] = useState([]);
+    const fetchPosts = async () => {
+        const baseURL = 'http://159.223.28.163:30002';
+        const postURL = baseURL + '/posts/';
+    
+        try {
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
+                },
+            });
+    
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                //console.log('Response:', jsonResponse);
+                setPosts(jsonResponse);
+               
+            } else {
+                const errorResponse = await response.json();
+                console.log('Error Response:', errorResponse);
+              
+                throw new Error('Network response was not ok.');
+                
+            }
+        } catch (error) {
+          
+            console.error('Error:', error);
+        }
 
-    const handleViewPost = () => {
-        navigation.navigate('Post');
-    }
+
+        
+      };
+      useFocusEffect(
+        React.useCallback(() => {
+          fetchPosts();
+        }, [])
+      );
+
+
+    const handleViewPost = (post) => {
+        navigation.navigate('Post', { postId: post.id });
+    };
 
     const handleCreatePost = () => {
         navigation.navigate('CreatePost');
     }
 
+    const renderItem = ({ item: post }) => (
+        <View key={post.id} style={styles.postCard}>
+            <Text style={styles.postTitle}>{post.title}</Text>
+            <Text style={styles.postMeta}>
+                Published on: {post.date} by {post.author}
+            </Text>
+            <Text style={styles.postContent}>{post.content}</Text>
+            <View style={styles.tagsContainer}>
+                {post.tags.map((tag) => (
+                    <Text key={tag} style={styles.tag}>{tag}</Text>
+                ))}
+            </View>
+            {post.graph && (
+                <Image source={{ uri: post.graph }} style={styles.graph} />
+            )}
+            <View style={styles.actions}>
+                <TouchableOpacity style={styles.actionButton}>
+                    <Text>👍 {post.likes}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton}>
+                    <Text>💬 {post.comments}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={styles.viewPostButton}
+                    onPress={() => handleViewPost(post)}
+                >
+                    <Text style={styles.viewPostButtonText}>View Post</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <Text style={styles.header}>Community</Text>
             <TouchableOpacity 
                 style={styles.createPostButton} 
-                onPress={() => handleCreatePost()}
+                onPress={handleCreatePost}
             >
                 <Text style={styles.createPostButtonText}>Create A Post</Text>
             </TouchableOpacity>
@@ -48,38 +125,12 @@ const Community = ({navigation}) => {
                 style={styles.searchBar}
                 placeholder="Search posts..."
             />
-            {posts.map((post) => (
-                <View key={post.id} style={styles.postCard}>
-                    <Text style={styles.postTitle}>{post.title}</Text>
-                    <Text style={styles.postMeta}>
-                        Published on: {post.date} by {post.author}
-                    </Text>
-                    <Text style={styles.postContent}>{post.content}</Text>
-                    <View style={styles.tagsContainer}>
-                        {post.tags.map((tag) => (
-                            <Text key={tag} style={styles.tag}>{tag}</Text>
-                        ))}
-                    </View>
-                    {post.graph && (
-                        <Image source={{ uri: post.graph }} style={styles.graph} />
-                    )}
-                    <View style={styles.actions}>
-                        <TouchableOpacity style={styles.actionButton}>
-                            <Text>👍 {post.likes}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.actionButton}>
-                            <Text>💬 {post.comments}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={styles.viewPostButton}
-                            onPress={() => handleViewPost()}
-                        >
-                            <Text style={styles.viewPostButtonText}>View Post</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            ))}
-        </ScrollView>
+            <FlatList
+                data={posts}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+            />
+        </View>
     );
 };
 
