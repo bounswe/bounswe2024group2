@@ -137,6 +137,7 @@
   color: var(--color-neutral-white);
   font-size: 1rem;
   font-weight: bold;
+  margin-right: 10px;
 }
 
 .user-profile {
