@@ -103,6 +103,9 @@ const Dashboard = () => {
               <button onClick={handleSignOut} className="auth-button">
                 Sign Out
               </button>
+              <button onClick={toggleDarkMode} className="custom-button">
+                {darkMode ? <FaMoon /> : <FaSun />}
+              </button>
             </div>
           ) : (
             <div className="auth-buttons">
