@@ -13,6 +13,9 @@ import Home from './Home';
 import Profile from './Profile';
 import News from './News';
 import Markets from './Markets';
+import Community from './Community';
+import Post from './Post';
+import CreatePost from './CreatePost';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,8 +31,7 @@ const CustomHeader = ({ navigation }) => {
       navigation.navigate('Login&Register');
     }
   };
-
-  return (
+    return (
     <View style={styles.customHeader}>
       <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
         <MaterialIcons name="menu" size={30} color="white" />
@@ -41,6 +43,20 @@ const CustomHeader = ({ navigation }) => {
     </View>
   );
 };
+
+    const PostRelated = () => {
+      return (
+        <ThemeProvider>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="CommunityPage" component={Community} ></Stack.Screen>
+            <Stack.Screen name="Post" component={Post} ></Stack.Screen>
+            <Stack.Screen name="CreatePost" component={CreatePost} ></Stack.Screen>
+          </Stack.Navigator>
+        </ThemeProvider>
+        
+      )
+    }
+
 
 // Login & Register Stack Navigator
 const LoginStack = () => (
@@ -61,6 +77,7 @@ const DrawerNavigator = () => {
             header: ({ navigation }) => <CustomHeader navigation={navigation} />,
           }}
         >
+
           <Drawer.Screen name="Home" component={Home} />
           { user  ? (
             <Drawer.Screen name="Profile" component={Profile} />
@@ -69,6 +86,10 @@ const DrawerNavigator = () => {
           )}
           <Drawer.Screen name="News" component={News} />
           <Drawer.Screen name="Markets" component={Markets} />
+          <Drawer.Screen
+              name="Community"
+              component={PostRelated}
+            />
         </Drawer.Navigator>
   );
 };
@@ -82,6 +103,7 @@ const App = () => {
       </NavigationContainer>
     </AuthProvider>
   );
+
 };
 
 const styles = StyleSheet.create({
