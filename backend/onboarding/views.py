@@ -19,6 +19,7 @@ from onboarding.serializers import *
 from rest_framework import generics
 from rest_framework import status
 from onboarding.utils import Util
+from rest_framework.decorators import action
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -124,6 +125,16 @@ class UserViewSet(viewsets.ModelViewSet):
         currency = self.get_object()
         currency.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'], url_path='(?P<username>[^/.]+)')
+    def get_by_username(self, request, username=None):
+        try:
+            user = self.get_queryset().get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
 
 
 class LogoutView(generics.GenericAPIView):
