@@ -14,3 +14,4 @@ django-cors-headers==4.5.0
 Pillow
 feedparser
 beautifulsoup4
+yfinance
