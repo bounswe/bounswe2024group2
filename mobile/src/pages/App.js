@@ -10,6 +10,7 @@ import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
 import Profile from './Profile';
+import News from './News';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
 
@@ -87,6 +88,10 @@ const App = () => {
             <Sidebar.Screen 
               name="Login&Register" 
               component={LoginRelated} 
+            />
+            <Sidebar.Screen 
+              name="News" 
+              component={News} 
             />
           </Sidebar.Navigator>
         </NavigationContainer>
