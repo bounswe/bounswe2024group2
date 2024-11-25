@@ -7,8 +7,8 @@ const CreatePost = ({navigation}) => {
   const { user, accessToken, refreshToken } = useAuth();
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
-  const [tags, setTags] = useState(["Lilium", "Hisse Analizi", "Amerika"]);
-
+  //const [tags, setTags] = useState(["Lilium", "Hisse Analizi", "Amerika"]);
+  const [tags, setTags] = useState([]);
   const removeTag = (tag) => {
     setTags(tags.filter((t) => t !== tag));
   };
