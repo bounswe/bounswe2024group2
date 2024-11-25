@@ -18,7 +18,6 @@ const CreatePost = ({navigation}) => {
     const postData = {
         title: postTitle,
         content: postContent,
-        author: 1,
         liked_by:[],
         tags:tags,
         portfolios:[]
@@ -44,12 +43,12 @@ const CreatePost = ({navigation}) => {
 
         if (response.ok) {
             const jsonResponse = await response.json();
-            console.log('Response:', jsonResponse);
+            //console.log('Response:', jsonResponse);
             navigation.navigate("CommunityPage");
            
         } else {
           const errorResponse = await response.json();
-        console.log('Error Response:', errorResponse);
+          console.log('Error Response:', errorResponse);
           
           throw new Error('Network response was not ok.');
             
