@@ -27,7 +27,7 @@ const PostView = () => {
     const fetchBackendPost = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL}/${postId}/`
+          `${process.env.REACT_APP_API_BASE_URL}/posts/${postId}/`
         );
         if (!response.ok) throw new Error("Failed to fetch post");
         const backendPost = await response.json();
