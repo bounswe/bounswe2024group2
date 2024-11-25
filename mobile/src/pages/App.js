@@ -1,107 +1,87 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
 import Profile from './Profile';
 import News from './News';
-import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
-import { ThemeProvider } from '../themes/ThemeProvider';
 import Markets from './Markets';
 
-
 const Stack = createStackNavigator();
-const Sidebar = createDrawerNavigator();
+const Drawer = createDrawerNavigator();
 
-const navigateProfile = (navigation, username) => {
-  navigation.navigate("Profile", { username });
+// Custom Header
+const CustomHeader = ({ navigation }) => {
+  const { user } = useAuth();
+
+  const handleProfileNavigation = () => {
+    if (user) {
+      navigation.navigate('Profile', { username: user.username });
+    } else {
+      navigation.navigate('Login&Register');
+    }
+  };
+
+  return (
+    <View style={styles.customHeader}>
+      <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+        <MaterialIcons name="menu" size={30} color="white" />
+      </TouchableOpacity>
+      <Text style={styles.logoText}>Bull&Bear</Text>
+      <TouchableOpacity onPress={handleProfileNavigation} style={styles.headerButton}>
+        <MaterialIcons name="account-circle" size={30} color="white" />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-const CustomHeader = ({ navigation }) => (
-  <View style={styles.customHeader}>
-    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
-      <MaterialIcons name="menu" size={30} color="white" />
-    </TouchableOpacity>
-    <Text style={styles.logoText}>Bull&Bear</Text>
-    <TouchableOpacity onPress={() => navigateProfile(navigation)} style={styles.headerButton}>
-      <MaterialIcons name="account-circle" size={30} color="white" />
-    </TouchableOpacity>
-  </View>
+// Login & Register Stack Navigator
+const LoginStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Register" component={Register} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+  </Stack.Navigator>
 );
-
-const App = () => {
-  const [loading, setLoading] = useState(true);
-    const LoginRelated = () => {
-      return (
-        <ThemeProvider>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Login" component={Login} ></Stack.Screen>
-            <Stack.Screen name="Register" component={Register} ></Stack.Screen>
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
-          </Stack.Navigator>
-        </ThemeProvider>
-        
-      )
-    }
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Replace with real data fetching logic
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false); // Set loading to false once data is loaded
-      }
-    };
-    loadData();
-  }, []);
-
-
-  if (loading) {
-    return <LoadingScreen message="Loading..." />; // Use LoadingScreen
-  }
-
-    return (
-      <ThemeProvider>
-        <NavigationContainer>
-          <Sidebar.Navigator
-        screenOptions={{
-          headerShown: true,
-          header: ({ navigation }) => <CustomHeader navigation={navigation} />,
-        }}
+const DrawerNavigator = () => {
+  
+  const { user } = useAuth();
+  
+  return (
+  <Drawer.Navigator
+          screenOptions={{
+            headerShown: true,
+            header: ({ navigation }) => <CustomHeader navigation={navigation} />,
+          }}
         >
-            <Sidebar.Screen 
-              name="Home" 
-              component={Home}              
-            />
-            <Sidebar.Screen 
-              name="Profile" 
-              component={Profile}               
-            />
-            <Sidebar.Screen 
-              name="Login&Register" 
-              component={LoginRelated} 
-            />
-            <Sidebar.Screen
-              name="Markets"
-              component={Markets}
-            />
-            <Sidebar.Screen 
-              name="News" 
-              component={News} 
-            />
-          </Sidebar.Navigator>
-        </NavigationContainer>
-        </ThemeProvider>
-      );
+          <Drawer.Screen name="Home" component={Home} />
+          { user  ? (
+            <Drawer.Screen name="Profile" component={Profile} />
+          ) : (
+            <Drawer.Screen name="Login&Register" component={LoginStack} />
+          )}
+          <Drawer.Screen name="News" component={News} />
+          <Drawer.Screen name="Markets" component={Markets} />
+        </Drawer.Navigator>
+  );
+};
+const App = () => {
+   // Access authentication state
+
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </AuthProvider>
+  );
 };
 
 const styles = StyleSheet.create({
