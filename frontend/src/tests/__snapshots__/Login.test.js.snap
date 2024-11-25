@@ -1,0 +1,416 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Login correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="news-page"
+  >
+    <div
+      class="news-header"
+    >
+      <h1
+        class="news-title"
+      >
+        Economic News
+      </h1>
+      <h2
+        class="news-subtitle"
+      >
+        Your daily updates on economic trends
+      </h2>
+    </div>
+    <div
+      class="news-content"
+    >
+      <h3
+        class="section-title"
+      >
+        Mock Economic News Section
+      </h3>
+      <div
+        class="filter-buttons"
+      >
+        <div
+          class="filter-buttons"
+        >
+          <button
+            class="filter-button selected"
+          >
+            All
+          </button>
+          <button
+            class="filter-button "
+          >
+            Global Economy
+          </button>
+          <button
+            class="filter-button "
+          >
+            Stock Market
+          </button>
+          <button
+            class="filter-button "
+          >
+            Cryptocurrency
+          </button>
+          <button
+            class="filter-button "
+          >
+            Inflation
+          </button>
+          <button
+            class="filter-button "
+          >
+            Job Market
+          </button>
+        </div>
+      </div>
+      <div
+        class="scrollable-section"
+      >
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              Economic Times
+            </span>
+            <span
+              class="card-time"
+            >
+              2 hours ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                GDP Growth Forecasts Revised
+              </h3>
+              <p
+                class="card-description"
+              >
+                Recent reports indicate that GDP growth forecasts for major economies have been revised upwards.
+              </p>
+            </div>
+            <div
+              class="card-icon"
+            >
+              <img
+                alt="Economic Times"
+                src="https://www.thisiscolossal.com/wp-content/uploads/2024/10/jonk-1.jpg"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              Market Watch
+            </span>
+            <span
+              class="card-time"
+            >
+              3 hours ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Major Indices Reach All-Time Highs
+              </h3>
+              <p
+                class="card-description"
+              >
+                The stock market sees a significant uptick as major indices reach all-time highs.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              CoinDesk
+            </span>
+            <span
+              class="card-time"
+            >
+              1 hour ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Bitcoin Surges Past $60,000
+              </h3>
+              <p
+                class="card-description"
+              >
+                Bitcoin's value has surged past $60,000 amid increased institutional adoption.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              Bloomberg
+            </span>
+            <span
+              class="card-time"
+            >
+              4 hours ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Rising Costs Impact Consumers
+              </h3>
+              <p
+                class="card-description"
+              >
+                Inflation rates are rising, leading to increased costs for consumers on everyday goods.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              The Wall Street Journal
+            </span>
+            <span
+              class="card-time"
+            >
+              5 hours ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Unemployment Rates Hit Record Low
+              </h3>
+              <p
+                class="card-description"
+              >
+                The job market strengthens as unemployment rates hit a record low across the nation.
+              </p>
+            </div>
+            <div
+              class="card-icon"
+            >
+              <img
+                alt="The Wall Street Journal"
+                src="https://1finance.co.in/magazine/wp-content/uploads/2024/01/Blog-5-b-scaled.jpg"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <h3
+        class="section-title"
+      >
+        Mock RSS Feed Economic News Section
+      </h3>
+      <div
+        class="filter-buttons"
+      >
+        <div
+          class="filter-buttons"
+        >
+          <button
+            class="filter-button selected"
+          >
+            All
+          </button>
+          <button
+            class="filter-button "
+          >
+            Trade
+          </button>
+          <button
+            class="filter-button "
+          >
+            Market Trends
+          </button>
+          <button
+            class="filter-button "
+          >
+            Federal Reserve
+          </button>
+        </div>
+      </div>
+      <div
+        class="scrollable-section"
+      >
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              Reuters
+            </span>
+            <span
+              class="card-time"
+            >
+              3 days ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                New Agreements Boost International Trade
+              </h3>
+              <p
+                class="card-description"
+              >
+                New trade agreements are set to boost international trade among participating countries.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              Forbes
+            </span>
+            <span
+              class="card-time"
+            >
+              2 days ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Emerging Markets on the Rise
+              </h3>
+              <p
+                class="card-description"
+              >
+                Emerging markets are gaining traction as investors look for new opportunities.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card"
+        >
+          <div
+            class="card-header"
+          >
+            <span
+              class="card-source"
+            >
+              CNBC
+            </span>
+            <span
+              class="card-time"
+            >
+              1 day ago
+            </span>
+          </div>
+          <div
+            class="card-body"
+          >
+            <div
+              class="card-text"
+            >
+              <h3
+                class="card-title"
+              >
+                Interest Rates Held Steady
+              </h3>
+              <p
+                class="card-description"
+              >
+                The Federal Reserve has announced that interest rates will remain steady for the foreseeable future.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

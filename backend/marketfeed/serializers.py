@@ -100,7 +100,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
     liked_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
     portfolios = serializers.PrimaryKeyRelatedField(queryset=Portfolio.objects.all(), many=True, required=False)
@@ -130,7 +130,6 @@ class PostSerializer(serializers.ModelSerializer):
 
         post = Post.objects.create(**validated_data)
 
-        #Many-to-Many relationships
         post.liked_by.set(liked_by)
         post.tags.set(tags)
         post.portfolios.set(portfolios)

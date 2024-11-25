@@ -10,6 +10,7 @@ import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import Home from './Home';
 import Profile from './Profile';
+import News from './News';
 import LoadingScreen from './LoadingScreen'; // Import LoadingScreen
 import { ThemeProvider } from '../themes/ThemeProvider';
 import Markets from './Markets';
@@ -92,6 +93,10 @@ const App = () => {
             <Sidebar.Screen
               name="Markets"
               component={Markets}
+            />
+            <Sidebar.Screen 
+              name="News" 
+              component={News} 
             />
           </Sidebar.Navigator>
         </NavigationContainer>
