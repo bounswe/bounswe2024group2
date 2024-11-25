@@ -9,7 +9,7 @@ const transformNewsItem = (newsItem) => {
         rssUrl: newsItem.link,
         category: "General", 
         publishedAt: newsItem.published ? new Date(newsItem.published).toLocaleDateString() : "Unknown",
-        coverImageUrl: newsItem.coverImageUrl || "",
+        coverImageUrl: newsItem.image || "",
         source: newsItem.author ? newsItem.author.split(' by ')[0] || newsItem.author : "Unknown", 
     };
 };

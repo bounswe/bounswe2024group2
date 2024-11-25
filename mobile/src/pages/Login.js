@@ -7,45 +7,69 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
-import LoadingScreen from './LoadingScreen'; // Import the LoadingScreen component
+import { useAuth } from './context/AuthContext'; // Import AuthContext
+
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
+
+  const [loading, setLoading] = useState(false); // State for loading spinner
+  const { login } = useAuth(); // Access the login function from AuthContext
 
   const handleLogin = async () => {
-    const url = 'http://159.223.28.163:30002/login/';
-    const loginData = { username, password };
 
-    setLoading(true); // Start loading
+    const url = 'http://159.223.28.163:30002/login/';
+
+
+    // Login data
+    const loginData = {
+      username: username,
+      password: password,
+    };
+
+
+    setLoading(true); // Show loading spinner
+
 
     try {
+      // Make the POST request to the backend
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
         },
         body: JSON.stringify(loginData),
       });
 
+      // Parse the JSON response
       const data = await response.json();
 
+      // Check for a successful login
       if (response.ok) {
+        // Handle successful login
+
+        const { access, refresh } = data;
+        login(username, access, refresh);
+
         Alert.alert('Login Successful', 'Welcome!');
-        navigation.navigate('Home', { username });
+        navigation.navigate('Home'); // Navigate to the Home screen
       } else {
+        // Handle login failure
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
       }
     } catch (error) {
+      // Handle network or other errors
+
+      console.error('Login error:', error.message || error);
       Alert.alert('Error', 'An error occurred. Please try again later.');
-      console.error('Login error:', error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); // Hide loading spinner
+
     }
   };
 
@@ -55,11 +79,6 @@ const Login = ({ navigation }) => {
       setShowPassword(false); // Reset to hidden when input is cleared
     }
   };
-
-  // Show loading screen if loading
-  if (loading) {
-    return <LoadingScreen message="Logging in..." />;
-  }
 
   return (
     <View style={styles.container}>
@@ -88,7 +107,7 @@ const Login = ({ navigation }) => {
             placeholderTextColor="#999999"
             value={password}
             onChangeText={handlePasswordChange}
-            secureTextEntry={!showPassword}
+            secureTextEntry={!showPassword} // Always start with hidden password
           />
           {password.length > 0 && (
             <TouchableOpacity
@@ -101,9 +120,13 @@ const Login = ({ navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
+        {loading ? ( // Show spinner when loading
+          <ActivityIndicator size="large" color="#005AAB" style={styles.spinner} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.linkContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.linkText}>Register</Text>
@@ -168,6 +191,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    position: 'relative',
     marginBottom: 10,
   },
   passwordInput: {
@@ -188,6 +212,9 @@ const styles = StyleSheet.create({
   showPasswordText: {
     color: '#005AAB',
     fontWeight: 'bold',
+  },
+  spinner: {
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#0A2F44',
