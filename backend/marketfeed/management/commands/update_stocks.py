@@ -20,7 +20,6 @@ class Command(BaseCommand):
             response = requests.get(url)
             response.raise_for_status()
             stocks = response.json().get('data', [])
-            # name, symbol, currency
             currency = Currency.objects.get(code='TRY')
             for stock in stocks:
                 try:
@@ -35,6 +34,5 @@ class Command(BaseCommand):
                     )
                 except Exception as e:
                     print(e)
-              # Output the result           
         except Exception as e:
             print(e)
