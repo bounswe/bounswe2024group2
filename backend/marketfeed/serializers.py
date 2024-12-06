@@ -136,3 +136,63 @@ class PostSerializer(serializers.ModelSerializer):
 
         return post
     
+ # TODO delete this
+
+
+class StockListSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = Stock
+        fields = ['symbol','currency']
+
+    def __init__(self, *args, **kwargs):
+        super(StockListSerializer, self).__init__(*args, **kwargs)
+         
+    
+class IndexListSerializer(serializers.ModelSerializer):
+    #stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True)
+    #stocks = StockSerializer(many=True)
+    # TODO should populate stocks but by fetching all of their prices at once.
+    stocks = StockListSerializer(many=True)
+    class Meta:
+        model = Index
+        fields = ['id', 'name', 'stocks']
+    
+    def __init__(self, *args, **kwargs):
+        super(IndexListSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+
+        if request and request.method == 'PUT':
+            self.fields['name'].required = False
+            self.fields['stocks'].required = False
+
+        elif request and request.method == 'POST':
+            self.fields['name'].required = True
+            self.fields['stocks'].required = False
+
+class IndexSerializer(serializers.ModelSerializer):
+    stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True)
+    #stocks = StockSerializer(many=True)
+    # TODO should populate stocks but by fetching all of their prices at once.
+    #stocks = StockListSerializer(many=True)
+    class Meta:
+        model = Index
+        fields = ['id', 'name', 'stocks']
+    
+    def __init__(self, *args, **kwargs):
+        super(IndexSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+
+        if request and request.method == 'PUT':
+            self.fields['name'].required = False
+            self.fields['stocks'].required = False
+
+        elif request and request.method == 'POST':
+            self.fields['name'].required = True
+            self.fields['stocks'].required = False
+         
+
+
