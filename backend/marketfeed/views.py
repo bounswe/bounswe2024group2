@@ -237,6 +237,16 @@ class IndexViewSet(viewsets.ModelViewSet):
         indices = self.get_queryset()
         serializer = self.get_serializer(indices, many=True)
         serializerData = serializer.data
+        symbols = [index['symbol'] + '.IS' if index['currency']['code'] == 'TRY' else index['symbol']    for index in serializerData]
+        data = yf.download(tickers= symbols, period='1d', interval='1d')
+        
+        prices = {
+            symbol.split('.')[0]: float(data['Close'][symbol]) 
+            for symbol in symbols
+        }
+            
+        for index in serializerData:
+            index['price'] = prices[index['symbol']]
         print(serializerData)
         return Response(serializer.data)
 
@@ -247,6 +257,13 @@ class IndexViewSet(viewsets.ModelViewSet):
         index = self.get_object()
         serializer = self.get_serializer(index)
         serializerData = serializer.data
+        
+        indexName = serializerData['symbol']
+        if serializerData['currency']['code'] == 'TRY':
+            indexName += '.IS'
+        data = yf.download(tickers= indexName, period='1d', interval='1d')
+        serializerData['price'] = data['Close'].values[0][0]
+
         stocks = []
         def get_stats(ticker):
             info = yf.Ticker(ticker).info

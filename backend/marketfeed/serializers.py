@@ -155,9 +155,10 @@ class IndexListSerializer(serializers.ModelSerializer):
     #stocks = StockSerializer(many=True)
     # TODO should populate stocks but by fetching all of their prices at once.
     stocks = StockListSerializer(many=True)
+    currency = CurrencySerializer()
     class Meta:
         model = Index
-        fields = ['id', 'name', 'stocks']
+        fields = ['id', 'name','symbol','currency', 'stocks']
     
     def __init__(self, *args, **kwargs):
         super(IndexListSerializer, self).__init__(*args, **kwargs)
@@ -177,9 +178,10 @@ class IndexSerializer(serializers.ModelSerializer):
     #stocks = StockSerializer(many=True)
     # TODO should populate stocks but by fetching all of their prices at once.
     #stocks = StockListSerializer(many=True)
+    currency = serializers.PrimaryKeyRelatedField(queryset=Currency.objects.all())
     class Meta:
         model = Index
-        fields = ['id', 'name', 'stocks']
+        fields = ['id', 'name','symbol','currency', 'stocks']
     
     def __init__(self, *args, **kwargs):
         super(IndexSerializer, self).__init__(*args, **kwargs)
