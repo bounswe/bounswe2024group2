@@ -28,16 +28,16 @@ function Login() {
 
     loadingTimeout.current = setTimeout(() => {
       setLoading(true);
-    }, 1000); 
+    }, 1000);
 
     try {
-
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/login/`,
         loginData,
         {
-          headers: { 
-            "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -57,7 +57,7 @@ function Login() {
 
       // Display success toast
       toast.success("Login successful!");
-      
+
       // Navigating to the home page if login successful
       navigate("/home");
     } catch (error) {
@@ -129,19 +129,22 @@ function Login() {
       clearTimeout(loadingTimeout.current);
       setLoading(false);
 
-      toast.error("Login failed! Please ensure that your username and password are correct.");
+      toast.error(
+        "Login failed! Please ensure that your username and password are correct."
+      );
     }
-  };
+  }
 
   return (
     <div className="login-container">
       {loading && <CircleAnimation />} {}
       <div className="left-side">
         <div className="logo-container">
-          <img 
+          <img
             src={bullBearIcon}
-            alt="Bull and Bear Icon" 
-            className="app-logo" />
+            alt="Bull and Bear Icon"
+            className="app-logo"
+          />
           <h1 className="app-name">Bull&Bear</h1>
         </div>
       </div>
