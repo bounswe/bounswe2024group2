@@ -1,29 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
+import apiClient from "../../service/apiClient";
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
-  const [availableTags] = useState([
-    { id: 1, name: "Stock Analysis" },
-    { id: 2, name: "BIST30" },
-    { id: 3, name: "S&P" },
-    { id: 4, name: "NASDAQ" },
-    { id: 5, name: "Dow Jones" },
-    { id: 6, name: "USA" },
-    { id: 7, name: "Türkiye" },
-  ]);
-  const [filteredTags, setFilteredTags] = useState(availableTags);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const tagSearchRef = useRef(null);
+  const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
@@ -37,13 +29,37 @@ const CreatePostPage = () => {
   }, [navigate]);
 
   useEffect(() => {
+    const mockTags = [
+      { id: 1, name: "Stock Analysis" },
+      { id: 2, name: "BIST30" },
+      { id: 3, name: "S&P" },
+      { id: 4, name: "NASDAQ" },
+      { id: 5, name: "Dow Jones" },
+      { id: 6, name: "USA" },
+      { id: 7, name: "Türkiye" },
+    ];
+
+    const fetchTags = async () => {
+      try {
+        const response = await apiClient.get("/tags");
+        setAvailableTags(response.data);
+      } catch (error) {
+        console.error("Failed to fetch tags, using mock data", error);
+        setAvailableTags(mockTags);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  useEffect(() => {
     const availableTagsToShow = availableTags.filter(
       (tag) =>
         !selectedTags.includes(tag) &&
         tag.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredTags(availableTagsToShow);
-  }, [selectedTags, searchQuery]);
+  }, [availableTags, selectedTags, searchQuery]);
 
   const handleSearchChange = (e) => {
     const query = e.target.value;
@@ -83,28 +99,18 @@ const CreatePostPage = () => {
       return;
     }
 
+    const tagIds = selectedTags.map((tag) => tag.id);
     const postData = {
       title,
       content: description,
       author: 2,
       liked_by: [],
-      tags: [],
+      tags: tagIds,
       portfolios: [],
     };
 
-    console.log("Payload:", postData);
-
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/posts/`,
-        postData,
-        { headers }
-      );
+      const response = await apiClient.post("/posts/", postData);
       console.log("Post created successfully:", response.data);
       alert("Post created successfully!");
       navigate("/community");
@@ -154,7 +160,8 @@ const CreatePostPage = () => {
                 {filteredTags.map((tag, index) => (
                   <button
                     key={tag.id}
-                    className={`tag-suggestion color-${index % 4}`}
+                    className={`tag-suggestion`}
+                    style={{ backgroundColor: colors[index % colors.length] }}
                     onClick={() => handleTagSelect(tag)}
                   >
                     {tag.name}
@@ -166,7 +173,14 @@ const CreatePostPage = () => {
 
           <div className="selected-tags">
             {selectedTags.map((tag, index) => (
-              <span key={tag.id} className={`selected-tag color-${index % 4}`}>
+              <span
+                key={tag.id}
+                className="selected-tag"
+                style={{
+                  backgroundColor: colors[index % colors.length],
+                  color: "white",
+                }}
+              >
                 {tag.name}
                 <span
                   className="tag-remove"
