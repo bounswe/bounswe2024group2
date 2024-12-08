@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sites.shortcuts import get_current_site
@@ -203,9 +204,14 @@ class ProfileViewSet(viewsets.ModelViewSet):
         currency.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=['post'], url_path='follow')
-    def follow(self, request):
-        serializer = FollowUnfollowSerializer(data=request.data)
+User = get_user_model()
+
+class FollowView(generics.GenericAPIView):
+    serializer_class = FollowUnfollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data['username']
 
@@ -219,9 +225,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
         profile_to_follow.followers.add(user_profile)
         return Response({'detail': f'Successfully followed {username}.'}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], url_path='unfollow')
-    def unfollow(self, request):
-        serializer = FollowUnfollowSerializer(data=request.data)
+
+class UnfollowView(generics.GenericAPIView):
+    serializer_class = FollowUnfollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data['username']
 
