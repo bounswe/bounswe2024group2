@@ -10,9 +10,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from './context/AuthContext'; // Import AuthContext
-
+import config from './config/config';
 
 const Login = ({ navigation }) => {
+  const { baseURL } = config;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -21,9 +22,7 @@ const Login = ({ navigation }) => {
   const { login } = useAuth(); // Access the login function from AuthContext
 
   const handleLogin = async () => {
-
-    const url = 'http://159.223.28.163:30002/login/';
-
+    const loginUrl = `${baseURL}/login/`;
 
     // Login data
     const loginData = {
@@ -31,13 +30,11 @@ const Login = ({ navigation }) => {
       password: password,
     };
 
-
     setLoading(true); // Show loading spinner
-
 
     try {
       // Make the POST request to the backend
-      const response = await fetch(url, {
+      const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -52,7 +49,9 @@ const Login = ({ navigation }) => {
       // Check for a successful login
       if (response.ok) {
         // Handle successful login
-
+        console.log('Login data:', data);
+        //console.log('Access', data.access);
+        //console.log('Refresh', data.refresh);
         const { access, refresh } = data;
         login(username, access, refresh);
 

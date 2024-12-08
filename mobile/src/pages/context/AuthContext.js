@@ -14,7 +14,7 @@
       setUser({ username });
       setAccessToken(access);
       setRefreshToken(refresh);
-
+      console.log("access token",accessToken);
     };
 
     const logout = async () => {
@@ -35,7 +35,7 @@
     
 
     return (
-      <AuthContext.Provider value={{ user, login, logout }}>
+      <AuthContext.Provider value={{ user, accessToken, refreshToken, login, logout }}>
         {children}
       </AuthContext.Provider>
     );
