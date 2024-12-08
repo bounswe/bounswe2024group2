@@ -36,3 +36,4 @@ The application is deployed on Digital Ocean. To access application frontend sim
 
 Similarly to view deployed api 
 - API : 'http://159.223.28.163:30002/docs'
+
