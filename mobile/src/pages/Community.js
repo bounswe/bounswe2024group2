@@ -1,39 +1,17 @@
 import React from 'react';
-import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import config from './config/config';
+import { useAuth } from './context/AuthContext';
+
 
 
 const Community = ({navigation}) => {
-    /*
-    const posts = [
-        {
-            id: 1,
-            title: 'Lilium\'un yan kuruluşları iflas tehlikesiyle karşı karşıya, "pennystock" olur mu',
-            author: 'Hüsnü Çoban',
-            date: '10/12/2024',
-            tags: ['Lilium', 'Hisse Analizi', 'Amerika'],
-            content: `Alman hava taksisi geliştiricisi Lilium, bugün iki yan kuruluşunun iflas başvurusunda bulunacağını duyurdu. Bu haber, şirketin ABD borsasında işlem gören hisselerinde sert düşüşe neden oldu ve hisseler %57 değer kaybetti.`,
-            graph: null, // No graph for this post
-            likes: 45,
-            comments: 12
-        },
-        {
-            id: 2,
-            title: 'Borsa İstanbul’da kazandıran hisse senetleri',
-            author: 'Ahmet Atak',
-            date: '10/12/2024',
-            tags: ['BIST', 'Yatırım', 'Hisse Senedi'],
-            content: `BIST 100, pozitif açılışın ardından yükselişine devam ederken gün içinde 8.920 puana kadar yükseldi.`,
-            graph: 'https://via.placeholder.com/150', // Placeholder image
-            likes: 32,
-            comments: 8
-        }
-    ];
-*/
+    const { user } = useAuth();
+    const { baseURL } = config;
     const [posts, setPosts] = useState([]);
     const fetchPosts = async () => {
-        const baseURL = 'http://159.223.28.163:30002';
         const postURL = baseURL + '/posts/';
     
         try {
@@ -41,7 +19,7 @@ const Community = ({navigation}) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
+                    /* 'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN' ,*/
                 },
             });
     
@@ -77,10 +55,17 @@ const Community = ({navigation}) => {
     };
 
     const handleCreatePost = () => {
-        navigation.navigate('CreatePost');
+        if(!user){
+            Alert.alert('Please login to create a post');
+            navigation.navigate('Login&Register');
+        }else{
+            navigation.navigate('CreatePost');
+        }
+        
     }
 
     const renderItem = ({ item: post }) => (
+        //console.log(post),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>

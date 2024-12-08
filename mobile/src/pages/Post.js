@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, StyleSheet, View, Dimensions } from 'react-native';
+import { ScrollView, Text, StyleSheet, View, Dimensions, Button, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import config from './config/config';
 
-const Post = ({route}) => {
+
+const Post = ({ route }) => {
     const { postId } = route.params;
+    const { baseURL } = config;
     const [post, setPost] = useState(null);
     const [user, setUser] = useState({});
-    
-
+    const [likes, setLikes] = useState(0); // State to manage like count
 
     const fetchPost = async () => {
-        const baseURL = 'http://159.223.28.163:30002';
         const postURL = `${baseURL}/posts/${postId}/`;
-    
+
         try {
             const response = await fetch(postURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
+                    /* 'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN', */
                 },
             });
             if (response.ok) {
                 const postData = await response.json();
                 setPost(postData);
-    
-                // Kullanıcı bilgisi çekme
-                const authorId = postData.author;
-                fetchUser(authorId);
+                setLikes(postData.likes || 0); // Set likes from post data
             } else {
                 console.error('Error fetching post:', response.status);
             }
@@ -35,51 +33,46 @@ const Post = ({route}) => {
             console.error('Error fetching post:', error.message, error.stack);
         }
     };
+
+    const handleLike = () => {
+        setLikes(likes + 1);
     
-    const fetchUser = async (authorId) => {
-        const baseURL = 'http://159.223.28.163:30002';
-        const userURL = `${baseURL}/users/${authorId}/`;
-    
-        try {
-            const response = await fetch(userURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
-                },
-            });
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-            } else {
-                console.log('Error fetching user:', response);
-                console.error('Error fetching user:', response.status);
-            }
-        } catch (error) {
-            console.error('Error fetching user:', error.message, error.stack);
-        }
     };
-    
+
+    const handleAddComment = () => {
+        console.log('Add Comment button pressed');
+    };
 
     useEffect(() => {
         fetchPost();
-        
     }, []);
-    
+
     if (!post) {
         return <Text>Loading...</Text>;
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>{post.title}</Text>
             <Text style={styles.author}>{user.username}</Text>
             <Text style={styles.date}>{post.created_at}</Text>
             <Text style={styles.content}>{post.content}</Text>
-        </View>
+
+            
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
+                    <Text style={styles.buttonText}>👍 Like ({likes})</Text>
+                </TouchableOpacity>
+
+               
+                <TouchableOpacity style={styles.commentButton} onPress={handleAddComment}>
+                    <Text style={styles.buttonText}>💬 Add Comment</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
 
-    
+
     // Sample stock data (Replace this with dynamic data)
     const stockData = [142, 145, 143, 141, 144, 140, 138, 139]; // Closing prices
     const [tooltip, setTooltip] = useState(null); // State for tooltip info
@@ -118,8 +111,8 @@ const Post = ({route}) => {
                         backgroundGradientFrom: '#1e2923',
                         backgroundGradientTo: '#08130d',
                         decimalPlaces: 2, // Rounds values to 2 decimal places
-                        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        color: (opacity = 1) => rgba(26, 255, 146, `${opacity}`),
+                        labelColor: (opacity = 1) => rgba(255, 255, 255, `${opacity}`),
                         style: {
                             borderRadius: 16,
                         },
@@ -133,7 +126,7 @@ const Post = ({route}) => {
                     style={styles.chart}
                     onDataPointClick={({ value, x, y, index }) => {
                         setTooltip({
-                            value: `$${value}`,
+                            value: `${value}`,
                             x,
                             y,
                             index,
@@ -158,64 +151,59 @@ const Post = ({route}) => {
             </View>
         </ScrollView>
     );
+
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-        padding: 10,
+        backgroundColor: '#ffffff',
+        padding: 15,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 5,
+        color: '#333333',
+        marginBottom: 10,
     },
     author: {
         fontSize: 16,
-        color: '#666',
+        color: '#555555',
         marginBottom: 5,
     },
     date: {
         fontSize: 14,
-        color: '#888',
-        marginBottom: 10,
-    },
-    tagsContainer: {
-        flexDirection: 'row',
-        marginBottom: 10,
-    },
-    tag: {
-        backgroundColor: '#e0f7fa',
-        color: '#007BFF',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 15,
-        marginRight: 5,
+        color: '#999999',
+        marginBottom: 20,
     },
     content: {
         fontSize: 16,
+        lineHeight: 24,
+        color: '#444444',
         marginBottom: 20,
     },
-    graphTitle: {
-        fontSize: 18,
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    likeButton: {
+        backgroundColor: '#0073e6',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    commentButton: {
+        backgroundColor: '#28a745',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    chart: {
-        marginVertical: 8,
-        borderRadius: 16,
-    },
-    tooltip: {
-        position: 'absolute',
-        backgroundColor: '#000',
-        padding: 5,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    tooltipText: {
-        color: '#fff',
-        fontSize: 12,
+        textAlign: 'center',
     },
 });
 

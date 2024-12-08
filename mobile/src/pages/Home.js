@@ -10,21 +10,21 @@ import gubrfLogo from "../../assets/stock-logos/gubrf.png";
 import bist100 from "../../assets/stock-logos/bist-100.png";
 import bist30 from "../../assets/stock-logos/bist-30.png";
 import bist from "../../assets/stock-logos/bist.png";
-
+import config from './config/config';
 
 
 const Home = () => {
+  const { baseURL } = config;
   const { theme, toggleTheme, isDarkMode } = useContext(ThemeContext);
   const [latestPosts, setLatestPosts] = useState([]);
   const [loading, setLoading] = useState(true);
     const fetchLatestPosts = async () => {
-        const baseURL = 'http://159.223.28.163:30002';
         const postURL = `${baseURL}/posts/`;
 
         try {
             const response = await fetch(postURL);
             const data = await response.json();
-            setLatestPosts(data); // Assuming the API returns a paginated response
+            setLatestPosts(data); 
         } catch (error) {
             console.error('Error fetching latest posts:', error);
         }finally {
@@ -51,9 +51,9 @@ const Home = () => {
       data: loading ? mockPosts: latestPosts.map(post => ({
         id: post.id,
         type: 'post',
-        username: post.author, // API'ye göre düzenle
+        username: post.author, 
         title: post.title,
-        tag: post.tags, // API'ye göre düzenle
+        tag: post.tags, 
         content: post.content,
       })),
     },

@@ -2,31 +2,27 @@ import React, { useContext,useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
 import { useAuth } from './context/AuthContext';
+import config from "./config/config";
 
 const CreatePost = ({navigation}) => {
+  const { baseURL } = config;
   const { user, accessToken, refreshToken } = useAuth();
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
-  //const [tags, setTags] = useState(["Lilium", "Hisse Analizi", "Amerika"]);
   const [tags, setTags] = useState([]);
   const removeTag = (tag) => {
     setTags(tags.filter((t) => t !== tag));
   };
 
   const handleCreation = async () => {
-    const baseURL = 'http://159.223.28.163:30002';
+    
     const postData = {
         title: postTitle,
         content: postContent,
         liked_by:[],
-        tags:tags,
+        tags:[],
         portfolios:[]
     };
-    console.log('title:', postTitle);
-    console.log('content:', postContent);
-    console.log('tag:', tags);
-    console.log('access:', accessToken);
-    console.log('refresh:', refreshToken);
 
     const postURL = baseURL + '/posts/';
 
@@ -43,18 +39,18 @@ const CreatePost = ({navigation}) => {
 
         if (response.ok) {
             const jsonResponse = await response.json();
-            //console.log('Response:', jsonResponse);
+            console.log('Response:', jsonResponse);
             navigation.navigate("CommunityPage");
            
         } else {
           const errorResponse = await response.json();
+          console.log('Access', accessToken);
           console.log('Error Response:', errorResponse);
           
           throw new Error('Network response was not ok.');
             
         }
     } catch (error) {
-      
         console.error('Error:', error);
     }
   };
@@ -62,10 +58,11 @@ const CreatePost = ({navigation}) => {
 
 
   return (
+    console.log('Access', accessToken),
     <View style={styles.container}>
       <TextInput
         style={styles.titleInput}
-        placeholder="Başlık"
+        placeholder="Title"
         value={postTitle}
         onChangeText={setPostTitle}
       />
@@ -80,12 +77,12 @@ const CreatePost = ({navigation}) => {
           </Chip>
         ))}
         <TouchableOpacity style={styles.addTagButton}>
-          <Text style={styles.addTagText}>+ Tag Ekle</Text>
+          <Text style={styles.addTagText}>+ Add Tag</Text>
         </TouchableOpacity>
       </View>
       <TextInput
         style={styles.contentInput}
-        placeholder="Gönderi İçeriği..."
+        placeholder="Content..."
         value={postContent}
         onChangeText={setPostContent}
         multiline
