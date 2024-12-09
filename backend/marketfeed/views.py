@@ -2,6 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets, status, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.viewsets import ViewSet
 from .serializers import *
 from .models import *
 
@@ -140,6 +144,63 @@ class PortfolioViewSet(viewsets.ModelViewSet):
         portfolio = self.get_object()
         portfolio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+class PortfolioStockViewSet(ViewSet):
+    """
+    A viewset for adding and removing stocks from a portfolio.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PortfolioStockActionSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        context = kwargs.pop('context', {})
+        context['request'] = self.request  # Add the request object
+        context['view'] = self  # Add the view object
+        return self.serializer_class(*args, context=context, **kwargs)
+
+    @action(detail=False, methods=['post'])
+    def add_stock(self, request):
+        serializer = self.get_serializer(data=request.data, context={'action': 'add_stock'})        
+        serializer.is_valid(raise_exception=True)
+
+        portfolio = serializer.validated_data['portfolio_id']
+        stock = serializer.validated_data['stock']
+        price_bought = serializer.validated_data['price_bought']
+
+        # Check if stock already exists in the portfolio
+        if PortfolioStock.objects.filter(portfolio=portfolio, stock=stock).exists():
+            return Response({'detail': 'This stock is already in the portfolio.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Add stock to PortfolioStock model
+        PortfolioStock.objects.create(portfolio=portfolio, stock=stock, price_bought=price_bought)
+
+        # Add stock to Portfolio's ManyToMany relationship
+        portfolio.stocks.add(stock)
+
+        return Response({'status': 'Stock added to portfolio'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['post'])
+    def remove_stock(self, request):
+        serializer = self.get_serializer(data=request.data, context={'action': 'remove_stock'})
+        serializer.is_valid(raise_exception=True)
+
+        portfolio = serializer.validated_data['portfolio_id']
+        stock = serializer.validated_data['stock']
+
+        # Check if stock exists in the PortfolioStock model
+        portfolio_stock = PortfolioStock.objects.filter(portfolio=portfolio, stock=stock)
+        if not portfolio_stock.exists():
+            return Response({'detail': 'This stock is not in the portfolio.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove stock from PortfolioStock model
+        portfolio_stock.delete()
+
+        # Remove stock from Portfolio's ManyToMany relationship
+        portfolio.stocks.remove(stock)
+
+        return Response({'status': 'Stock removed from portfolio'}, status=status.HTTP_200_OK)
 
 
 class PostViewSet(viewsets.ModelViewSet):
