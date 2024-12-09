@@ -107,7 +107,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'tags', 'portfolios']
+        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'disliked_by', 'tags', 'portfolios']
 
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)
@@ -119,20 +119,30 @@ class PostSerializer(serializers.ModelSerializer):
                 self.fields['title'].required = False
                 self.fields['content'].required = False
                 self.fields['liked_by'].required = False
+                self.fields['disliked_by'].required = False
                 self.fields['tags'].required = False
                 self.fields['portfolios'].required = False
                 self.fields['author'].required = False
 
     def create(self, validated_data):
         liked_by = validated_data.pop('liked_by', [])
+        disliked_by = validated_data.pop('disliked_by', [])
         tags = validated_data.pop('tags', [])
         portfolios = validated_data.pop('portfolios', [])
 
         post = Post.objects.create(**validated_data)
 
         post.liked_by.set(liked_by)
+        post.disliked_by.set(disliked_by)
         post.tags.set(tags)
         post.portfolios.set(portfolios)
 
         return post
-    
+
+class LikeDislikeSerializer(serializers.ModelSerializer):
+
+    post_id = serializers.IntegerField(write_only=True)  # Accept post ID in the request
+
+    class Meta:
+        model = Post
+        fields = ['post_id']

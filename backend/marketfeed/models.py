@@ -81,9 +81,18 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
-    liked_by = models.ManyToManyField(User, related_name="liked_posts")
+    liked_by = models.ManyToManyField(User, related_name="liked_posts", blank=True)
+    disliked_by = models.ManyToManyField(User, related_name="disliked_posts", blank=True)
     tags = models.ManyToManyField(Tag, verbose_name="list of tags")
     portfolios = models.ManyToManyField(Portfolio, verbose_name="list of portfolios")
+    def like_count(self):
+        return self.liked_by.count()
+
+    def dislike_count(self):
+        return self.disliked_by.count()
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
