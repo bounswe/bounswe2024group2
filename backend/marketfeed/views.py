@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticate
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
+from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
 
 
 class CurrencyViewSet(viewsets.ModelViewSet):
@@ -74,6 +76,39 @@ class StockViewSet(viewsets.ModelViewSet):
         stock = self.get_object()
         stock.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=True, methods=['post'])
+    @swagger_auto_schema(request_body=StockHistoricDataSerializer)
+    def get_historical_data(self, request, pk=None):
+        stock = self.get_object()
+        stock_symbol = stock.symbol
+        serializer = StockHistoricDataSerializer(data=request.data)
+        
+        serializer.is_valid(raise_exception=True)
+
+        start_date = serializer.validated_data['start_date']
+        end_date = serializer.validated_data['end_date']
+
+        if not start_date or not end_date:
+            return Response({"error": "Start date and end date are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if stock.currency.code == 'TRY':
+            stock_symbol += '.IS'
+        try:
+            # Fetch stock data using yfinance
+            stock_data = yf.Ticker(stock_symbol)
+            data = stock_data.history(start=start_date, end=end_date)
+            data = data.drop(columns=['Volume', 'Dividends', 'Stock Splits'])
+            data['Date'] = data.index.date
+            data = data.round(2)
+            data = data.reset_index(drop=True)  
+            data['Stock'] = stock.symbol
+        
+            return Response(data, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({"error": f"An error occurred while fetching data: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -160,17 +195,16 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):  
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()  # Retrieves the post instance based on the URL parameter (e.g., post ID)
+        instance = self.get_object()  
         serializer = self.get_serializer(instance)
         
-        # Customize the response to include detailed information for related fields
         data = serializer.data
         data['author'] = instance.author.id
         data['liked_by'] = [user.id for user in instance.liked_by.all()]

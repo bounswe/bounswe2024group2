@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,78 +8,137 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
-import Home from './Home'
-import Profile from './Profile';
+import Home from './Home';
+import { ThemeProvider } from '../themes/ThemeProvider';
+
+import Profile from './ProfilePage';
+import News from './News';
+
+import Markets from './Markets';
+import Community from './Community';
+import Post from './Post';
+import CreatePost from './CreatePost';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 
 const Stack = createStackNavigator();
-const Sidebar = createDrawerNavigator();
+const Drawer = createDrawerNavigator();
+
+// Custom Header
+const CustomHeader = ({ navigation }) => {
+  const { user } = useAuth();
 
 
-const navigateProfile = (navigation, username) => {
-  navigation.navigate("Profile", {username: username});
+  const handleProfileNavigation = () => {
+    if (user) {
+      navigation.navigate('Profile', { username: user.username });
+    } else {
+      navigation.navigate('Login&Register');
+    }
+  };
+
+  return (
+    <View style={styles.customHeader}>
+      <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
+        <MaterialIcons name="menu" size={30} color="white" />
+      </TouchableOpacity>
+      <Text style={styles.logoText}>Bull&Bear</Text>
+      <TouchableOpacity onPress={handleProfileNavigation} style={styles.headerButton}>
+        <MaterialIcons name="account-circle" size={30} color="white" />
+      </TouchableOpacity>
+    </View>
+  );
 };
-const CustomHeader = ({ navigation }) => (
-  <View style={styles.customHeader}>
-    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.headerButton}>
-      <MaterialIcons name="menu" size={30} color="white" />
-    </TouchableOpacity>
-    <Text style={styles.logoText}>Bull&Bear</Text>
-    <TouchableOpacity onPress={() => navigateProfile(navigation)} style={styles.headerButton}>
-      <MaterialIcons name="account-circle" size={30} color="white" />
-    </TouchableOpacity>
-  </View>
+
+// Login & Register Stack Navigator
+const LoginStack = () => (
+  <Stack.Navigator >
+    <Stack.Screen name="Login" component={Login} options={{header: ({ navigation }) => <CustomHeader navigation={navigation} />}} />
+    <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerShown: false }} />
+  </Stack.Navigator>
 );
 
+const PostStack = () => {
+  return (
+    <ThemeProvider>
+      <Stack.Navigator>
+        <Stack.Screen name="CommunityPage" component={Community} options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} />, }}></Stack.Screen>
+        <Stack.Screen name="Post" component={Post} options={{ headerShown: true }} ></Stack.Screen>
+        <Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: true, title:"Create a post" }}></Stack.Screen>
+      </Stack.Navigator>
+    </ThemeProvider>
+    
+  )
+}
+const DrawerNavigator = () => {
+  const { user } = useAuth();
 
-const App = () => {
-    const LoginRelated = () => {
-      return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={Login} ></Stack.Screen>
-          <Stack.Screen name="Register" component={Register} ></Stack.Screen>
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} ></Stack.Screen>
-        </Stack.Navigator>
-      )
-    }
 
-    /* const TabBar = (params) =>{ // This structure can be used after some point
-      const username = params.route;
-      
-      return(
-      
-      )
-    } */
 
     return (
-        <NavigationContainer>
-          <Sidebar.Navigator
+        <Drawer.Navigator
+        
         screenOptions={{
-          headerShown: true, // Enable the custom header globally
-          header: ({ navigation }) => <CustomHeader navigation={navigation} />, // Use CustomHeader for all screens
+          header: ({ navigation }) => <CustomHeader navigation={navigation} />
         }}
+          
         >
-            <Sidebar.Screen 
+            <Drawer.Screen 
               name="Home" 
-              component={Home}              
+              component={Home}  
+                       
             />
-            <Sidebar.Screen 
-              name="Profile" 
-              component={Profile}               
+            { user  ? (
+              <Drawer.Screen 
+                name="Profile" 
+                component={Profile} 
+                
+              />
+              ) : (
+              <Drawer.Screen 
+                name="Login&Register" 
+                component={LoginStack} 
+                options={{ headerShown: false }}   
+              />
+            )}
+            <Drawer.Screen
+              name="Markets"
+              component={Markets}
+              
             />
-            <Sidebar.Screen 
-              name="Login&Register" 
-              component={LoginRelated} 
+            <Drawer.Screen
+              name="Community"
+              component={PostStack}
+              options={{ headerShown: false }}   
             />
-          </Sidebar.Navigator>
-        </NavigationContainer>
+            <Drawer.Screen
+              name="News"
+              component={News}
+               
+            />
+            
+          </Drawer.Navigator>
       );
+
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <NavigationContainer>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </ThemeProvider>
+    </AuthProvider>
+  );
 };
 
 const styles = StyleSheet.create({
   customHeader: {
     height: 60,
-    backgroundColor: '#0077B6', // Set to a solid color to make it fully visible
+    backgroundColor: '#0077B6',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -1,0 +1,155 @@
+.asset-button {
+    background-color: var(--color-primary-500);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-neutral-white);
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease;
+}
+
+.asset-button:hover {
+    background-color: var(--color-primary-700);
+}
+
+.asset-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.asset-edit-button {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 15px;
+    margin: 4px;
+    transition: background-color 0.3s ease;
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-800);
+}
+
+.asset-edit-button:hover {
+    background-color: var(--color-neutral-300);
+}
+
+.asset-delete-button {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 15px;
+    margin: 4px;
+    transition: background-color 0.3s ease;
+    background-color: var(--color-neutral-100);
+    color: var(--color-error-700);
+}
+
+.asset-delete-button:hover {
+    background-color: var(--color-error-300);
+}
+
+.asset-info {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.asset-input {
+     border: 1px solid var(--border-light);
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    padding: 8px;
+    width: 90%;
+}
+
+.asset-list {
+    margin-top: 20px;
+}
+
+.asset-list-card {
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.asset-list-container {
+    margin: 0 auto;
+    margin-right: 48px;
+    width: 100%;
+}
+
+.asset-name {
+    color: var(--color-primary-900);
+    font-weight: bold;
+}
+
+.asset-price {
+    color: var(--color-neutral-700);
+}
+
+.asset-row {
+    align-items: center;
+    border-bottom: 1px solid var(--color-neutral-300);
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.asset-row:last-child {
+    border-bottom: none;
+}
+
+.asset-save-button {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 15px;
+    margin: 4px;
+    transition: background-color 0.3s ease;
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-800);
+}
+
+.asset-save-button:hover {
+    background-color: var(--color-neutral-300);
+}
+
+.asset-table {
+    border-radius: 8px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+.asset-table td {
+     border: 1px solid var(--border-light);
+    padding: 12px;
+    text-align: center;
+}
+
+.asset-table th {
+    background-color: var(--color-primary-500);
+    color: var(--color-neutral-white);
+    padding: 8px;
+    font-weight: bold;
+}
+
+.asset-table tr:nth-child(even) {
+    background-color: var(--color-neutral-100);
+}
+
+
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.pagination-controls button {
+    cursor: pointer;
+    padding: 5px 10px;
+}
