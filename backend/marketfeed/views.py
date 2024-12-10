@@ -112,7 +112,6 @@ class StockViewSet(viewsets.ModelViewSet):
             return Response({"error": f"An error occurred while fetching data: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -260,6 +259,15 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment = self.get_object()
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'], url_path='post-comments/(?P<post_id>[^/.]+)')
+    def post_comments(self, request, post_id=None):
+        """
+        Custom action to retrieve comments for a specific post.
+        """
+        comments = self.queryset.filter(post_id=post_id)
+        serializer = self.get_serializer(comments, many=True)
+        return Response(serializer.data)
 
 
 
