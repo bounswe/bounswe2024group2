@@ -91,3 +91,9 @@ class Comment(models.Model):
     user_id=models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=250)
+
+class Index(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    symbol = models.CharField(max_length=250, unique=True, null=True)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True)
+    stocks = models.ManyToManyField(Stock, verbose_name='list of stocks in the index')

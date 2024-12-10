@@ -11,7 +11,7 @@ def notStock(stockName):
 
 class Command(BaseCommand):
     help = 'Update or Insert the Turkish stock market stocks to db'
-    
+    print("update stocks")
 
     def handle(self, *args, **kwargs):
         # Url to fetch stock list
@@ -20,7 +20,10 @@ class Command(BaseCommand):
             response = requests.get(url)
             response.raise_for_status()
             stocks = response.json().get('data', [])
+            print(stocks)
             currency = Currency.objects.get(code='TRY')
+            print(currency)
+
             for stock in stocks:
                 try:
                     if notStock(stock['ad']):
