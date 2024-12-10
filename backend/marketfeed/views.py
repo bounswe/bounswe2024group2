@@ -171,11 +171,12 @@ class PortfolioViewSet(viewsets.ModelViewSet):
         serializer.save(user_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def update(self, request, pk=None):
-        portfolio = self.get_object()
-        serializer = self.get_serializer(portfolio, data=request.data)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        self.perform_update(serializer)
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
@@ -189,7 +190,6 @@ class PortfolioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(portfolios, many=True)
         return Response(serializer.data)
     
-
 
 class PortfolioStockViewSet(ViewSet):
     """
@@ -212,11 +212,16 @@ class PortfolioStockViewSet(ViewSet):
         portfolio = serializer.validated_data['portfolio_id']
         stock = serializer.validated_data['stock']
         price_bought = serializer.validated_data['price_bought']
+        quantity = serializer.validated_data.get('quantity', 1)
 
         if PortfolioStock.objects.filter(portfolio=portfolio, stock=stock).exists():
             return Response({'detail': 'This stock is already in the portfolio.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        PortfolioStock.objects.create(portfolio=portfolio, stock=stock, price_bought=price_bought)
+        PortfolioStock.objects.create(
+            portfolio=portfolio, 
+            stock=stock, 
+            price_bought=price_bought, 
+            quantity=quantity)
 
         portfolio.stocks.add(stock)
 
@@ -335,7 +340,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         comments = self.queryset.filter(post_id=post_id)
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)
-
 
 
 class IndexViewSet(viewsets.ModelViewSet):

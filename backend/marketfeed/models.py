@@ -70,6 +70,7 @@ class PortfolioStock(models.Model):
     portfolio = models.ForeignKey('Portfolio', on_delete=models.CASCADE, related_name='portfolio_stocks')
     stock = models.ForeignKey('Stock', on_delete=models.CASCADE)
     price_bought = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
 
