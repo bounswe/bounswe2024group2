@@ -2,7 +2,7 @@
 from .models import *
 from rest_framework import serializers
 from onboarding.models import User
-
+from datetime import datetime, timedelta
 
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,6 +32,44 @@ class StockSerializer(serializers.ModelSerializer):
             self.fields['price'].required = False
             self.fields['name'].required = False
             self.fields['symbol'].required = False
+
+class StockCreateSerializer(serializers.ModelSerializer):
+    currency = serializers.PrimaryKeyRelatedField(queryset=Currency.objects.all())
+
+    class Meta:
+        model = Stock
+        fields = ['id', 'name', 'symbol', 'currency']
+    
+    def __init__(self, *args, **kwargs):
+        super(StockCreateSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'POST':
+            self.fields['currency'].required = True
+
+
+
+
+class StockHistoricDataSerializer(serializers.Serializer):
+    start_date = serializers.DateField()  # Start date of the interval
+    end_date = serializers.DateField()  # End date of the interval
+
+    def validate_date(self, value):
+        two_years_ago = datetime.now() - timedelta(days=365*2)
+        today = datetime.now().date()
+        range = self.end_date - self.start_date
+        if self.start_date < two_years_ago or self.end_date < two_years_ago:
+            raise serializers.ValidationError("The given date/s cannot be older than 2 years.")
+        elif self.start_date > today or self.end_date > today:
+            raise serializers.ValidationError("The given date cannot be later than the current date.")
+        elif range.days > 365:
+            raise serializers.ValidationError("The date range must be less than or equal to one year.")
+
+        return value
+
+
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -170,3 +208,65 @@ class PostSerializer(serializers.ModelSerializer):
 
         return post
     
+ # TODO delete this
+
+
+class StockListSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = Stock
+        fields = ['symbol','currency']
+
+    def __init__(self, *args, **kwargs):
+        super(StockListSerializer, self).__init__(*args, **kwargs)
+         
+    
+class IndexListSerializer(serializers.ModelSerializer):
+    #stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True)
+    #stocks = StockSerializer(many=True)
+    # TODO should populate stocks but by fetching all of their prices at once.
+    stocks = StockListSerializer(many=True)
+    currency = CurrencySerializer()
+    class Meta:
+        model = Index
+        fields = ['id', 'name','symbol','currency', 'stocks']
+    
+    def __init__(self, *args, **kwargs):
+        super(IndexListSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+
+        if request and request.method == 'PUT':
+            self.fields['name'].required = False
+            self.fields['stocks'].required = False
+
+        elif request and request.method == 'POST':
+            self.fields['name'].required = True
+            self.fields['stocks'].required = False
+
+class IndexSerializer(serializers.ModelSerializer):
+    stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True)
+    #stocks = StockSerializer(many=True)
+    # TODO should populate stocks but by fetching all of their prices at once.
+    #stocks = StockListSerializer(many=True)
+    currency = serializers.PrimaryKeyRelatedField(queryset=Currency.objects.all())
+    class Meta:
+        model = Index
+        fields = ['id', 'name','symbol','currency', 'stocks']
+    
+    def __init__(self, *args, **kwargs):
+        super(IndexSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+
+        if request and request.method == 'PUT':
+            self.fields['name'].required = False
+            self.fields['stocks'].required = False
+
+        elif request and request.method == 'POST':
+            self.fields['name'].required = True
+            self.fields['stocks'].required = False
+         
+
+
