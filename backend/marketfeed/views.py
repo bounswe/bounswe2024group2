@@ -58,6 +58,8 @@ class StockViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+        if request.method == 'POST':
+            self.serializer_class = StockCreateSerializer
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

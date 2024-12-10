@@ -33,6 +33,22 @@ class StockSerializer(serializers.ModelSerializer):
             self.fields['name'].required = False
             self.fields['symbol'].required = False
 
+class StockCreateSerializer(serializers.ModelSerializer):
+    currency = serializers.PrimaryKeyRelatedField(queryset=Currency.objects.all())
+
+    class Meta:
+        model = Stock
+        fields = ['id', 'name', 'symbol', 'currency']
+    
+    def __init__(self, *args, **kwargs):
+        super(StockCreateSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'POST':
+            self.fields['currency'].required = True
+
 
 
 
