@@ -2,6 +2,10 @@ from django.shortcuts import render
 from rest_framework import viewsets, status, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.viewsets import ViewSet
 from .serializers import *
 from .models import *
 from rest_framework.decorators import action
@@ -167,17 +171,79 @@ class PortfolioViewSet(viewsets.ModelViewSet):
         serializer.save(user_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def update(self, request, pk=None):
-        portfolio = self.get_object()
-        serializer = self.get_serializer(portfolio, data=request.data)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        self.perform_update(serializer)
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
         portfolio = self.get_object()
         portfolio.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'], url_path='portfolios-by-user/(?P<user_id>[^/.]+)')
+    def user_portfolios(self, request, user_id=None):
+        portfolios = self.queryset.filter(user_id=user_id)
+        serializer = self.get_serializer(portfolios, many=True)
+        return Response(serializer.data)
+    
+
+class PortfolioStockViewSet(ViewSet):
+    """
+    A viewset for adding and removing stocks from a portfolio.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PortfolioStockActionSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        context = kwargs.pop('context', {})
+        context['request'] = self.request
+        context['view'] = self
+        return self.serializer_class(*args, context=context, **kwargs)
+
+    @action(detail=False, methods=['post'])
+    def add_stock(self, request):
+        serializer = self.get_serializer(data=request.data, context={'action': 'add_stock'})        
+        serializer.is_valid(raise_exception=True)
+
+        portfolio = serializer.validated_data['portfolio_id']
+        stock = serializer.validated_data['stock']
+        price_bought = serializer.validated_data['price_bought']
+        quantity = serializer.validated_data.get('quantity', 1)
+
+        if PortfolioStock.objects.filter(portfolio=portfolio, stock=stock).exists():
+            return Response({'detail': 'This stock is already in the portfolio.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        PortfolioStock.objects.create(
+            portfolio=portfolio, 
+            stock=stock, 
+            price_bought=price_bought, 
+            quantity=quantity)
+
+        portfolio.stocks.add(stock)
+
+        return Response({'status': 'Stock added to portfolio'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['post'])
+    def remove_stock(self, request):
+        serializer = self.get_serializer(data=request.data, context={'action': 'remove_stock'})
+        serializer.is_valid(raise_exception=True)
+
+        portfolio = serializer.validated_data['portfolio_id']
+        stock = serializer.validated_data['stock']
+
+        portfolio_stock = PortfolioStock.objects.filter(portfolio=portfolio, stock=stock)
+        if not portfolio_stock.exists():
+            return Response({'detail': 'This stock is not in the portfolio.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        portfolio_stock.delete()
+
+        portfolio.stocks.remove(stock)
+
+        return Response({'status': 'Stock removed from portfolio'}, status=status.HTTP_200_OK)
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -225,6 +291,12 @@ class PostViewSet(viewsets.ModelViewSet):
         post = self.get_object()
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=False, methods=['get'], url_path='posts-by-user/(?P<user_id>[^/.]+)')
+    def user_posts(self, request, user_id=None):
+        posts = self.queryset.filter(author=user_id)
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -268,7 +340,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         comments = self.queryset.filter(post_id=post_id)
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)
-
 
 
 class IndexViewSet(viewsets.ModelViewSet):

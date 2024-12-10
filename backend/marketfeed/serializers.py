@@ -90,30 +90,63 @@ class TagSerializer(serializers.ModelSerializer):
             self.fields['user_id'].required = False
 
 
+class PortfolioStockActionSerializer(serializers.Serializer):
+    portfolio_id = serializers.PrimaryKeyRelatedField(queryset=Portfolio.objects.all())
+    stock = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all())
+    price_bought = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
+    quantity = serializers.IntegerField(min_value=1, required=False) 
+
+    def validate(self, data):
+        if self.context['request'].method == 'POST' and self.context.get('view').action == 'add_stock':
+            if 'price_bought' not in data:
+                raise serializers.ValidationError({'price_bought': 'This field is required for adding a stock.'})
+        return data
+
+class PortfolioStockSerializer(serializers.ModelSerializer):
+    stock = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all())
+    price_bought = serializers.DecimalField(max_digits=10, decimal_places=2)
+    quantity = serializers.IntegerField(min_value=1) 
+
+    class Meta:
+        model = PortfolioStock
+        fields = ['stock', 'price_bought', 'quantity']
+
+    def __init__(self, *args, **kwargs):
+        super(PortfolioStockSerializer, self).__init__(*args, **kwargs)
+        
+        request = self.context.get('request', None)
+        
+        if request and request.method == 'DELETE':
+            self.fields['price_bought'].required = False
+            self.fields['quantity'].required = False
+
+
 class PortfolioSerializer(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True)
+    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    stocks = PortfolioStockSerializer(source='portfolio_stocks', many=True, required=False)
 
     class Meta:
         model = Portfolio
         fields = ['id', 'name', 'description', 'user_id', 'created_at', 'updated_at', 'stocks']
-    
-    def __init__(self, *args, **kwargs):
-        super(PortfolioSerializer, self).__init__(*args, **kwargs)
-        
-        request = self.context.get('request', None)
-        
-        if request and request.method == 'PUT':
-            self.fields['name'].required = False
-            self.fields['description'].required = False
-            self.fields['user_id'].required = False
-            self.fields['stocks'].required = False
 
-        elif request and request.method == 'POST':
-            self.fields['name'].required = True
-            self.fields['description'].required = False
-            self.fields['user_id'].required = True
-            self.fields['stocks'].required = False
+    def create(self, validated_data):
+        stocks_data = validated_data.pop('portfolio_stocks', [])
+        portfolio = Portfolio.objects.create(**validated_data)
+        for stock_data in stocks_data:
+            PortfolioStock.objects.create(portfolio=portfolio, **stock_data)
+        return portfolio
+
+    def update(self, instance, validated_data):
+        if 'portfolio_stocks' in validated_data:
+            stocks_data = validated_data.pop('portfolio_stocks')
+            instance.portfolio_stocks.all().delete()
+            for stock_data in stocks_data:
+                PortfolioStock.objects.create(portfolio=instance, **stock_data)
+        
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+        return instance
 
 
 class CommentSerializer(serializers.ModelSerializer):
