@@ -48,7 +48,6 @@ class UserService {
 
   static isLoggedIn() {
     const tokenExpired = UserService.isTokenExpired();
-    console.log("Token expired:", tokenExpired);
     if (tokenExpired) {
         UserService.logout();
     }
@@ -118,9 +117,6 @@ class UserService {
 
     const expirationTime = UserService.getTokenExpiration(accessToken);
     const currentTime = new Date().getTime();
-
-    console.log("Token expiration time:", expirationTime);
-    console.log("Current time:", currentTime);
     return expirationTime < currentTime;
   }
 }
