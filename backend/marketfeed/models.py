@@ -66,13 +66,23 @@ class Tag(models.Model):
         return super().save(**kwargs)
 
 
+class PortfolioStock(models.Model):
+    portfolio = models.ForeignKey('Portfolio', on_delete=models.CASCADE, related_name='portfolio_stocks')
+    stock = models.ForeignKey('Stock', on_delete=models.CASCADE)
+    price_bought = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+
 class Portfolio(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length = 150)
+    description = models.CharField(max_length=150)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True, auto_now=True)
-    stocks = models.ManyToManyField(Stock, verbose_name="list of stocks in the portfolio")
+    stocks = models.ManyToManyField(
+        'Stock', through='PortfolioStock', verbose_name="list of stocks in the portfolio"
+    )
 
 
 class Post(models.Model):
@@ -100,3 +110,9 @@ class Comment(models.Model):
     user_id=models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=250)
+
+class Index(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    symbol = models.CharField(max_length=250, unique=True, null=True)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE, null=True)
+    stocks = models.ManyToManyField(Stock, verbose_name='list of stocks in the index')
