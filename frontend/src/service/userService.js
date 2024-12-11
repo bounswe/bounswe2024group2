@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import log from '../utils/logger';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -43,10 +44,14 @@ class UserService {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userName");
     localStorage.removeItem("userId");
-    toast.success("Logged out successfully.");
   }
 
   static isLoggedIn() {
+    const tokenExpired = UserService.isTokenExpired();
+    console.log("Token expired:", tokenExpired);
+    if (tokenExpired) {
+        UserService.logout();
+    }
     const accessToken = localStorage.getItem("accessToken");
     return accessToken ? true : false;
   }
@@ -61,6 +66,7 @@ class UserService {
 
   static getTokenExpiration(token) {
     const decodedToken = jwtDecode(token);
+    log.debug("Decoded token:", decodedToken);
     return decodedToken.exp * 1000;
   }
 
@@ -102,6 +108,20 @@ class UserService {
       toast.error("Failed to refresh token. Please log in again.");
       UserService.logout();
     }
+  }
+
+  static isTokenExpired() {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      return true;
+    }
+
+    const expirationTime = UserService.getTokenExpiration(accessToken);
+    const currentTime = new Date().getTime();
+
+    console.log("Token expiration time:", expirationTime);
+    console.log("Current time:", currentTime);
+    return expirationTime < currentTime;
   }
 }
 
