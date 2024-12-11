@@ -210,7 +210,15 @@ class PostSerializer(serializers.ModelSerializer):
 
         return post
 
-class LikeDislikeSerializer(serializers.ModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
+
+    post_id = serializers.IntegerField(write_only=True)  # Accept post ID in the request
+
+    class Meta:
+        model = Post
+        fields = ['post_id']
+
+class DislikeSerializer(serializers.ModelSerializer):
 
     post_id = serializers.IntegerField(write_only=True)  # Accept post ID in the request
 
