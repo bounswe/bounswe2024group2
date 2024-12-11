@@ -12,6 +12,7 @@ from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor
+from django.db.models import Q
 
 
 class CurrencyViewSet(viewsets.ModelViewSet):
@@ -83,8 +84,42 @@ class StockViewSet(viewsets.ModelViewSet):
         stock.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    @action(detail=True, methods=['post'])
+    @action(detail=False, methods=['post'],serializer_class=StockPatternSearchSerializer)
+    def search(self, request):
+        """
+        Search for stocks by pattern and limit.
+        """
+        serializer = StockPatternSearchSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        pattern = serializer.validated_data.get('pattern').strip().lower()
+        limit = serializer.validated_data.get('limit', 10)
+
+        if not pattern:
+            return Response({"error": "Pattern is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        starts_with = Stock.objects.filter(
+            Q(name__istartswith=pattern) | Q(symbol__istartswith=pattern)
+        ).order_by('name')
+
+        if starts_with.count() >= limit:
+            stocks = starts_with[:limit]
+            serializer = self.get_serializer(stocks, many=True)
+            return Response(serializer.data)
+
+        contains = Stock.objects.filter(
+            Q(name__icontains=pattern) | Q(symbol__icontains=pattern)
+        ).exclude(id__in=starts_with).order_by('name')
+
+        stocks = list(starts_with) + list(contains)
+        stocks = stocks[:limit]
+
+        serializer = self.get_serializer(stocks, many=True)
+        return Response(serializer.data)
+
     @swagger_auto_schema(request_body=StockHistoricDataSerializer)
+    @action(detail=False, methods=['post'])
     def get_historical_data(self, request, pk=None):
         stock = self.get_object()
         stock_symbol = stock.symbol

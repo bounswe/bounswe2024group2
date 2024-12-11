@@ -50,8 +50,6 @@ class StockCreateSerializer(serializers.ModelSerializer):
             self.fields['currency'].required = True
 
 
-
-
 class StockHistoricDataSerializer(serializers.Serializer):
     start_date = serializers.DateField()  # Start date of the interval
     end_date = serializers.DateField()  # End date of the interval
@@ -69,8 +67,14 @@ class StockHistoricDataSerializer(serializers.Serializer):
 
         return value
 
+class StockPatternSearchSerializer(serializers.Serializer):
 
+    pattern = serializers.CharField(
+        required=True,
+        help_text="The pattern to search stock symbol and name for.",
+    )
 
+    limit = serializers.IntegerField(required=False, default=10)
 
 class TagSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
