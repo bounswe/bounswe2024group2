@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -275,6 +276,7 @@ class PostViewSet(viewsets.ModelViewSet):
         data = serializer.data
         data['author'] = instance.author.id
         data['liked_by'] = [user.id for user in instance.liked_by.all()]
+        data['disliked_by'] = [user.id for user in instance.disliked_by.all()]
         data['tags'] = [{'id': tag.id, 'name': tag.name} for tag in instance.tags.all()]
         data['portfolios'] = [{'id': portfolio.id, 'name': portfolio.name} for portfolio in instance.portfolios.all()]
 
@@ -331,7 +333,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment = self.get_object()
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+    
     @action(detail=False, methods=['get'], url_path='post-comments/(?P<post_id>[^/.]+)')
     def post_comments(self, request, post_id=None):
         """
@@ -340,6 +342,53 @@ class CommentViewSet(viewsets.ModelViewSet):
         comments = self.queryset.filter(post_id=post_id)
         serializer = self.get_serializer(comments, many=True)
         return Response(serializer.data)
+
+class PostLikeDislikeViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = LikeDislikeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    @action(detail=False, methods=['post'], url_path='like')
+    def like(self, request):
+        """Handle liking a post."""
+        serializer = LikeDislikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        post_id = serializer.validated_data['post_id']
+        post = self.get_queryset().filter(id=post_id).first()  # Retrieve post
+        if not post:
+            return Response({"detail": f"Post with ID {post_id} not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        if user in post.liked_by.all():
+            post.liked_by.remove(user)
+            return Response({"detail": "Like removed."}, status=status.HTTP_200_OK)
+
+        post.liked_by.add(user)
+        post.disliked_by.remove(user)  # Ensure mutual exclusivity
+        return Response({"detail": "Post liked."}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='dislike')
+    def dislike(self, request):
+        """Handle disliking a post."""
+        serializer = LikeDislikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        post_id = serializer.validated_data['post_id']
+        post = self.get_queryset().filter(id=post_id).first()  # Retrieve post
+        if not post:
+            return Response({"detail": f"Post with ID {post_id} not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user
+
+        if user in post.disliked_by.all():
+            post.disliked_by.remove(user)
+            return Response({"detail": "Dislike removed."}, status=status.HTTP_200_OK)
+
+        post.disliked_by.add(user)
+        post.liked_by.remove(user)  # Ensure mutual exclusivity
+        return Response({"detail": "Post disliked."}, status=status.HTTP_200_OK)
 
 
 class IndexViewSet(viewsets.ModelViewSet):
