@@ -1,11 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.template import Template, Context
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.http.response import JsonResponse
 from onboarding.models import User as User
+from onboarding.models import Profile
 from rest_framework import permissions, status , viewsets, generics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -200,3 +203,44 @@ class ProfileViewSet(viewsets.ModelViewSet):
         currency = self.get_object()
         currency.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+User = get_user_model()
+
+class FollowView(generics.GenericAPIView):
+    serializer_class = FollowUnfollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+
+        user_to_follow = get_object_or_404(User, username=username)
+        profile_to_follow = user_to_follow.profile
+        user_profile = request.user.profile
+
+        if user_profile in profile_to_follow.followers.all():
+            return Response({'detail': 'Already following this user.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        profile_to_follow.followers.add(user_profile)
+        return Response({'detail': f'Successfully followed {username}.'}, status=status.HTTP_200_OK)
+
+
+class UnfollowView(generics.GenericAPIView):
+    serializer_class = FollowUnfollowSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+
+        user_to_unfollow = get_object_or_404(User, username=username)
+        profile_to_unfollow = user_to_unfollow.profile
+        user_profile = request.user.profile
+
+        if user_profile not in profile_to_unfollow.followers.all():
+            return Response({'detail': 'You are not following this user.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        profile_to_unfollow.followers.remove(user_profile)
+        return Response({'detail': f'Successfully unfollowed {username}.'}, status=status.HTTP_200_OK)
