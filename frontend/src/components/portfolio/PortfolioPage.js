@@ -13,6 +13,8 @@ import CircleAnimation from '../CircleAnimation';
 import { useNavigate } from "react-router-dom";
 import log from '../../utils/logger';
 import { useAlertModal } from '../alert/AlertModalContext';
+import { debug } from 'loglevel';
+import { StockService } from '../../service/stockService';
 
 
 const PortfolioPage = () => {
@@ -40,6 +42,7 @@ const PortfolioPage = () => {
         }
         const userId = UserService.getUserId();
         const fetchedPortfolios = await PortfolioService.fetchPortfolioByUserId(userId);
+        log.debug('Fetched portfolios:', fetchedPortfolios);
         setPortfolios(fetchedPortfolios);
       } catch (err) {
         console.error('Error fetching portfolios:', err);
@@ -82,7 +85,7 @@ const PortfolioPage = () => {
     try {
       const newPortfolio = await PortfolioService.createPortfolio({
         name: portfolioName,
-        description: '',
+        description: "This is a new portfolio",
         stocks: [],
       });
       setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
@@ -107,8 +110,19 @@ const PortfolioPage = () => {
     }
   }
 
-  const handleAddAsset = (asset) => {
-    const existingAssetIndex = selectedPortfolio.stocks.findIndex(a => a.code === asset.code);
+  const handleAddAsset = async (data) => {
+    console.log(data);
+    const stock = await StockService.fetchStockById(data.stockId);
+    const asset = {
+      id: data.stockId,
+      code: data.stockCode,
+      name: stock.name,
+      quantity: data.quantity,
+      boughtPrice: data.stockPrice,
+      currentPrice: stock.price,
+    };
+    const existingAssetIndex = selectedPortfolio.stocks.findIndex(a => a.id === asset.id);
+    log.debug("handleAddAsset", asset, existingAssetIndex);
 
     if (existingAssetIndex !== -1) {
       const existingAsset = selectedPortfolio.stocks[existingAssetIndex];
@@ -121,7 +135,8 @@ const PortfolioPage = () => {
           return {
             ...a,
             quantity: newQuantity,
-            stockPrice: newAveragePrice,
+            boughtPrice: newAveragePrice,
+
           };
         }
         return a;
@@ -129,25 +144,28 @@ const PortfolioPage = () => {
 
       const updatedPortfolio = {
         ...selectedPortfolio,
-        assets: updatedAssets,
+        stocks: updatedAssets,
       };
+      await PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
+      log.debug('Updated portfolio:', updatedPortfolio);
 
       setPortfolios((prevPortfolios) =>
         prevPortfolios.map((p) =>
-          p.name === selectedPortfolio.name ? updatedPortfolio : p
+          p.id === selectedPortfolio.id ? updatedPortfolio : p
         )
       );
-
       handleSelectPortfolio(updatedPortfolio);
     } else {
       const updatedPortfolio = {
         ...selectedPortfolio,
-        assets: [...selectedPortfolio.stocks, asset],
+        stocks: [...selectedPortfolio.stocks, asset],
       };
+
+      await PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
 
       setPortfolios((prevPortfolios) =>
         prevPortfolios.map((p) =>
-          p.name === selectedPortfolio.name ? updatedPortfolio : p
+          p.id === selectedPortfolio.id ? updatedPortfolio : p
         )
       );
 
@@ -160,12 +178,13 @@ const PortfolioPage = () => {
   const handleUpdateAssets = (updatedAssets) => {
     const updatedPortfolio = {
       ...selectedPortfolio,
-      assets: updatedAssets,
+      stocks: updatedAssets,
     };
-
+    log.debug('Updated portfolio:', updatedPortfolio);
+    PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
     setPortfolios((prevPortfolios) =>
       prevPortfolios.map((p) =>
-        p.name === selectedPortfolio.name ? updatedPortfolio : p
+        p.id === selectedPortfolio.id ? updatedPortfolio : p
       )
     );
     handleSelectPortfolio(updatedPortfolio);
@@ -275,7 +294,7 @@ const PortfolioPage = () => {
               {portfolios.map((portfolio, index) => (
                 <div
                   key={index}
-                  className={`portfolio-tab ${portfolio.name === selectedPortfolio?.name ? 'selected' : ''}`}
+                  className={`portfolio-tab ${portfolio.id === selectedPortfolio?.id ? 'selected' : ''}`}
                   onClick={() => handleSelectPortfolio(portfolio)}
                 >
                   {portfolio.name}

@@ -1,31 +1,54 @@
 import React, { useState } from 'react';
 import '../../styles/portfolio/AssetList.css';
+import { useAlertModal } from '../alert/AlertModalContext';
 
 const AssetList = ({ assets, setAssets }) => {
+  const { showModal } = useAlertModal();
+  
   const [editIndex, setEditIndex] = useState(null);
   const [editData, setEditData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const handleEdit = (index, field, value) => {
-    setEditData({ ...editData, [field]: value });
+  const handleEdit = (index, field, value, param = "string") => {
+    let parsedValue = value;
+    if (param === "number") {
+      parsedValue = value === "" ? "0" : Number(value);
+      if (isNaN(parsedValue)) {
+        parsedValue = 0;
+      }
+    } else if (param === "string") {
+      parsedValue = value;
+    }
+  
+    setEditData({ ...editData, [field]: parsedValue });
   };
 
   const saveEdit = (index) => {
     const updatedAssets = [...assets];
+    console.log(editData);
     updatedAssets[index] = { ...updatedAssets[index], ...editData };
+    console.log(updatedAssets);
     setAssets(updatedAssets);
     setEditIndex(null);
   };
 
   const handleDelete = (index) => {
-    if (window.confirm('Are you sure you want to delete this asset?')) {
-      const updatedAssets = assets.filter((_, i) => i !== index);
-      setAssets(updatedAssets);
-    }
+    showModal(
+      'Are you sure you want to delete this asset?', 
+      () => {
+        const updatedAssets = assets.filter((_, i) => i !== index);
+        setAssets(updatedAssets);
+      },
+      () => {},
+      true,
+      "Cancel",
+      "Delete",
+    );
   };
 
   const calculateProfitLoss = (asset) => {
+    console.log("profit val", asset);
     const profitLoss = (parseFloat(asset.currentPrice) - parseFloat(asset.boughtPrice)) * parseFloat(asset.quantity);
     return profitLoss.toFixed(2);
   };
@@ -61,7 +84,6 @@ const AssetList = ({ assets, setAssets }) => {
                     <input
                       type="text"
                       value={editData.code || asset.code}
-                      onChange={(e) => handleEdit(index, 'stockCode', e.target.value)}
                       className="asset-input"
                     />
                   </td>
@@ -69,7 +91,7 @@ const AssetList = ({ assets, setAssets }) => {
                     <input
                       type="number"
                       value={editData.boughtPrice || asset.boughtPrice}
-                      onChange={(e) => handleEdit(index, 'stockPrice', e.target.value)}
+                      onChange={(e) => handleEdit(index, 'boughtPrice', e.target.value, "number")}
                       className="asset-input"
                     />
                   </td>
@@ -77,7 +99,7 @@ const AssetList = ({ assets, setAssets }) => {
                     <input
                       type="number"
                       value={editData.quantity || asset.quantity}
-                      onChange={(e) => handleEdit(index, 'quantity', e.target.value)}
+                      onChange={(e) => handleEdit(index, 'quantity', e.target.value, "number")}
                       className="asset-input"
                     />
                   </td>

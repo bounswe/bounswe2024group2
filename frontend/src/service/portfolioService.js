@@ -18,7 +18,7 @@ async function transformPortfolioStockItem(stockItem) {
     try {
         const stock = await StockService.fetchStockById(stockItem.stock);
         return {
-            id: stockItem.id,
+            id: stock.id,
             code: stock.code,
             name: stock.name,
             currentPrice: stock.price,
@@ -83,11 +83,18 @@ export const PortfolioService = {
             throw error;
         }
     },
-
-    // Partially update a portfolio by ID (PATCH)
-    async patchPortfolio(id, partialData) {
+    
+    async patchPortfolioStocks(id, portfolio) {
         try {
-            const response = await apiClient.patch(`/portfolios/${id}/`, partialData);
+            const data = {
+                "stocks": portfolio.stocks.map(stock => ({
+                    stock: stock.id,
+                    price_bought: stock.boughtPrice,
+                    quantity: stock.quantity
+                }))
+            }
+            const response = await apiClient.patch(`/portfolios/${id}/`, data);
+
             return transformPortfolioItem(response.data);
         } catch (error) {
             log.error(`Error patching portfolio with ID ${id}:`, error);
