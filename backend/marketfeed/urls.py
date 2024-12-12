@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CurrencyViewSet, StockViewSet, TagViewSet, PortfolioViewSet, PostViewSet, CommentViewSet, \
-    IndexViewSet, PortfolioStockViewSet, PostLikeView, PostDislikeView
+from .views import CurrencyViewSet, StockViewSet, TagViewSet, PortfolioViewSet, PostViewSet, CommentViewSet, IndexViewSet, PortfolioStockViewSet, PostLikeView, PostDislikeView
 
 router = DefaultRouter()
 router.register(r'currencies', CurrencyViewSet)
