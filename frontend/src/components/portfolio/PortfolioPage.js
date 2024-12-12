@@ -6,27 +6,23 @@ import PortfolioDetailsCard from './PortfolioDetailsCard';
 import { Chart } from 'react-google-charts';
 import '../../styles/portfolio/PortfolioPage.css';
 import '../../styles/portfolio/AssetList.css';
-import mockStocks from '../../data/mockStocks';
 import '../../index.css';
 import UserService from '../../service/userService';
 import { PortfolioService } from '../../service/portfolioService';
 import CircleAnimation from '../CircleAnimation';
 import { useNavigate } from "react-router-dom";
-import { StockService } from '../../service/stockService';
 import log from '../../utils/logger';
+import { useAlertModal } from '../alert/AlertModalContext';
 
 
 const PortfolioPage = () => {
   const navigate = useNavigate();
-
+  const { showModal } = useAlertModal();
   const [portfolios, setPortfolios] = useState([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [showPortfolioModal, setShowPortfolioModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
-
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
   const [calculatingPortfolioStats, setCalculatingPortfolioStats] = useState(true);
   const [numAssets, setNumAssets] = useState(0);
   const [totalValue, setTotalValue] = useState(0);
@@ -39,7 +35,6 @@ const PortfolioPage = () => {
       try {
         const userLoggedIn = UserService.isLoggedIn();
         if (!userLoggedIn) {
-          setError('User is not logged in');
           setLoading(false);
           return;
         }
@@ -48,7 +43,6 @@ const PortfolioPage = () => {
         setPortfolios(fetchedPortfolios);
       } catch (err) {
         console.error('Error fetching portfolios:', err);
-        setError('Failed to fetch portfolios. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -56,6 +50,32 @@ const PortfolioPage = () => {
 
     fetchPortfolios();
   }, []);
+
+  const handleDeletePortfolio = async (portfolioId) => {
+    log.debug('Deleting portfolio:', portfolioId);
+    showModal(
+      'Are you sure you want to delete this portfolio?',
+      async () => {
+        try {
+          await PortfolioService.deletePortfolio(portfolioId);
+          setPortfolios((prevPortfolios) =>
+            prevPortfolios.filter((portfolio) => portfolio.id !== portfolioId)
+          );
+          if (selectedPortfolio && selectedPortfolio.id === portfolioId) {
+            handleSelectPortfolio(null);
+          }
+        } catch (err) {
+          log.error('Error deleting portfolio:', err);
+        }
+      },
+      () => {
+        log.debug('Delete portfolio cancelled');
+      },
+      true,
+      "Cancel",
+      "Delete"
+    );
+  };
 
 
   const handleCreatePortfolio = async (portfolioName) => {
@@ -68,8 +88,7 @@ const PortfolioPage = () => {
       setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
       handleSelectPortfolio(newPortfolio);
     } catch (err) {
-      console.error('Error creating portfolio:', err);
-      setError('Failed to create portfolio. Please try again.');
+      log.error('Error creating portfolio:', err);
     } finally {
       setShowPortfolioModal(false);
     }
@@ -83,7 +102,7 @@ const PortfolioPage = () => {
   const handleCreatePortfolioModal = () => {
     if (!UserService.isLoggedIn()) {
       navigate('/login');
-    }else{
+    } else {
       setShowPortfolioModal(true);
     }
   }
@@ -181,8 +200,7 @@ const PortfolioPage = () => {
   const chartData = [
     ['Stock', 'Value'],
     ...(selectedPortfolio?.stocks ?? []).map((asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.code)?.price || 0;
-      const value = currentStockPrice * asset.quantity;
+      const value = asset.currentPrice * asset.quantity;
       return [asset.code, value];
     })
   ];
@@ -192,7 +210,7 @@ const PortfolioPage = () => {
   };
 
   const getSliceColor = (asset) => {
-    const currentStockPrice = mockStocks.find(stock => stock.code === asset.code)?.price || 0;
+    const currentStockPrice = asset.currentPrice;
     const profit = (currentStockPrice - asset.boughtPrice) * asset.quantity;
     const profitPercentage = (profit / (asset.boughtPrice * asset.quantity)) * 100;
 
@@ -271,9 +289,18 @@ const PortfolioPage = () => {
               {selectedPortfolio ? (
                 <div className="portfolio-layout">
                   <div className="asset-list-container portfolio-card">
-                    <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
-                      Add Assets
-                    </button>
+                    <div className="button-container">
+                      <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
+                        Add Assets
+                      </button>
+                      <hr className="divider" />
+                      <button
+                        onClick={() => handleDeletePortfolio(selectedPortfolio.id)}
+                        className="delete-portfolio-button"
+                      >
+                        Delete Portfolio
+                      </button>
+                    </div>
                     {selectedPortfolio.stocks.length > 0 && (
                       <AssetList assets={selectedPortfolio.stocks} setAssets={handleUpdateAssets} />
                     )}
@@ -318,7 +345,6 @@ const PortfolioPage = () => {
           <AssetModal
             onClose={() => setShowAssetModal(false)}
             onSubmit={handleAddAsset}
-            stockData={mockStocks}
           />
         )}
       </div>

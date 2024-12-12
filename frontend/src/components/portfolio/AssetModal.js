@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/portfolio/PortfolioModal.css';
 import { StockService } from '../../service/stockService';
 
-const AssetModal = ({ onClose, onSubmit, stockData }) => {
+const AssetModal = ({ onClose, onSubmit }) => {
   const [stockId, setStockId] = useState('');
   const [stockCode, setStockCode] = useState('');
   const [stockPrice, setStockPrice] = useState('');

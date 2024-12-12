@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../../styles/portfolio/AssetList.css';
-import mockStocks from '../../data/mockStocks';
 
 const AssetList = ({ assets, setAssets }) => {
   const [editIndex, setEditIndex] = useState(null);
