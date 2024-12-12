@@ -28,7 +28,8 @@ jobs:
       - name: Build frontend Docker image
         run: |
           FRONTEND_IMAGE_TAG=${{ github.sha }}
-          docker build -t 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG ./frontend
+          FRONTEND_API_URL="http://${{ secrets.DO_REMOTE }}:30002"
+          docker build --build-arg REACT_APP_API_BASE_URL=$FRONTEND_API_URL -t 24cmpe451group2/frontend:$FRONTEND_IMAGE_TAG ./frontend
           docker tag 24cmpe451group2/frontend:${{ github.sha }} 24cmpe451group2/frontend:latest
 
       # Build the backend image
