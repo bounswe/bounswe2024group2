@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PortfolioModal from './PortfolioModal';
 import AssetModal from './AssetModal';
 import AssetList from './AssetList';
@@ -8,6 +8,10 @@ import '../../styles/portfolio/PortfolioPage.css';
 import '../../styles/portfolio/AssetList.css';
 import mockStocks from '../../data/mockStocks';
 import '../../index.css';
+import UserService from '../../service/userService';
+import { PortfolioService } from '../../service/portfolioService';
+import CircleAnimation from '../CircleAnimation';
+
 
 const PortfolioPage = () => {
   const [portfolios, setPortfolios] = useState([]);
@@ -15,11 +19,50 @@ const PortfolioPage = () => {
   const [showPortfolioModal, setShowPortfolioModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
 
-  const handleCreatePortfolio = (portfolioName) => {
-    const newPortfolio = { name: portfolioName, assets: [] };
-    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
-    setSelectedPortfolio(newPortfolio);
-    setShowPortfolioModal(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Fetch portfolios when the component mounts
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      setLoading(true);
+      try {
+        const userLoggedIn = UserService.isLoggedIn();
+        if (!userLoggedIn) {
+          setError('User is not logged in');
+          setLoading(false);
+          return;
+        }
+        const userId = UserService.getUserId();
+        const fetchedPortfolios = await PortfolioService.fetchPortfolioByUserId(userId);
+        setPortfolios(fetchedPortfolios);
+      } catch (err) {
+        console.error('Error fetching portfolios:', err);
+        setError('Failed to fetch portfolios. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolios();
+  }, []);
+
+
+  const handleCreatePortfolio = async (portfolioName) => {
+    try {
+      const newPortfolio = await PortfolioService.createPortfolio({
+        name: portfolioName,
+        description: '',
+        stocks: [],
+      });
+      setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+      setSelectedPortfolio(newPortfolio);
+    } catch (err) {
+      console.error('Error creating portfolio:', err);
+      setError('Failed to create portfolio. Please try again.');
+    } finally {
+      setShowPortfolioModal(false);
+    }
   };
 
   const handleSelectPortfolio = (portfolio) => {
@@ -164,16 +207,19 @@ const PortfolioPage = () => {
     backgroundColor: 'transparent',
   };
 
-  return (
+  if (loading) {
+    return <CircleAnimation />;
+  }
 
+  return (
     <div className="page">
-              {portfolios.length === 0 ? (
-      <div className="page-header">
-        <h1 className="page-title">You have no portfolios yet</h1>
+      {portfolios.length === 0 ? (
+        <div className="page-header">
+          <h1 className="page-title">You have no portfolios yet</h1>
           <h2 className="page-subtitle">Create a new portfolio to get started</h2>
-        
-      </div>
-    ) : (<div></div>)}
+
+        </div>
+      ) : (<div></div>)}
 
       <div className="page-content">
 
