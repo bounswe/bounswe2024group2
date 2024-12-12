@@ -68,12 +68,10 @@ class StockHistoricDataSerializer(serializers.Serializer):
         return value
 
 class StockPatternSearchSerializer(serializers.Serializer):
-
     pattern = serializers.CharField(
         required=True,
         help_text="The pattern to search stock symbol and name for.",
     )
-
     limit = serializers.IntegerField(required=False, default=10)
 
 class TagSerializer(serializers.ModelSerializer):
