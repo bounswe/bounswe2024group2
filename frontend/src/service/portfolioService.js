@@ -87,4 +87,19 @@ export const PortfolioService = {
             throw error;
         }
     },
+
+    // Fetch portfolio by user id
+    async fetchPortfolioByUserId(userId) {
+        try {
+            const response = await apiClient.get(`/portfolios/portfolios-by-user/${userId}/`);
+            // a list of portfolios
+            const rawPortfolios = response.data;
+            const transformedPortfolios = rawPortfolios.map(transformPortfolioItem);
+            return transformedPortfolios;
+        } catch (error) {
+            log.error(`Error fetching portfolio with user ID ${userId}:`, error);
+            throw error;
+        }
+    },
+
 };
