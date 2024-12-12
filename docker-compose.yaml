@@ -20,7 +20,6 @@ services:
       test: ['CMD', 'mysql-db', '-h', '$MYSQL_HOST', '-u', '$MYSQL_USER', '-p$MYSQL_PASSWORD', '-e', 'SELECT 1']
       timeout: 20s
       retries: 10
-
   backend:
     build: 
       context: ./backend
@@ -70,7 +69,6 @@ services:
       - backend
     networks:
       - backend_network
-
   mailhog:
       image: mailhog/mailhog
       ports:
@@ -82,7 +80,6 @@ services:
 networks:
   backend_network:
     driver: bridge
-
 volumes:
   my-db:
   backend:
