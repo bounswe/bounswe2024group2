@@ -11,7 +11,7 @@ import '../../index.css';
 import UserService from '../../service/userService';
 import { PortfolioService } from '../../service/portfolioService';
 import CircleAnimation from '../CircleAnimation';
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 const PortfolioPage = () => {
