@@ -59,10 +59,10 @@ services:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
+      args: 
+        REACT_APP_API_BASE_URL: 'http://0.0.0.0:8000'
     container_name: frontend
     restart: always
-    environment:
-      REACT_APP_API_BASE_URL: 'http://0.0.0.0:8000'
     ports:
       - "3000:3000"
     depends_on:

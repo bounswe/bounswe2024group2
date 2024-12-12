@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import mockPosts from "../../data/mockPosts";
 import FinancialGraph from "./FinancialGraph";
 import "../../styles/community/PostView.css";
-import apiClient from "../../service/apiClient";
+import {apiClient} from "../../service/apiClient";
 import CircleAnimation from "../CircleAnimation";
 import NotFound from "../notfound/NotFound";
 import {

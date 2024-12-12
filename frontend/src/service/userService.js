@@ -2,8 +2,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import log from '../utils/logger';
+import { API_BASE_URL } from "./apiClient";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 class UserService {
   static async login(username, password) {

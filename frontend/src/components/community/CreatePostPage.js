@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
-import apiClient from "../../service/apiClient";
+import {apiClient} from "../../service/apiClient";
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
