@@ -11,9 +11,12 @@ import '../../index.css';
 import UserService from '../../service/userService';
 import { PortfolioService } from '../../service/portfolioService';
 import CircleAnimation from '../CircleAnimation';
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 
 const PortfolioPage = () => {
+  const navigate = useNavigate();
+
   const [portfolios, setPortfolios] = useState([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [showPortfolioModal, setShowPortfolioModal] = useState(false);
@@ -68,6 +71,14 @@ const PortfolioPage = () => {
   const handleSelectPortfolio = (portfolio) => {
     setSelectedPortfolio(portfolio);
   };
+
+  const handleCreatePortfolioModal = () => {
+    if (!UserService.isLoggedIn()) {
+      navigate('/login');
+    }else{
+      setShowPortfolioModal(true);
+    }
+  }
 
   const handleAddAsset = (asset) => {
     const existingAssetIndex = selectedPortfolio.assets.findIndex(a => a.stockCode === asset.stockCode);
@@ -217,7 +228,6 @@ const PortfolioPage = () => {
         <div className="page-header">
           <h1 className="page-title">You have no portfolios yet</h1>
           <h2 className="page-subtitle">Create a new portfolio to get started</h2>
-
         </div>
       ) : (<div></div>)}
 
@@ -225,7 +235,7 @@ const PortfolioPage = () => {
 
         {portfolios.length === 0 ? (
           <div className="empty-portfolio">
-            <button className="create-portfolio-button" onClick={() => setShowPortfolioModal(true)}>
+            <button className="create-portfolio-button" onClick={() => handleCreatePortfolioModal()}>
               Create Portfolio
             </button>
           </div>
