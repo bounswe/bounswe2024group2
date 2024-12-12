@@ -12,6 +12,8 @@ import UserService from '../../service/userService';
 import { PortfolioService } from '../../service/portfolioService';
 import CircleAnimation from '../CircleAnimation';
 import { useNavigate } from "react-router-dom";
+import { StockService } from '../../service/stockService';
+import log from '../../utils/logger';
 
 
 const PortfolioPage = () => {
@@ -24,6 +26,11 @@ const PortfolioPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [calculatingPortfolioStats, setCalculatingPortfolioStats] = useState(true);
+  const [numAssets, setNumAssets] = useState(0);
+  const [totalValue, setTotalValue] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0);
 
   // Fetch portfolios when the component mounts
   useEffect(() => {
@@ -59,7 +66,7 @@ const PortfolioPage = () => {
         stocks: [],
       });
       setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
-      setSelectedPortfolio(newPortfolio);
+      handleSelectPortfolio(newPortfolio);
     } catch (err) {
       console.error('Error creating portfolio:', err);
       setError('Failed to create portfolio. Please try again.');
@@ -70,6 +77,7 @@ const PortfolioPage = () => {
 
   const handleSelectPortfolio = (portfolio) => {
     setSelectedPortfolio(portfolio);
+    calculatePortfolioStats(portfolio);
   };
 
   const handleCreatePortfolioModal = () => {
@@ -81,15 +89,15 @@ const PortfolioPage = () => {
   }
 
   const handleAddAsset = (asset) => {
-    const existingAssetIndex = selectedPortfolio.assets.findIndex(a => a.stockCode === asset.stockCode);
+    const existingAssetIndex = selectedPortfolio.stocks.findIndex(a => a.code === asset.code);
 
     if (existingAssetIndex !== -1) {
-      const existingAsset = selectedPortfolio.assets[existingAssetIndex];
+      const existingAsset = selectedPortfolio.stocks[existingAssetIndex];
       const newQuantity = existingAsset.quantity + asset.quantity;
-      const totalCost = (existingAsset.stockPrice * existingAsset.quantity) + (asset.stockPrice * asset.quantity);
+      const totalCost = (existingAsset.boughtPrice * existingAsset.quantity) + (asset.boughtPrice * asset.quantity);
       const newAveragePrice = totalCost / newQuantity;
 
-      const updatedAssets = selectedPortfolio.assets.map((a, index) => {
+      const updatedAssets = selectedPortfolio.stocks.map((a, index) => {
         if (index === existingAssetIndex) {
           return {
             ...a,
@@ -111,11 +119,11 @@ const PortfolioPage = () => {
         )
       );
 
-      setSelectedPortfolio(updatedPortfolio);
+      handleSelectPortfolio(updatedPortfolio);
     } else {
       const updatedPortfolio = {
         ...selectedPortfolio,
-        assets: [...selectedPortfolio.assets, asset],
+        assets: [...selectedPortfolio.stocks, asset],
       };
 
       setPortfolios((prevPortfolios) =>
@@ -124,7 +132,7 @@ const PortfolioPage = () => {
         )
       );
 
-      setSelectedPortfolio(updatedPortfolio);
+      handleSelectPortfolio(updatedPortfolio);
     }
 
     setShowAssetModal(false);
@@ -141,37 +149,41 @@ const PortfolioPage = () => {
         p.name === selectedPortfolio.name ? updatedPortfolio : p
       )
     );
-
-    setSelectedPortfolio(updatedPortfolio);
+    handleSelectPortfolio(updatedPortfolio);
   };
 
-  const calculatePortfolioStats = () => {
-    if (!selectedPortfolio || selectedPortfolio.assets.length === 0) {
-      return { numAssets: 0, totalValue: 0, totalProfit: 0 };
+  const calculatePortfolioStats = (portfolio) => {
+    log.debug('Calculating portfolio stats');
+    setCalculatingPortfolioStats(true);
+    if (!portfolio || portfolio.stocks.length === 0) {
+      log.debug('No assets to calculate');
+      setCalculatingPortfolioStats(false);
+      setNumAssets(0);
+      setTotalValue(0);
+      setTotalProfit(0);
+      return;
     }
-
-    const numAssets = selectedPortfolio.assets.length;
-    const totalValue = selectedPortfolio.assets.reduce((acc, asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-      return acc + (currentStockPrice * asset.quantity);
+    const numAssets = portfolio.stocks.length;
+    const totalValue = portfolio.stocks.reduce((acc, asset) => {
+      return acc + (asset.currentPrice * asset.quantity);
+    }, 0);
+    const totalProfit = portfolio.stocks.reduce((acc, asset) => {
+      return acc + ((asset.currentPrice - asset.boughtPrice) * asset.quantity);
     }, 0);
 
-    const totalProfit = selectedPortfolio.assets.reduce((acc, asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-      return acc + ((currentStockPrice - asset.stockPrice) * asset.quantity);
-    }, 0);
-
-    return { numAssets, totalValue, totalProfit };
+    setCalculatingPortfolioStats(false);
+    setNumAssets(numAssets);
+    setTotalValue(totalValue);
+    setTotalProfit(totalProfit);
   };
 
-  const { numAssets, totalValue, totalProfit } = calculatePortfolioStats();
 
   const chartData = [
     ['Stock', 'Value'],
-    ...(selectedPortfolio?.assets ?? []).map((asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
+    ...(selectedPortfolio?.stocks ?? []).map((asset) => {
+      const currentStockPrice = mockStocks.find(stock => stock.code === asset.code)?.price || 0;
       const value = currentStockPrice * asset.quantity;
-      return [asset.stockCode, value];
+      return [asset.code, value];
     })
   ];
 
@@ -180,9 +192,9 @@ const PortfolioPage = () => {
   };
 
   const getSliceColor = (asset) => {
-    const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-    const profit = (currentStockPrice - asset.stockPrice) * asset.quantity;
-    const profitPercentage = (profit / (asset.stockPrice * asset.quantity)) * 100;
+    const currentStockPrice = mockStocks.find(stock => stock.code === asset.code)?.price || 0;
+    const profit = (currentStockPrice - asset.boughtPrice) * asset.quantity;
+    const profitPercentage = (profit / (asset.boughtPrice * asset.quantity)) * 100;
 
     if (profitPercentage <= -90) {
       return getCssVariable('--color-error-900');
@@ -208,7 +220,7 @@ const PortfolioPage = () => {
   const chartOptions = {
     title: 'Portfolio Distribution',
     pieSliceText: 'value',
-    slices: selectedPortfolio?.assets.map((asset, index) => ({
+    slices: selectedPortfolio?.stocks.map((asset, index) => ({
       offset: 0.1,
       color: getSliceColor(asset),
     })),
@@ -262,18 +274,19 @@ const PortfolioPage = () => {
                     <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
                       Add Assets
                     </button>
-                    {selectedPortfolio.assets.length > 0 && (
-                      <AssetList assets={selectedPortfolio.assets} setAssets={handleUpdateAssets} />
+                    {selectedPortfolio.stocks.length > 0 && (
+                      <AssetList assets={selectedPortfolio.stocks} setAssets={handleUpdateAssets} />
                     )}
                   </div>
                   <div className="portfolio-details portfolio-card">
                     <PortfolioDetailsCard
+                      loading={calculatingPortfolioStats}
                       numAssets={numAssets}
                       totalValue={totalValue}
                       totalProfit={totalProfit}
                     />
                     <div className="portfolio-chart">
-                      {selectedPortfolio.assets.length > 0 ? (
+                      {selectedPortfolio.stocks.length > 0 ? (
                         <Chart
                           className='portfolio-chart'
                           chartType="PieChart"

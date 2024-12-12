@@ -27,9 +27,7 @@ const AssetList = ({ assets, setAssets }) => {
   };
 
   const calculateProfitLoss = (asset) => {
-    const assetCode = asset.stockCode;
-    const assetPrice = mockStocks.find(stock => stock.code === assetCode)?.price || 0;
-    const profitLoss = (parseFloat(assetPrice) - parseFloat(asset.stockPrice)) * parseFloat(asset.quantity);
+    const profitLoss = (parseFloat(asset.currentPrice) - parseFloat(asset.boughtPrice)) * parseFloat(asset.quantity);
     return profitLoss.toFixed(2);
   };
 
@@ -63,7 +61,7 @@ const AssetList = ({ assets, setAssets }) => {
                   <td>
                     <input
                       type="text"
-                      value={editData.stockCode || asset.stockCode}
+                      value={editData.code || asset.code}
                       onChange={(e) => handleEdit(index, 'stockCode', e.target.value)}
                       className="asset-input"
                     />
@@ -71,7 +69,7 @@ const AssetList = ({ assets, setAssets }) => {
                   <td>
                     <input
                       type="number"
-                      value={editData.stockPrice || asset.stockPrice}
+                      value={editData.boughtPrice || asset.boughtPrice}
                       onChange={(e) => handleEdit(index, 'stockPrice', e.target.value)}
                       className="asset-input"
                     />
@@ -93,8 +91,8 @@ const AssetList = ({ assets, setAssets }) => {
                 </>
               ) : (
                 <>
-                  <td>{asset.stockCode}</td>
-                  <td>{parseFloat(asset.stockPrice).toFixed(2)}</td>
+                  <td>{asset.code}</td>
+                  <td>{parseFloat(asset.boughtPrice).toFixed(2)}</td>
                   <td>{asset.quantity}</td>
                   <td className={getProfitLossClass(asset)}>
                     {calculateProfitLoss(asset)}

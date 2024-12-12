@@ -1,7 +1,8 @@
 import apiClient from './apiClient';
 import log from '../utils/logger';
+import { StockService } from './stockService';
 
-const transformPortfolioItem = (portfolioItem) => {
+async function transformPortfolioItem(portfolioItem){
     return {
         id: portfolioItem.id,
         name: portfolioItem.name,
@@ -9,9 +10,26 @@ const transformPortfolioItem = (portfolioItem) => {
         userId: portfolioItem.user_id,
         createdAt: portfolioItem.created_at ? new Date(portfolioItem.created_at).toLocaleDateString() : "Unknown",
         updatedAt: portfolioItem.updated_at ? new Date(portfolioItem.updated_at).toLocaleDateString() : "Unknown",
-        stocks: portfolioItem.stocks || [],
+        stocks: await Promise.all(portfolioItem.stocks.map(transformPortfolioStockItem)) || [],
     };
 };
+
+async function transformPortfolioStockItem(stockItem) {
+    try {
+        const stock = await StockService.fetchStockById(stockItem.stock);
+        return {
+            id: stockItem.id,
+            code: stock.code,
+            name: stock.name,
+            currentPrice: stock.price,
+            boughtPrice: stockItem.price_bought,
+            quantity: stockItem.quantity,
+        };
+    } catch (error) {
+        log.error('Error transforming portfolio stock item:', error);
+        throw error;
+    }
+}
 
 export const PortfolioService = {
     // Fetch all portfolios with pagination
@@ -94,7 +112,8 @@ export const PortfolioService = {
             const response = await apiClient.get(`/portfolios/portfolios-by-user/${userId}/`);
             // a list of portfolios
             const rawPortfolios = response.data;
-            const transformedPortfolios = rawPortfolios.map(transformPortfolioItem);
+            const transformedPortfolios = await Promise.all(rawPortfolios.map(transformPortfolioItem));
+            log.debug('Transformed portfolios:', transformedPortfolios);
             return transformedPortfolios;
         } catch (error) {
             log.error(`Error fetching portfolio with user ID ${userId}:`, error);

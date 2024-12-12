@@ -19,6 +19,7 @@ const transformStockItem = (stockItem) => {
 }
 
 export const StockService = {
+    
     async fetchSimilarStocks(pattern, limit) {
         try {
             const response = await apiClient.post('/stocks/search/', {
@@ -33,5 +34,17 @@ export const StockService = {
             log.error('Error fetching similar stocks:', error);
             throw error;
         }
-    }
+    },
+
+    // Get stock by ID
+    async fetchStockById(id) {
+        try {
+            const response = await apiClient.get(`/stocks/${id}/`);
+            return transformStockItem(response.data);
+        } catch (error) {
+            log.error(`Error fetching stock with ID ${id}:`, error);
+            throw error;
+        }
+    },
+
 };
