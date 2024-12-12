@@ -85,30 +85,26 @@ class StockViewSet(viewsets.ModelViewSet):
         stock.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    @action(detail=False, methods=['post'],serializer_class=StockPatternSearchSerializer)
+    # Response body stock serializer
+    # Request body stock pattern search serializer
+    @action(detail=False, methods=['post'], serializer_class=StockPatternSearchSerializer)
     def search(self, request):
         """
         Search for stocks by pattern and limit.
         """
-        serializer = StockPatternSearchSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        pattern = serializer.validated_data.get('pattern').strip().lower()
-        limit = serializer.validated_data.get('limit', 10)
-
+        input_serializer = StockPatternSearchSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        pattern = input_serializer.validated_data.get('pattern').strip().lower()
+        limit = input_serializer.validated_data.get('limit', 10)
         if not pattern:
             return Response({"error": "Pattern is required."}, status=status.HTTP_400_BAD_REQUEST)
-
         starts_with = Stock.objects.filter(
             Q(name__istartswith=pattern) | Q(symbol__istartswith=pattern)
         ).order_by('name')
-
         if starts_with.count() >= limit:
             stocks = starts_with[:limit]
-            serializer = self.get_serializer(stocks, many=True)
+            serializer = StockSerializer(stocks, many=True)
             return Response(serializer.data)
-
         contains = Stock.objects.filter(
             Q(name__icontains=pattern) | Q(symbol__icontains=pattern)
         ).exclude(id__in=starts_with).order_by('name')
@@ -116,7 +112,7 @@ class StockViewSet(viewsets.ModelViewSet):
         stocks = list(starts_with) + list(contains)
         stocks = stocks[:limit]
 
-        serializer = self.get_serializer(stocks, many=True)
+        serializer = StockSerializer(stocks, many=True)
         return Response(serializer.data)
 
     @swagger_auto_schema(request_body=StockHistoricDataSerializer)
@@ -125,9 +121,7 @@ class StockViewSet(viewsets.ModelViewSet):
         stock = self.get_object()
         stock_symbol = stock.symbol
         serializer = StockHistoricDataSerializer(data=request.data)
-        
         serializer.is_valid(raise_exception=True)
-
         start_date = serializer.validated_data['start_date']
         end_date = serializer.validated_data['end_date']
 
