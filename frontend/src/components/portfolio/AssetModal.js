@@ -1,33 +1,41 @@
 import React, { useState } from 'react';
 import '../../styles/portfolio/PortfolioModal.css';
+import { StockService } from '../../service/stockService';
 
 const AssetModal = ({ onClose, onSubmit, stockData }) => {
+  const [stockId, setStockId] = useState('');
   const [stockCode, setStockCode] = useState('');
   const [stockPrice, setStockPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+  let debounceTimer;
   const handleStockSearch = (code) => {
-    setStockCode(code);
-    if (code) {
-      const results = stockData
-        .filter((s) => s.code.toLowerCase().includes(code.toLowerCase()))
-        .slice(0, 5);
-      setSearchResults(results);
-    } else {
+    if (!code) {
+      setStockCode('');
       setSearchResults([]);
+      return;
     }
+
+    setStockCode(code);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      StockService.fetchSimilarStocks(code, 5)
+        .then((results) => setSearchResults(results))
+        .catch((error) => console.error('Error fetching similar stocks:', error));
+    }, 300);
   };
 
   const handleSelectStock = (stock) => {
+    setStockId(stock.id);
     setStockCode(stock.code);
     setStockPrice(stock.price);
     setSearchResults([]);
   };
 
   const handleSubmit = () => {
-    if (stockCode && stockPrice && quantity) {
-      onSubmit({ stockCode, stockPrice: parseFloat(stockPrice), quantity: parseInt(quantity) });
+    if (stockId && stockCode && stockPrice && quantity) {
+      onSubmit({ stockId: stockId, stockCode: stockCode, stockPrice: parseFloat(stockPrice), quantity: parseInt(quantity) });
       onClose();
     }
   };
