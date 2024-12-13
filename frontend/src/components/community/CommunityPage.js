@@ -12,7 +12,6 @@ const CommunityPage = () => {
   const [sortOrder, setSortOrder] = useState("dsc");
   const [searchActive, setSearchActive] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [tags, setTags] = useState({});
   const [users, setUsers] = useState({});
   const navigate = useNavigate();
 
@@ -20,7 +19,6 @@ const CommunityPage = () => {
     const fetchPosts = async () => {
       try {
         const response = await apiClient.get("/posts");
-        const tagsResponse = await apiClient.get("/tags");
         const usersResponse = await apiClient.get("/users");
         const usersById = usersResponse.data.reduce((acc, user) => {
           acc[user.id] = user.username;
