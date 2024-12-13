@@ -64,7 +64,6 @@ const PostView = () => {
       try {
         const response = await apiClient.get(`/posts/${postId}/`);
         const backendPost = response.data;
-        // console.log("backendpost", backendPost);
         const commentsResponse = await apiClient.get(
           `/comments/post-comments/${postId}`
         );
@@ -82,16 +81,9 @@ const PostView = () => {
           })
         );
 
-        const loggedInUser = parseInt(UserService.getUserId(), 10); // Adjust as needed to get the user's ID
-        console.log("backen", backendPost);
+        console.log("backedn, comment", backendComments);
+        const loggedInUser = parseInt(UserService.getUserId(), 10);
         const userHasLiked = backendPost.liked_by.includes(loggedInUser);
-        console.log(
-          "loogedinuseıd",
-          loggedInUser,
-          "likedby",
-          backendPost.liked_by[0]
-        );
-        console.log("userhaslike", userHasLiked);
 
         const normalizedPost = {
           "post-id": backendPost.id,
@@ -105,9 +97,7 @@ const PostView = () => {
             backendPost.created_at
           ).toLocaleDateString(),
         };
-        console.log("noemal", normalizedPost);
-        setIsLikedByUser(userHasLiked); // Update the state
-        console.log(isLikedByUser);
+        setIsLikedByUser(userHasLiked);
         setPost(normalizedPost);
       } catch (error) {
         console.error("Error fetching post:", error);
@@ -183,22 +173,6 @@ const PostView = () => {
       console.error(`Error toggling like state: ${error.message}`);
     }
   };
-
-  // const handleLike = async () => {
-  //   const payload = {
-  //     post_id: postId,
-  //   };
-
-  //   await apiClient.post(`/like`, payload);
-  // };
-
-  // const handleDislike = async () => {
-  //   const payload = {
-  //     post_id: postId,
-  //   };
-
-  //   await apiClient.post(`/dislike`, payload);
-  // };
 
   if (loading) {
     return (
