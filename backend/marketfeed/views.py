@@ -164,7 +164,7 @@ class TagViewSet(viewsets.ModelViewSet):
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(user_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
@@ -222,9 +222,6 @@ class PortfolioViewSet(viewsets.ModelViewSet):
     
 
 class PortfolioStockViewSet(ViewSet):
-    """
-    A viewset for adding and removing stocks from a portfolio.
-    """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PortfolioStockActionSerializer
 
@@ -288,9 +285,15 @@ class PostViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def list(self, request):
-        posts = self.get_queryset()
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
+        queryset = self.paginate_queryset(self.get_queryset())
+        data = []
+        for post in queryset:
+            serializer = self.get_serializer(post)
+            serialized_data = serializer.data
+            serialized_data['tags'] = [{'id': tag.id, 'name': tag.name} for tag in post.tags.all()]
+            data.append(serialized_data)
+
+        return self.get_paginated_response(data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -325,9 +328,19 @@ class PostViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], url_path='posts-by-user/(?P<user_id>[^/.]+)')
     def user_posts(self, request, user_id=None):
-        posts = self.queryset.filter(author=user_id)
-        serializer = self.get_serializer(posts, many=True)
-        return Response(serializer.data)
+        queryset = self.queryset.filter(author_id=user_id)
+        if not queryset.exists():
+            return Response({'detail': 'No posts found for the specified user.'}, status=status.HTTP_404_NOT_FOUND)
+
+        paginated_queryset = self.paginate_queryset(queryset)
+        data = []
+        for post in paginated_queryset:
+            serializer = self.get_serializer(post)
+            serialized_data = serializer.data
+            serialized_data['tags'] = [{'id': tag.id, 'name': tag.name} for tag in post.tags.all()]
+            data.append(serialized_data)
+
+        return self.get_paginated_response(data)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
