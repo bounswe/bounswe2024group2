@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import mockPosts from "../../data/mockPosts";
 import FinancialGraph from "./FinancialGraph";
 import "../../styles/community/PostView.css";
-import {apiClient} from "../../service/apiClient";
+import { apiClient } from "../../service/apiClient";
 import CircleAnimation from "../CircleAnimation";
 import NotFound from "../notfound/NotFound";
+import UserService from "../../service/userService";
 import {
   FaNewspaper,
   FaImage,
@@ -38,6 +39,13 @@ const PostView = () => {
     }
   };
 
+  const getUserName = async (userID) => {
+    const userData = await apiClient.get(`/users/${userID}`);
+    const userName = userData.data.username;
+
+    return userName;
+  };
+
   const getColorForTag = (tag) => {
     const asciiValue = tag.charCodeAt(0);
     const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
@@ -55,12 +63,29 @@ const PostView = () => {
       try {
         const response = await apiClient.get(`/posts/${postId}/`);
         const backendPost = response.data;
+
+        const commentsResponse = await apiClient.get(
+          `/comments/post-comments/${postId}`
+        );
+
+        const commentsData = commentsResponse.data;
+
+        const backendComments = await Promise.all(
+          commentsData.map(async (comment) => {
+            const username = await getUserName(comment.user_id);
+            return {
+              "comment-id": comment.id,
+              user: username,
+              comment: comment.content,
+            };
+          })
+        );
         const normalizedPost = {
           "post-id": backendPost.id,
           user: users[backendPost.author] || "Unknown",
           title: backendPost.title,
           content: [{ type: "plain-text", "plain-text": backendPost.content }],
-          comments: [],
+          comments: backendComments,
           likes: backendPost.liked_by.length,
           tags: backendPost.tags,
           "publication-date": new Date(
@@ -95,18 +120,35 @@ const PostView = () => {
   }, [isUsersLoaded, postId, users]);
   const handleCommentChange = (e) => setCommentText(e.target.value);
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     if (commentText.trim()) {
-      const newComment = {
-        "comment-id": Date.now(),
-        user: "Current User",
-        comment: commentText,
-      };
-      setPost((prevPost) => ({
-        ...prevPost,
-        comments: [...prevPost.comments, newComment],
-      }));
-      setCommentText("");
+      try {
+        const userId = UserService.getUserId();
+        const username = UserService.getUsername();
+
+        const payload = {
+          post_id: postId,
+          user_id: userId,
+          content: commentText.trim(),
+        };
+
+        await apiClient.post("/comments/", payload);
+
+        setPost((prevPost) => ({
+          ...prevPost,
+          comments: [
+            ...prevPost.comments,
+            {
+              "comment-id": Date.now(), // Temporary ID until refreshed
+              user: username,
+              comment: commentText.trim(),
+            },
+          ],
+        }));
+        setCommentText("");
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
     }
   };
 
