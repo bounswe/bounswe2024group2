@@ -15,6 +15,7 @@ import CommunityPage from "./components/community/CommunityPage.js";
 import MarketsPage from "./components/markets/MarketsPage.js";
 import StocksPage from "./components/markets/StocksPage.js";
 import PortfolioPage from "./components/portfolio/PortfolioPage.js";
+import ProfilePage from "./components/profile/ProfilePage.js";
 import NotFound from "./components/notfound/NotFound.js";
 import PostView from "./components/community/PostView.js";
 import CreatePostPage from "./components/community/CreatePostPage.js";
@@ -41,6 +42,7 @@ function App() {
               <Route path="stocks/:indexId" element={<StocksPage />} />
               <Route path="news" element={<NewsPage />} />
               <Route path="portfolio" element={<PortfolioPage />} />
+              <Route path="profile" element={<ProfilePage />} />
 
               <Route path="/post/:postId" element={<PostView />} />
               <Route path="/" element={<Navigate to="/home" />} />
