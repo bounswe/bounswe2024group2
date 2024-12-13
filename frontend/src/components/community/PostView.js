@@ -24,20 +24,6 @@ const PostView = () => {
   const [tags, setTags] = useState([]);
   const [users, setUsers] = useState({});
   const [isUsersLoaded, setIsUsersLoaded] = useState(false);
-
-  const fetchTags = async (tags) => {
-    try {
-      const tagPromises = tags.map((tag) => apiClient.get(`/tags/${tag.id}/`));
-      const responses = await Promise.all(tagPromises);
-      const tagNames = responses.map((response) => response.data.name);
-
-      setTags(tagNames);
-    } catch (error) {
-      console.error("Error fetching tags:", error);
-      setTags([]);
-    }
-  };
-
   const fetchUsers = async () => {
     try {
       const response = await apiClient.get("/users");
@@ -83,7 +69,6 @@ const PostView = () => {
         };
 
         setPost(normalizedPost);
-        fetchTags(backendPost.tags);
       } catch (error) {
         console.error("Error fetching post:", error);
         setPost(null);
