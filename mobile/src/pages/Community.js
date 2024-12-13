@@ -11,6 +11,8 @@ const Community = ({navigation}) => {
     const { user } = useAuth();
     const { baseURL } = config;
     const [posts, setPosts] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [userMap, setUserMap] = useState([]);
     const fetchPosts = async () => {
         const postURL = baseURL + '/posts/';
     
@@ -39,15 +41,52 @@ const Community = ({navigation}) => {
           
             console.error('Error:', error);
         }
-
-
-        
       };
-      useFocusEffect(
-        React.useCallback(() => {
-          fetchPosts();
-        }, [])
-      );
+
+
+      const fetchUsers = async () => {
+        const postURL = baseURL + '/users/';
+    
+        try {
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    /* 'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN' ,*/
+                },
+            });
+    
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                //console.log('Response:', jsonResponse);
+                setUsers(jsonResponse);
+
+                const map = {};
+                jsonResponse.forEach((user) => {
+                    map[user.id] = user;
+                });
+                setUserMap(map);
+
+               
+            } else {
+                const errorResponse = await response.json();
+                console.log('Error Response:', errorResponse);
+              
+                throw new Error('Network response was not ok.');
+                
+            }
+        } catch (error) {
+          
+            console.error('Error:', error);
+        }
+      };
+    useFocusEffect(
+    React.useCallback(() => {
+        fetchPosts();
+        fetchUsers();
+    }, [])
+    );
+
 
 
     const handleViewPost = (post) => {
@@ -65,11 +104,11 @@ const Community = ({navigation}) => {
     }
 
     const renderItem = ({ item: post }) => (
-        //console.log(post),
+        console.log(post),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>
-                Published on: {post.date} by {post.author}
+                Published on: {post.date} by {userMap[post.author].username}
             </Text>
             <Text style={styles.postContent}>{post.content}</Text>
             <View style={styles.tagsContainer}>
