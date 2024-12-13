@@ -23,7 +23,6 @@
   gap: 10px;
 }
 
-
 .auth-section {
   align-items: center;
   display: flex;
@@ -44,7 +43,6 @@
   overflow-y: auto;
 }
 
-
 .custom-button {
   align-items: center;
   background-color: var(--color-primary-500);
@@ -62,10 +60,13 @@
   width: 40px;
 }
 
-
-
 .custom-button:hover {
   background-color: var(--color-primary-700);
+}
+
+.custom-button svg {
+  font-size: 1.2rem;
+  color: var(--color-neutral-100);
 }
 
 .dashboard-container {
@@ -91,8 +92,6 @@
   text-decoration: none;
   transition: background-color 0.3s;
 }
-
-
 
 .nav-links a:hover {
   background-color: var(--color-primary-500);
