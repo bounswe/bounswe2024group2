@@ -5,7 +5,7 @@ import "../../styles/community/CommunityPage.css";
 import PostCard from "./PostCard";
 import "../../styles/Page.css";
 import { useNavigate } from "react-router-dom";
-import {apiClient} from "../../service/apiClient";
+import { apiClient } from "../../service/apiClient";
 
 const CommunityPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,16 +26,41 @@ const CommunityPage = () => {
         }, {});
         setUsers(usersById);
 
-        const transformedPosts = response.data.map((post) => ({
-          "post-id": post.id,
-          user: usersById[post.author] || "Unknown",
-          title: post.title,
-          content: [{ type: "plain-text", "plain-text": post.content }],
-          comments: [],
-          likes: post.liked_by.length,
-          tags: post.tags,
-          "publication-date": new Date(post.created_at),
-        }));
+        const transformedPosts = await Promise.all(
+          response.data.map(async (post) => {
+            try {
+              const commentsResponse = await apiClient.get(
+                `/comments/post-comments/${post.id}`
+              );
+
+              return {
+                "post-id": post.id,
+                user: usersById[post.author] || "Unknown",
+                title: post.title,
+                content: [{ type: "plain-text", "plain-text": post.content }],
+                comments: commentsResponse.data,
+                likes: post.liked_by?.length || 0,
+                tags: post.tags || [],
+                "publication-date": new Date(post.created_at),
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching comments for post ${post.id}:`,
+                error
+              );
+              return {
+                "post-id": post.id,
+                user: usersById[post.author] || "Unknown",
+                title: post.title,
+                content: [{ type: "plain-text", "plain-text": post.content }],
+                comments: 0,
+                likes: post.liked_by?.length || 0,
+                tags: post.tags || [],
+                "publication-date": new Date(post.created_at),
+              };
+            }
+          })
+        );
         setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
