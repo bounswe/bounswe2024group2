@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useAuth } from './context/AuthContext'; // Import AuthContext
 import config from './config/config';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = ({ navigation }) => {
   const { baseURL } = config;
@@ -49,11 +50,9 @@ const Login = ({ navigation }) => {
       // Check for a successful login
       if (response.ok) {
         // Handle successful login
-        console.log('Login data:', data);
-        //console.log('Access', data.access);
-        //console.log('Refresh', data.refresh);
         const { access, refresh } = data;
-        login(username, access, refresh);
+        const decodedToken = jwtDecode(access);
+        login(decodedToken.username, decodedToken.user_id, access, refresh);
 
         Alert.alert('Login Successful', 'Welcome!');
         navigation.navigate('Home'); // Navigate to the Home screen
