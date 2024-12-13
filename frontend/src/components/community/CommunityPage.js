@@ -21,13 +21,6 @@ const CommunityPage = () => {
       try {
         const response = await apiClient.get("/posts");
         const tagsResponse = await apiClient.get("/tags");
-        if (!tagsResponse.data) throw new Error("Failed to fetch tags");
-        const tagsById = tagsResponse.data.reduce((acc, tag) => {
-          acc[tag.id] = tag.name;
-          return acc;
-        }, {});
-        setTags(tagsById);
-
         const usersResponse = await apiClient.get("/users");
         console.log(usersResponse);
         const usersById = usersResponse.data.reduce((acc, user) => {
@@ -45,7 +38,7 @@ const CommunityPage = () => {
           content: [{ type: "plain-text", "plain-text": post.content }],
           comments: [],
           likes: post.liked_by.length,
-          tags: post.tags.map((tagId) => tagsById[tagId] || "Unknown"),
+          tags: post.tags,
           "publication-date": new Date(post.created_at).toLocaleDateString(),
         }));
         setPosts(transformedPosts);
