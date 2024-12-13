@@ -343,6 +343,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'], url_path='posts-by-tag/(?P<tag_id>[^/.]+)')
+    def posts_by_tag(self, request, tag_id=None):
+        tag = get_object_or_404(Tag, id=tag_id)
+        queryset = Post.objects.filter(tags=tag)
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -550,4 +557,3 @@ class SearchViewSet(ViewSet):
         results['portfolios'] = portfolio_serializer.data 
 
         return Response(results)
-        
