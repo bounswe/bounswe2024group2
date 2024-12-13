@@ -25,6 +25,7 @@ const PostView = () => {
   const [tags, setTags] = useState([]);
   const [users, setUsers] = useState({});
   const [isUsersLoaded, setIsUsersLoaded] = useState(false);
+  const [isLikedByUser, setIsLikedByUser] = useState(false);
   const fetchUsers = async () => {
     try {
       const response = await apiClient.get("/users");
@@ -63,7 +64,7 @@ const PostView = () => {
       try {
         const response = await apiClient.get(`/posts/${postId}/`);
         const backendPost = response.data;
-
+        // console.log("backendpost", backendPost);
         const commentsResponse = await apiClient.get(
           `/comments/post-comments/${postId}`
         );
@@ -80,6 +81,18 @@ const PostView = () => {
             };
           })
         );
+
+        const loggedInUser = parseInt(UserService.getUserId(), 10); // Adjust as needed to get the user's ID
+        console.log("backen", backendPost);
+        const userHasLiked = backendPost.liked_by.includes(loggedInUser);
+        console.log(
+          "loogedinuseıd",
+          loggedInUser,
+          "likedby",
+          backendPost.liked_by[0]
+        );
+        console.log("userhaslike", userHasLiked);
+
         const normalizedPost = {
           "post-id": backendPost.id,
           user: users[backendPost.author] || "Unknown",
@@ -92,7 +105,9 @@ const PostView = () => {
             backendPost.created_at
           ).toLocaleDateString(),
         };
-
+        console.log("noemal", normalizedPost);
+        setIsLikedByUser(userHasLiked); // Update the state
+        console.log(isLikedByUser);
         setPost(normalizedPost);
       } catch (error) {
         console.error("Error fetching post:", error);
@@ -149,6 +164,41 @@ const PostView = () => {
       }
     }
   };
+
+  const handleToggleLike = async () => {
+    try {
+      const endpoint = isLikedByUser ? `/like` : `/like`; // Reuse the same endpoint for toggling
+      const payload = { post_id: postId };
+
+      await apiClient.post(endpoint, payload);
+
+      // Update the UI to reflect the new like/unlike state
+      setPost((prevPost) => ({
+        ...prevPost,
+        likes: isLikedByUser ? prevPost.likes - 1 : prevPost.likes + 1, // Increment or decrement likes
+      }));
+
+      setIsLikedByUser((prevLiked) => !prevLiked); // Toggle like state
+    } catch (error) {
+      console.error(`Error toggling like state: ${error.message}`);
+    }
+  };
+
+  // const handleLike = async () => {
+  //   const payload = {
+  //     post_id: postId,
+  //   };
+
+  //   await apiClient.post(`/like`, payload);
+  // };
+
+  // const handleDislike = async () => {
+  //   const payload = {
+  //     post_id: postId,
+  //   };
+
+  //   await apiClient.post(`/dislike`, payload);
+  // };
 
   if (loading) {
     return (
@@ -252,8 +302,11 @@ const PostView = () => {
         </div>
       </div>
       <div className="post-actions">
-        <button className="like-button">
-          <FaThumbsUp /> Like
+        <button
+          className={`like-button ${isLikedByUser ? "liked" : ""}`}
+          onClick={handleToggleLike}
+        >
+          <FaThumbsUp /> {isLikedByUser ? " Liked" : " Like"}
         </button>
         <button className="comment-button">
           <FaComment /> Comment
