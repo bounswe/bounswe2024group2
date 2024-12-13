@@ -5,6 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 import bullBearIcon from "../assets/icon-bare-700.png";
 import { toast } from "react-toastify";
 import { FaMoon, FaSun } from "react-icons/fa";
+import UserService from "../service/userService";
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,22 +13,18 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
 
-
-
   useEffect(() => {
-    // Check if access token exists in localStorage
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (accessToken) {
+    if (UserService.isLoggedIn()) {
       setIsLoggedIn(true);
-      const storedUserName = localStorage.getItem("userName");
+      const storedUserName = UserService.getUsername();
+      console.log(storedUserName);
       if (storedUserName) {
         setUserName(storedUserName);
       }
     } else {
       setIsLoggedIn(false); // User is not logged in
     }
-
+  
     const storedDarkMode = localStorage.getItem("darkMode");
     const isDarkMode = storedDarkMode === "true";
     setDarkMode(isDarkMode);
@@ -44,13 +41,8 @@ const Dashboard = () => {
   };
 
   const handleSignOut = () => {
-    // Clear the tokens from localStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userName");
-
+    UserService.logout(); // Clear tokens from localStorage
     setIsLoggedIn(false); // Update state
-    // navigate("/login"); // Navigate to login? i am not sure
     toast.success("Signed out successfully!");
   };
 

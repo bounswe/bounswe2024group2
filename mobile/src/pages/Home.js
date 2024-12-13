@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Image, SectionList, TouchableOpacity } from 'react-native';
 import { ThemeContext } from '../themes/ThemeProvider';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -15,19 +15,47 @@ import bist from "../../assets/stock-logos/bist.png";
 
 const Home = () => {
   const { theme, toggleTheme, isDarkMode } = useContext(ThemeContext);
+  const [latestPosts, setLatestPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+    const fetchLatestPosts = async () => {
+        const baseURL = 'http://159.223.28.163:30002';
+        const postURL = `${baseURL}/posts/`;
 
+        try {
+            const response = await fetch(postURL);
+            const data = await response.json();
+            setLatestPosts(data); // Assuming the API returns a paginated response
+        } catch (error) {
+            console.error('Error fetching latest posts:', error);
+        }finally {
+          setLoading(false);
+        }
 
-  const sections = [
+    };
 
-    {
-      title: 'Feed',
-      data: [
-        { id: 1, type: 'post', username: "BullAlways", title: 'THYAO Stock Analysis', tag: 'StockAnalysis', content: 'THYAO has shown a strong uptrend in the last month...' },
+    useEffect(() => {
+        fetchLatestPosts();
+    }, []);
+
+    const mockPosts = [
+      { id: 1, type: 'post', username: "BullAlways", title: 'THYAO Stock Analysis', tag: 'StockAnalysis', content: 'THYAO has shown a strong uptrend in the last month...' },
         { id: 2, type: 'post', username: "Stocker", title: 'Market Insights', tag: 'MarketNews', content: 'BIST 100 index has gained momentum recently...' },
         { id: 3, type: 'post', username: "TraderJoe", title: 'Forex Trading Strategies', tag: 'CurrencyTrading', content: 'Learn effective strategies for trading major currency pairs...' },
         { id: 4, type: 'post', username: "FinanceGuru", title: 'Investing in Renewable Energy', tag: 'InvestmentTips', content: 'Renewable energy stocks are on the rise. Here are some to watch...' },
         { id: 5, type: 'post', username: "MarketMaven", title: 'Tech Stocks to Buy Now', tag: 'TechTrends', content: 'The tech sector is showing signs of recovery. Here are some top picks...' },
-      ],
+      ];
+
+  const sections = [
+    {
+      title: 'Latest Posts',
+      data: loading ? mockPosts: latestPosts.map(post => ({
+        id: post.id,
+        type: 'post',
+        username: post.author, // API'ye göre düzenle
+        title: post.title,
+        tag: post.tags, // API'ye göre düzenle
+        content: post.content,
+      })),
     },
     {
       title: 'Stock Prices',
@@ -111,11 +139,13 @@ const Home = () => {
   };
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+
       <TouchableOpacity onPress={toggleTheme} style={styles.toggleButton}>
         <Text style={{ color: theme.buttonColor }}>
           {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         </Text>
       </TouchableOpacity>
+
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id.toString()}

@@ -18,3 +18,5 @@ venv
 **/.env
 *.icloud
 
+/backend/env
+/backend/staticfiles

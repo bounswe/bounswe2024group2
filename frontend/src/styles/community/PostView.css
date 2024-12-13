@@ -1,171 +1,211 @@
 h1 {
-    color: var(--color-neutral-800);
-    margin-bottom: 10px;
+  color: var(--color-neutral-800);
+  margin-bottom: 10px;
 }
 
 .comment {
-    background: var(--color-neutral-100);
-     border: 1px solid var(--border-light);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    margin: 10px 0;
-    padding: 15px;
-    transition: background-color 0.2s ease;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  padding: 15px;
+  transition: background-color 0.2s ease;
 }
 
 .comment-text {
-    color: var(--color-neutral-800);
-    line-height: 1.5;
+  color: var(--color-neutral-800);
+  line-height: 1.5;
 }
 
 .comment-user {
-    color: var(--color-primary-500);
-    font-weight: bold;
-    margin-bottom: 5px;
+  color: var(--color-primary-500);
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .comment:hover {
-    background-color: var(--color-neutral-300);
+  background-color: var(--color-neutral-300);
 }
 
 .comments {
-    border-top: 1px solid var(--border-light);
-    padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 20px;
 }
 
 .comments h2 {
-    color: var(--color-neutral-800);
-    font-size: 1.5em;
-    margin-bottom: 15px;
+  color: var(--color-neutral-800);
+  font-size: 1.5em;
+  margin-bottom: 15px;
 }
 
 .footer-label {
-    color: var(--color-neutral-600);
-    font-size: 0.85em;
-    margin-top: 5px;
+  color: var(--color-neutral-600);
+  font-size: 0.85em;
+  margin-top: 5px;
 }
 
 .image {
-    margin: 20px 0;
-    text-align: center;
+  margin: 20px 0;
+  text-align: center;
 }
 
 .image img {
-    border-radius: 8px;
-    height: auto;
-    max-width: 100%;
-    max-width: 512px;
+  border-radius: 8px;
+  height: auto;
+  max-width: 100%;
+  max-width: 512px;
 }
 
-.like-button, .comment-button, .follow-button {
-    background-color: var(--color-primary-500);
-    border: none;
-    border-radius: 5px;
-    color: var(--color-neutral-white);
-    cursor: pointer;
-    padding: 10px 15px;
-    transition: background-color 0.3s ease;
+.like-button,
+.comment-button,
+.follow-button {
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease;
 }
 
-.like-button:hover, .comment-button:hover, .follow-button:hover {
-    background-color: var(--color-primary-300);
+.like-button:hover,
+.comment-button:hover,
+.follow-button:hover {
+  background-color: var(--color-primary-300);
 }
 
 .loading-comments {
-    color: var(--color-primary-500);
-    font-size: 1.2em;
-    margin: 20px 0;
-    text-align: center;
+  color: var(--color-primary-500);
+  font-size: 1.2em;
+  margin: 20px 0;
+  text-align: center;
 }
 
 .news {
-    background: var(--color-neutral-100);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    margin: 10px 0;
-    padding: 10px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin: 10px 0;
+  padding: 10px;
 }
 
 .news a {
-    color: var(--color-primary-500);
-    text-decoration: none;
+  color: var(--color-primary-500);
+  text-decoration: none;
 }
 
 .news a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .post-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .post-author {
-    align-items: center;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .post-content {
-    margin-bottom: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 10px;
+  margin-bottom: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
 }
 
 .post-view {
-    border-radius: 8px;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 32px 120px;
-    overflow-y: auto;
-    scrollbar-width: none;
-    width: 100%;
+  border-radius: 8px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 32px 120px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  width: 100%;
 }
 
 .tag {
-    background: var(--color-neutral-100);
-    border-radius: 15px;
-    margin: 5px;
-    padding: 5px 10px;
+  background: var(--color-neutral-100);
+  border-radius: 15px;
+  margin: 5px;
+  padding: 5px 10px;
 }
 
 .tags {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .timeline-content {
-    background: var(--color-neutral-100);
-    border-radius: 8px;
-    flex: 1;
-    padding: 10px;
+  background: var(--color-neutral-100);
+  border-radius: 8px;
+  flex: 1;
+  padding: 10px;
 }
 
 .timeline-dot {
-    align-items: center;
-    background-color: var(--color-primary-500);
-    border-radius: 50%;
-    display: flex;
-    height: 32px;
-    justify-content: center;
-    margin-right: 10px;
-    width: 32px;
+  align-items: center;
+  background-color: var(--color-primary-500);
+  border-radius: 50%;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  margin-right: 10px;
+  width: 32px;
 }
 
 .timeline-dot .icon {
-    color: var(--color-neutral-white);
-    font-size: 12px;
+  color: var(--color-neutral-white);
+  font-size: 12px;
 }
 
 .timeline-item {
-    align-items: flex-start;
-    display: flex;
-    margin: 20px 0;
+  align-items: flex-start;
+  display: flex;
+  margin: 20px 0;
+}
+
+.comment-box {
+  background: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-box textarea {
+  background: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1em;
+  color: var(--color-neutral-800);
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
+.comment-box button {
+  align-self: flex-start;
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: background-color 0.3s ease;
+}
+
+.comment-box button:hover {
+  background-color: var(--color-primary-300);
 }

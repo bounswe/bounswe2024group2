@@ -148,9 +148,10 @@
   padding: 5px 10px;
   margin: 5px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 0px;
+  border-radius: 50px;
   cursor: pointer;
+  color: white;
   transition: background-color 0.2s, color 0.2s;
 }
 
@@ -237,4 +238,49 @@
 .description-textarea:focus {
   border-color: #007bff;
   background-color: #fff;
+}
+
+body.dark-mode {
+  background-color: var(--color-neutral-300);
+  color: var(--color-neutral-white);
+}
+
+body.dark-mode .create-post-container {
+  background-color: var(--color-neutral-300);
+}
+
+body.dark-mode .post-title-input,
+body.dark-mode .tag-search-input,
+body.dark-mode .description-textarea {
+  background-color: var(--color-neutral-500);
+  color: var(--color-neutral-white);
+  border: 1px solid var(--color-neutral-700);
+}
+
+body.dark-mode .selected-tag {
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-white);
+}
+
+body.dark-mode .tag-suggestion {
+  background-color: var(--color-primary-500);
+  color: var(--color-neutral-white);
+}
+
+body.dark-mode .action-buttons button {
+  background-color: var(--color-neutral-700);
+  color: var(--color-neutral-white);
+}
+
+body.dark-mode .left-section {
+  background-color: var(--color-neutral-300);
+}
+
+body.dark-mode .right-section {
+  background-color: var(--color-neutral-300);
+}
+
+body.dark-mode .tag-suggestions-box {
+  background-color: var(--color-neutral-500);
+  border: var(--color-neutral-700);
 }
