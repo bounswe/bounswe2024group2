@@ -14,6 +14,8 @@ from drf_yasg.utils import swagger_auto_schema
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+
 
 
 class CurrencyViewSet(viewsets.ModelViewSet):
@@ -293,7 +295,7 @@ class PostViewSet(viewsets.ModelViewSet):
             serialized_data['tags'] = [{'id': tag.id, 'name': tag.name} for tag in post.tags.all()]
             data.append(serialized_data)
 
-        return self.get_paginated_response(data)
+        return Response(data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -332,15 +334,14 @@ class PostViewSet(viewsets.ModelViewSet):
         if not queryset.exists():
             return Response({'detail': 'No posts found for the specified user.'}, status=status.HTTP_404_NOT_FOUND)
 
-        paginated_queryset = self.paginate_queryset(queryset)
         data = []
-        for post in paginated_queryset:
+        for post in queryset:
             serializer = self.get_serializer(post)
             serialized_data = serializer.data
             serialized_data['tags'] = [{'id': tag.id, 'name': tag.name} for tag in post.tags.all()]
             data.append(serialized_data)
 
-        return self.get_paginated_response(data)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -498,3 +499,55 @@ class IndexViewSet(viewsets.ModelViewSet):
         index = self.get_object()
         index.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SearchViewSet(ViewSet):
+
+    @action(detail=False, methods=['get'], url_path='posts/(?P<q>[^/.]+)')
+    def search_posts(self, request, q=None):
+        if not q:
+            return Response({'detail': 'Search query not provided.'}, status=400)
+
+        queryset = Post.objects.filter(Q(title__icontains=q) | Q(content__icontains=q))
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='tags/(?P<q>[^/.]+)')
+    def search_tags(self, request, q=None):
+        if not q:
+            return Response({'detail': 'Search query not provided.'}, status=400)
+
+        queryset = Tag.objects.filter(name__icontains=q)
+        serializer = TagSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='portfolios/(?P<q>[^/.]+)')
+    def search_portfolios(self, request, q=None):
+        if not q:
+            return Response({'detail': 'Search query not provided.'}, status=400)
+
+        queryset = Portfolio.objects.filter(name__icontains=q)
+        serializer = PortfolioSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='all/(?P<q>[^/.]+)')
+    def search_all(self, request, q=None):
+        if not q:
+            return Response({'detail': 'Search query not provided.'}, status=400)
+
+        results = {}
+
+        post_queryset = Post.objects.filter(Q(title__icontains=q) | Q(content__icontains=q))
+        post_serializer = PostSerializer(post_queryset, many=True)
+        results['posts'] = post_serializer.data
+
+        tag_queryset = Tag.objects.filter(name__icontains=q)
+        tag_serializer = TagSerializer(tag_queryset, many=True)
+        results['tags'] = tag_serializer.data
+
+        portfolio_queryset = Portfolio.objects.filter(name__icontains=q)
+        portfolio_serializer = PortfolioSerializer(portfolio_queryset, many=True)
+        results['portfolios'] = portfolio_serializer.data 
+
+        return Response(results)
+        
