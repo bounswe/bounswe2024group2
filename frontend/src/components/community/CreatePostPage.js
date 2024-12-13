@@ -99,17 +99,18 @@ const CreatePostPage = () => {
       return;
     }
 
-    const tagIds = selectedTags.map((tag) => tag.id);
+    const tags = selectedTags;
     const postData = {
       title,
       content: description,
       author: 2,
       liked_by: [],
-      tags: tagIds,
+      tags: tags,
       portfolios: [],
     };
 
     try {
+      console.log(postData);
       const response = await apiClient.post("/posts/", postData);
       console.log("Post created successfully:", response.data);
       alert("Post created successfully!");
