@@ -22,15 +22,12 @@ const CommunityPage = () => {
         const response = await apiClient.get("/posts");
         const tagsResponse = await apiClient.get("/tags");
         const usersResponse = await apiClient.get("/users");
-        console.log(usersResponse);
         const usersById = usersResponse.data.reduce((acc, user) => {
           acc[user.id] = user.username;
-          console.log(acc);
           return acc;
         }, {});
         setUsers(usersById);
 
-        console.log(usersById);
         const transformedPosts = response.data.map((post) => ({
           "post-id": post.id,
           user: usersById[post.author] || "Unknown",
@@ -39,7 +36,7 @@ const CommunityPage = () => {
           comments: [],
           likes: post.liked_by.length,
           tags: post.tags,
-          "publication-date": new Date(post.created_at).toLocaleDateString(),
+          "publication-date": new Date(post.created_at),
         }));
         setPosts(transformedPosts);
       } catch (error) {
