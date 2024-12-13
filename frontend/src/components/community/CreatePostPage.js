@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
-import {apiClient} from "../../service/apiClient";
+import { apiClient } from "../../service/apiClient";
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
@@ -29,23 +29,12 @@ const CreatePostPage = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const mockTags = [
-      { id: 1, name: "Stock Analysis" },
-      { id: 2, name: "BIST30" },
-      { id: 3, name: "S&P" },
-      { id: 4, name: "NASDAQ" },
-      { id: 5, name: "Dow Jones" },
-      { id: 6, name: "USA" },
-      { id: 7, name: "Türkiye" },
-    ];
-
     const fetchTags = async () => {
       try {
         const response = await apiClient.get("/tags");
         setAvailableTags(response.data);
       } catch (error) {
-        console.error("Failed to fetch tags, using mock data", error);
-        setAvailableTags(mockTags);
+        console.error("Failed to fetch tags!", error);
       }
     };
 
@@ -147,14 +136,17 @@ const CreatePostPage = () => {
 
         <div className="tag-selection-section">
           <div className="tag-search-container" ref={tagSearchRef}>
-            <input
-              type="text"
-              className="tag-search-input"
-              placeholder="Search or select tags..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onFocus={() => setShowTagSuggestions(true)}
-            />
+            <div className="tag-input-wrapper">
+              <input
+                type="text"
+                className="tag-search-input"
+                placeholder="Search or select tags..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => setShowTagSuggestions(true)}
+              />
+              <button className="new-button">+ Add Tag</button>
+            </div>
             {showTagSuggestions && (
               <div className="tag-suggestions-box">
                 {filteredTags.map((tag, index) => (
