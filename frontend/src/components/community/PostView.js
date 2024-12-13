@@ -123,12 +123,10 @@ const PostView = () => {
   const handleSubmitComment = async () => {
     if (commentText.trim()) {
       try {
-        const userId = UserService.getUserId();
         const username = UserService.getUsername();
 
         const payload = {
           post_id: postId,
-          user_id: userId,
           content: commentText.trim(),
         };
 
