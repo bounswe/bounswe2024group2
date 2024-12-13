@@ -102,13 +102,13 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
 
     def list(self, request):
-        currencies = self.get_queryset()
-        serializer = self.get_serializer(currencies, many=True)
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        currency = self.get_object()
-        serializer = self.get_serializer(currency)
+        user = self.get_object()
+        serializer = self.get_serializer(user)
         return Response(serializer.data)
 
     def create(self, request):
@@ -118,18 +118,18 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, pk=None):
-        currency = self.get_object()
-        serializer = self.get_serializer(currency, data=request.data)
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        currency = self.get_object()
-        currency.delete()
+        user = self.get_object()
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=['get'], url_path='(?P<username>[^/.]+)')
+    @action(detail=False, methods=['get'], url_path='by-username/(?P<username>[^/.]+)')
     def get_by_username(self, request, username=None):
         try:
             user = self.get_queryset().get(username=username)
