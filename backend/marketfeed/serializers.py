@@ -75,7 +75,7 @@ class StockPatternSearchSerializer(serializers.Serializer):
     limit = serializers.IntegerField(required=False, default=10)
 
 class TagSerializer(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Tag
@@ -152,7 +152,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
     post_id = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
 
     class Meta:
