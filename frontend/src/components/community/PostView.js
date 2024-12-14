@@ -201,7 +201,10 @@ const PostView = () => {
             <span
               key={index}
               className="tag"
-              style={{ backgroundColor: getColorForTag(tag), color: "#ffffff" }}
+              style={{
+                backgroundColor: getColorForTag(tag.name),
+                color: "#ffffff",
+              }}
             >
               {tag}
             </span>
