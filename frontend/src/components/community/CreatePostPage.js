@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
 import { apiClient } from "../../service/apiClient";
+import userService from "../../service/userService";
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
@@ -89,10 +90,11 @@ const CreatePostPage = () => {
     }
 
     const tagIds = selectedTags.map((tag) => tag.id);
+    const userID = userService.getUserId();
     const postData = {
       title,
       content: description,
-      author: 2,
+      author: userID,
       liked_by: [],
       tags: tagIds,
       portfolios: [],
