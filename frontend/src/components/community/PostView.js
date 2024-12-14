@@ -193,7 +193,7 @@ const PostView = () => {
             </span>
           ))
         ) : (
-          <p>Loading tags...</p>
+          <p></p>
         )}
       </div>
       <div className="post-content">
