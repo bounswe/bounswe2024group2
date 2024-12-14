@@ -4,8 +4,10 @@ import StockChartSection from "./StockChartSection";
 import "../../../styles/markets/stocks/StockOverviewPage.css";
 import "../../../styles/Page.css";
 import { StockService } from "../../../service/stockService";
-import StockFinancialsSection from "./StockFinancialsSection";
+import StockMetricsSection from "./StockMetricsSection";
 import StockAboutSection from "./StockAboutSection";
+import StockRelatedPostsSection from "./StockRelatedPostsSection";
+
 import CircleAnimation from "../../CircleAnimation";
 
 const StockOverviewPage = () => {
@@ -45,16 +47,19 @@ const StockOverviewPage = () => {
             case "chart":
                 return <StockChartSection indexId={indexId} stockData={stockData} />;
             case "financials":
-                return <StockFinancialsSection indexId={indexId} />;
+                return <StockMetricsSection stockDetails={stockDetails} />;
             case "about":
                 return <StockAboutSection stockDetails={stockDetails} />;
+            case "posts":
+                return <StockRelatedPostsSection indexId={indexId} />;
             case "overview":
             default:
                 return (
                     <>
                         <StockChartSection indexId={indexId} stockData={stockData} />
-                        <StockFinancialsSection indexId={indexId} />
+                        <StockMetricsSection stockDetails={stockDetails} />
                         <StockAboutSection stockDetails={stockDetails} />
+                        <StockRelatedPostsSection indexId={indexId} />
                     </>
                 );
         }
@@ -85,6 +90,7 @@ const StockOverviewPage = () => {
                         <button onClick={() => setActiveTab("chart")}>Chart</button>
                         <button onClick={() => setActiveTab("financials")}>Financials</button>
                         <button onClick={() => setActiveTab("about")}>About</button>
+                        <button onClick={() => setActiveTab("posts")}>Posts</button>
                     </div>
                     <div className="content">
                         {renderContent()}
