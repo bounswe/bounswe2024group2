@@ -27,33 +27,30 @@ class GeneratorSerializer(serializers.ModelSerializer):
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
-    body = BodySerializer()  # Nested serializer for the Body model
-    target = SelectorSerializer()  # Nested serializer for the Selector model
-    creator = CreatorSerializer()  # Nested serializer for the Creator model
-    generator = GeneratorSerializer(required=False)  # Optional nested serializer
+    body = BodySerializer()  
+    target = SelectorSerializer()
+    creator = CreatorSerializer()
+    generator = GeneratorSerializer(required=False)
 
     class Meta:
         model = Annotation
         fields = '__all__'
 
     def create(self, validated_data):
-        # Extract nested data
+
         body_data = validated_data.pop('body')
         target_data = validated_data.pop('target')
         creator_data = validated_data.pop('creator')
         generator_data = validated_data.pop('generator', None)
 
-        # Create or get related instances
         body = Body.objects.create(**body_data)
         target = Selector.objects.create(**target_data)
         creator = Creator.objects.create(**creator_data)
 
-        # Handle optional generator
         generator = None
         if generator_data:
             generator = Generator.objects.create(**generator_data)
 
-        # Create the Annotation instance
         annotation = Annotation.objects.create(
             body=body,
             target=target,
@@ -64,10 +61,8 @@ class AnnotationSerializer(serializers.ModelSerializer):
         return annotation
 
     def to_representation(self, instance):
-        """Override to_representation to include nested objects in the output."""
         representation = super().to_representation(instance)
 
-        # Include nested objects in the output
         representation['body'] = BodySerializer(instance.body).data
         representation['target'] = SelectorSerializer(instance.target).data
         representation['creator'] = CreatorSerializer(instance.creator).data
