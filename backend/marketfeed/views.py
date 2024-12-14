@@ -14,7 +14,8 @@ from drf_yasg.utils import swagger_auto_schema
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor
 from django.db.models import Q
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
+
 
 
 
@@ -350,6 +351,37 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='tags',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.PATH,
+                description='Comma-separated list of tag IDs (e.g., 1,2,3)',
+                required=True,
+            )
+        ]
+    )
+    @action(detail=False, methods=['get'], url_path='posts-by-tags/(?P<tags>[^/.]+)')
+    def posts_by_tags(self, request, tags=None):
+        """
+        Retrieve posts by multiple tag IDs (comma-separated in the `tags` path parameter).
+        """
+        if not tags:
+            return Response({'detail': 'No tags provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            tag_ids = [int(tag_id.strip()) for tag_id in tags.split(',') if tag_id.strip().isdigit()]
+        except ValueError:
+            return Response({'detail': 'Invalid tag IDs provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        tags = Tag.objects.filter(id__in=tag_ids)
+        if not tags.exists():
+            return Response({'detail': 'No posts found for the specified tags.'}, status=status.HTTP_404_NOT_FOUND)
+
+        posts = Post.objects.filter(tags__in=tags).distinct()
+        serializer = self.get_serializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
