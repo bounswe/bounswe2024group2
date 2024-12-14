@@ -1,5 +1,6 @@
 import { apiClient } from './apiClient';
 import log from '../utils/logger';
+import { mockStockDetails } from '../data/mockStockDetails';
 
 const transformStockItem = (stockItem) => {
     log.debug('Transforming stock item:', {
@@ -46,5 +47,10 @@ export const StockService = {
             throw error;
         }
     },
+
+    async fetchStockDetails(id) {
+        // Swap this with the real implementation
+        return mockStockDetails;
+    }
 
 };
