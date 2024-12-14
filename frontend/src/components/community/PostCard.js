@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/community/PostCard.css";
 
 const getColorForTag = (tag) => {
-  const asciiValue = tag.charCodeAt(0);
+  const tagName = typeof tag === "string" ? tag : tag.name;
+  const asciiValue = tagName.charCodeAt(0);
   const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
   return colors[asciiValue % 5];
 };
@@ -48,7 +49,7 @@ const PostCard = ({ post }) => {
           <span
             key={index}
             className="post-tag"
-            style={{ backgroundColor: getColorForTag(tag.name) }}
+            style={{ backgroundColor: getColorForTag(tag) }}
           >
             {tag}
           </span>
