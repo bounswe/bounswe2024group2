@@ -23,41 +23,24 @@ const PostView = () => {
   const [post, setPost] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [tags, setTags] = useState([]);
-  const [users, setUsers] = useState({});
-  const [isUsersLoaded, setIsUsersLoaded] = useState(false);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
-  const fetchUsers = async () => {
-    try {
-      const response = await apiClient.get("/users");
-      const usersById = response.data.reduce((acc, user) => {
-        acc[user.id] = user.username;
-        return acc;
-      }, {});
-      setUsers(usersById);
-      setIsUsersLoaded(true);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
   const getUserName = async (userID) => {
-    const userData = await apiClient.get(`/users/${userID}`);
-    const userName = userData.data.username;
-
-    return userName;
+    try {
+      const userData = await apiClient.get(`/users/${userID}`);
+      const userName = userData.data.username;
+      return userName;
+    } catch (error) {
+      console.error("Error fetching user name:", error);
+      return "Unknown";
+    }
   };
 
   const getColorForTag = (tag) => {
-    const asciiValue = tag.charCodeAt(0);
+    const tagName = typeof tag === "string" ? tag : tag.name;
+    const asciiValue = tagName.charCodeAt(0);
     const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
     return colors[asciiValue % 5];
   };
-
-  useEffect(() => {
-    if (!isUsersLoaded) {
-      fetchUsers();
-    }
-  }, [isUsersLoaded]);
 
   useEffect(() => {
     const fetchBackendPost = async () => {
@@ -87,7 +70,7 @@ const PostView = () => {
 
         const normalizedPost = {
           "post-id": backendPost.id,
-          user: users[backendPost.author] || "Unknown",
+          user: await getUserName(backendPost.author),
           title: backendPost.title,
           content: [{ type: "plain-text", "plain-text": backendPost.content }],
           comments: backendComments,
@@ -107,7 +90,7 @@ const PostView = () => {
       }
     };
 
-    if (isUsersLoaded) {
+    if (postId) {
       const fetchData = async () => {
         const mockPost = mockPosts.find(
           (post) => post["post-id"] === parseInt(postId)
@@ -115,14 +98,15 @@ const PostView = () => {
         if (mockPost) {
           setPost(mockPost);
           setTags(mockPost.tags);
+          setLoading(false);
         } else {
           await fetchBackendPost();
         }
-        setLoading(false);
       };
+
       fetchData();
     }
-  }, [isUsersLoaded, postId, users]);
+  }, [postId]);
   const handleCommentChange = (e) => setCommentText(e.target.value);
 
   const handleSubmitComment = async () => {
@@ -162,13 +146,12 @@ const PostView = () => {
 
       await apiClient.post(endpoint, payload);
 
-      // Update the UI to reflect the new like/unlike state
       setPost((prevPost) => ({
         ...prevPost,
-        likes: isLikedByUser ? prevPost.likes - 1 : prevPost.likes + 1, // Increment or decrement likes
+        likes: isLikedByUser ? prevPost.likes - 1 : prevPost.likes + 1,
       }));
 
-      setIsLikedByUser((prevLiked) => !prevLiked); // Toggle like state
+      setIsLikedByUser((prevLiked) => !prevLiked);
     } catch (error) {
       console.error(`Error toggling like state: ${error.message}`);
     }
@@ -202,7 +185,7 @@ const PostView = () => {
               key={index}
               className="tag"
               style={{
-                backgroundColor: getColorForTag(tag.name),
+                backgroundColor: getColorForTag(tag),
                 color: "#ffffff",
               }}
             >
