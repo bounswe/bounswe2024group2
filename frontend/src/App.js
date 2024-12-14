@@ -21,6 +21,7 @@ import PostView from "./components/community/PostView.js";
 import CreatePostPage from "./components/community/CreatePostPage.js";
 import { ToastContainer } from "react-toastify";
 import { AlertModalProvider } from "./components/alert/AlertModalContext.js";
+import StockOverviewPage from "./components/markets/stocks/StockOverviewPage.js";
 
 function App() {
   return (
@@ -39,7 +40,9 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="community/create-post" element={<CreatePostPage />} />
               <Route path="markets" element={<MarketsPage />} />
-              <Route path="stocks/:indexId" element={<StocksPage />} />
+              <Route path="stocks/:indexId" element={<StockOverviewPage />} />
+              {/* <Route path="stocks/:indexId" element={<StocksPage />} /> */}
+              
               <Route path="news" element={<NewsPage />} />
               <Route path="portfolio" element={<PortfolioPage />} />
               <Route path="profile" element={<ProfilePage />} />

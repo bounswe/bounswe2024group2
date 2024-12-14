@@ -1,0 +1,147 @@
+* {
+  box-sizing: border-box;
+}
+
+.stock-overview-page {
+  padding: 20px;
+}
+
+.metadata {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.metadata img {
+  border-radius: 50%;
+  height: 128px;
+  width: 128px;
+}
+
+.metadata h2 {
+  color: var(--color-neutral-800);
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.metadata p {
+  color: var(--color-neutral-800);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.metadata-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  background-color: var(--color-primary-500);
+  border: none;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  cursor: pointer;
+  font-weight: bold;
+  padding: 10px 15px;
+  transition: background-color 0.3s;
+}
+
+.tabs button:hover {
+  background-color: var(--color-primary-700);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stock-tab-section {
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: var(--color-neutral-300);
+  color: var(--color-neutral-600);
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 20px;
+  text-align: left;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 100%;
+}
+
+.stock-tab-section-content{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.stock-tab-section-item {
+  background-color: var(--color-neutral-100);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: var(--color-neutral-300);
+  color: var(--color-neutral-600);
+  padding: 20px;
+  width: 100%;
+}
+
+.placeholder {
+  align-items: center;
+  background-color: var(--color-primary-500);
+  border-radius: 50%;
+  color: var(--color-neutral-white);
+  display: flex;
+  font-size: 3.5rem;
+  font-weight: bold;
+  height: 128px;
+  justify-content: center;
+  text-transform: uppercase;
+  width: 128px;
+}
+
+/* Chart Section */
+.duration-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.duration-buttons button {
+  all: initial;
+  background-color: rgba(240, 243, 250, 1);
+  border-radius: 8px;
+  color: rgba(19, 23, 34, 1);
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 510;
+  letter-spacing: -0.32px;
+  line-height: 24px;
+  padding: 8px 24px;
+}
+
+.duration-buttons button:hover {
+  background-color: rgba(224, 227, 235, 1);
+}
+
+.duration-buttons button:active {
+  background-color: rgba(209, 212, 220, 1);
+}
+
+#tradingview_chart {
+  height: 400px;
+  width: 100%;
+}
+
