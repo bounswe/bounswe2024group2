@@ -77,9 +77,51 @@ services:
       restart: unless-stopped
       networks:
         - backend_network
+
+  annotations-db:
+    image: mysql:latest
+    container_name: annotations-db
+    restart: always
+    volumes:
+      - annotations-db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: 'annotations_db'
+      MYSQL_USER: 'annotations_user'
+      MYSQL_PASSWORD: 'annotations_password'
+      MYSQL_ROOT_PASSWORD: 'annotations_password'
+    networks:
+      - backend_network
+
+  annotations-backend:
+    build:
+      context: ./annotations_project
+    container_name: annotations-backend
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+            python3 manage.py migrate --noinput &&
+            python3 manage.py collectstatic --noinput &&
+            gunicorn annotations_project.wsgi:application --bind 0.0.0.0:8001"
+    restart: always
+    environment:
+      MYSQL_HOST: 'annotations-db'
+      MYSQL_DATABASE: 'annotations_db'
+      MYSQL_USER: 'annotations_user'
+      MYSQL_PASSWORD: 'annotations_password'
+    ports:
+      - "8001:8001"
+    depends_on:
+      - annotations-db
+    healthcheck:
+      test: ["CMD", "python3", "manage.py", "check"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - backend_network
 networks:
   backend_network:
     driver: bridge
 volumes:
   my-db:
   backend:
+  annotations-db:
