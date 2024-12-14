@@ -5,14 +5,13 @@ import "../../styles/community/CommunityPage.css";
 import PostCard from "./PostCard";
 import "../../styles/Page.css";
 import { useNavigate } from "react-router-dom";
-import {apiClient} from "../../service/apiClient";
+import { apiClient } from "../../service/apiClient";
 
 const CommunityPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("dsc");
   const [searchActive, setSearchActive] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [tags, setTags] = useState({});
   const [users, setUsers] = useState({});
   const navigate = useNavigate();
 
@@ -20,34 +19,48 @@ const CommunityPage = () => {
     const fetchPosts = async () => {
       try {
         const response = await apiClient.get("/posts");
-        const tagsResponse = await apiClient.get("/tags");
-        if (!tagsResponse.data) throw new Error("Failed to fetch tags");
-        const tagsById = tagsResponse.data.reduce((acc, tag) => {
-          acc[tag.id] = tag.name;
-          return acc;
-        }, {});
-        setTags(tagsById);
-
         const usersResponse = await apiClient.get("/users");
-        console.log(usersResponse);
         const usersById = usersResponse.data.reduce((acc, user) => {
           acc[user.id] = user.username;
-          console.log(acc);
           return acc;
         }, {});
         setUsers(usersById);
 
-        console.log(usersById);
-        const transformedPosts = response.data.map((post) => ({
-          "post-id": post.id,
-          user: usersById[post.author] || "Unknown",
-          title: post.title,
-          content: [{ type: "plain-text", "plain-text": post.content }],
-          comments: [],
-          likes: post.liked_by.length,
-          tags: post.tags.map((tagId) => tagsById[tagId] || "Unknown"),
-          "publication-date": new Date(post.created_at).toLocaleDateString(),
-        }));
+        const transformedPosts = await Promise.all(
+          response.data.map(async (post) => {
+            try {
+              const commentsResponse = await apiClient.get(
+                `/comments/post-comments/${post.id}`
+              );
+
+              return {
+                "post-id": post.id,
+                user: usersById[post.author] || "Unknown",
+                title: post.title,
+                content: [{ type: "plain-text", "plain-text": post.content }],
+                comments: commentsResponse.data,
+                likes: post.liked_by?.length || 0,
+                tags: post.tags || [],
+                "publication-date": new Date(post.created_at),
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching comments for post ${post.id}:`,
+                error
+              );
+              return {
+                "post-id": post.id,
+                user: usersById[post.author] || "Unknown",
+                title: post.title,
+                content: [{ type: "plain-text", "plain-text": post.content }],
+                comments: 0,
+                likes: post.liked_by?.length || 0,
+                tags: post.tags || [],
+                "publication-date": new Date(post.created_at),
+              };
+            }
+          })
+        );
         setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
