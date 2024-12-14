@@ -41,7 +41,7 @@ function App() {
               <Route path="community/create-post" element={<CreatePostPage />} />
               <Route path="markets" element={<MarketsPage />} />
               <Route path="stocks/:indexId" element={<StockOverviewPage />} />
-              {/* <Route path="stocks/:indexId" element={<StocksPage />} /> */}
+              <Route path="indices/:indexId" element={<StocksPage />} />
               
               <Route path="news" element={<NewsPage />} />
               <Route path="portfolio" element={<PortfolioPage />} />
