@@ -118,7 +118,7 @@ class StockViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(request_body=StockHistoricDataSerializer)
-    @action(detail=False, methods=['post'])
+    @action(detail=True, methods=['post'], serializer_class=StockHistoricDataSerializer)
     def get_historical_data(self, request, pk=None):
         stock = self.get_object()
         stock_symbol = stock.symbol
