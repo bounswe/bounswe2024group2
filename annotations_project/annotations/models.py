@@ -23,7 +23,7 @@ class Selector(models.Model):
 
 
 class Creator(models.Model):
-    creator_id = models.URLField(primary_key=True)
+    creator_id = models.URLField()
     type = models.CharField(max_length=50, default="Person")  # 'Person', 'Agent'
     name = models.CharField(max_length=255)
 
