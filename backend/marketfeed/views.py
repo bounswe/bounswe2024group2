@@ -23,7 +23,7 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class StockResultsSetPagination(PageNumberPagination):
-    page_size = 15
+    page_size = 20
 
     def get_page_size(self, request):
         return request.query_params.get('page_size', self.page_size)
