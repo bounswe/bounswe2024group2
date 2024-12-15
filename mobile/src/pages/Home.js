@@ -27,8 +27,6 @@ const Home = () => {
             setLatestPosts(data); 
         } catch (error) {
             console.error('Error fetching latest posts:', error);
-        }finally {
-          setLoading(false);
         }
 
     };
