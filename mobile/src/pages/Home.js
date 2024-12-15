@@ -11,9 +11,11 @@ import bist100 from "../../assets/stock-logos/bist-100.png";
 import bist30 from "../../assets/stock-logos/bist-30.png";
 import bist from "../../assets/stock-logos/bist.png";
 import config from './config/config';
-
+import { useAuth } from './context/AuthContext';
 
 const Home = () => {
+  const {accessToken, userId, username} = useAuth();
+  console.log("home access", userId, username); 
   const { baseURL } = config;
   const { theme, toggleTheme, isDarkMode } = useContext(ThemeContext);
   const [latestPosts, setLatestPosts] = useState([]);
@@ -53,7 +55,7 @@ const Home = () => {
         type: 'post',
         username: post.author, 
         title: post.title,
-        tag: post.tags, 
+        tag: post.tags.name, 
         content: post.content,
       })),
     },
