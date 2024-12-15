@@ -39,6 +39,13 @@ jobs:
           docker build -t 24cmpe451group2/backend:$BACKEND_IMAGE_TAG ./backend
           docker tag 24cmpe451group2/backend:${{ github.sha }} 24cmpe451group2/backend:latest
 
+      # Build the annotations image
+      - name: Build annotations Docker image
+        run: |
+          ANNOTATIONS_IMAGE_TAG=${{ github.sha }}
+          docker build -t 24cmpe451group2/annotations:$ANNOTATIONS_IMAGE_TAG ./annotations_project
+          docker tag 24cmpe451group2/annotations:${{ github.sha }} 24cmpe451group2/annotations:latest
+
       # Push the frontend image to Docker Hub
       - name: Push frontend Docker image
         run: |
@@ -53,6 +60,13 @@ jobs:
           docker push 24cmpe451group2/backend:$BACKEND_IMAGE_TAG
           docker push 24cmpe451group2/backend:latest
 
+      # Push the annotations image to Docker Hub
+      - name: Push annotations Docker image
+        run: |
+          ANNOTATIONS_IMAGE_TAG=${{ github.sha }}
+          docker push 24cmpe451group2/annotations:$ANNOTATIONS_IMAGE_TAG
+          docker push 24cmpe451group2/annotations:latest
+
       # Login to DigitalOcean Droplet and trigger deployment updates
       - name: Deploy to DigitalOcean
         run: |
@@ -60,40 +74,8 @@ jobs:
             echo "Updating backend and frontend deployments"
             kubectl set image deployment/frontend frontend=24cmpe451group2/frontend:${{ github.sha }} --namespace=default
             kubectl set image deployment/backend backend=24cmpe451group2/backend:${{ github.sha }} --namespace=default
+            kubectl set image deployment/annotations annotations=24cmpe451group2/annotations:${{ github.sha }} --namespace=default
             kubectl rollout status deployment/frontend --timeout=5m --namespace=default
             kubectl rollout status deployment/backend --timeout=5m --namespace=default
-          EOF
-
-      # Sleep before checking pod status
-      - name: Sleep before checking pod status
-        run: sleep 30
-
-      # Check the status of the frontend pods
-      - name: Check frontend pod status
-        run: |
-          sshpass -p "${{ secrets.DO_SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.DO_REMOTE }} << EOF
-            echo "Checking the status of the frontend pods:"
-            FRONTEND_WAITING_REASONS=\$(kubectl get pods -l app=frontend --namespace=default -o jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}')
-            if [ -z "\$FRONTEND_WAITING_REASONS" ]; then
-              echo "All frontend pods are running successfully. No containers are waiting."
-            else
-              echo "Error: Some frontend pods are not running successfully."
-              echo "Waiting reasons for frontend pods: \$FRONTEND_WAITING_REASONS"
-              exit 1
-            fi
-          EOF
-
-      # Check the status of the backend pods
-      - name: Check backend pod status
-        run: |
-          sshpass -p "${{ secrets.DO_SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no root@${{ secrets.DO_REMOTE }} << EOF
-            echo "Checking the status of the backend pods:"
-            BACKEND_WAITING_REASONS=\$(kubectl get pods -l app=backend --namespace=default -o jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}')
-            if [ -z "\$BACKEND_WAITING_REASONS" ]; then
-              echo "All backend pods are running successfully. No containers are waiting."
-            else
-              echo "Error: Some backend pods are not running successfully."
-              echo "Waiting reasons for backend pods: \$BACKEND_WAITING_REASONS"
-              exit 1
-            fi
+            kubectl rollout status deployment/annotations --timeout=5m --namespace=default
           EOF
