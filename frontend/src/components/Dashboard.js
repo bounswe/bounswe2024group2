@@ -47,7 +47,12 @@ const Dashboard = () => {
   };
 
   const handleProfile = () => {
-    navigate("/profile");
+    if (UserService.isLoggedIn()) {
+      navigate(`/profile/${UserService.getUserId()}`);
+    } else {
+      toast.warn("Please sign in to view your profile.");
+      navigate("/login");
+    }
   };
 
   const toggleDarkMode = () => {

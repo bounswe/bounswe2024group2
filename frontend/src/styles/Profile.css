@@ -14,12 +14,17 @@
 .profile-avatar {
   width: 150px;
   height: 150px;
-  background-color: #ddd;
+  background-color: var(--color-primary-500);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3em;
+}
+
+.profile-avatar-placeholder {
+  color: var(--color-neutral-white);
+  font-size: 5rem;
 }
 
 .profile-right-container {
@@ -36,8 +41,8 @@
 
 .stat-item {
   height: 30px;
-  background-color: #4a90e2;
-  color: white;
+  background-color: var(--color-primary-300);
+  color: var(--color-neutral-white);
   padding-left: 15px;
   padding-right: 15px;
   border-radius: 15px;
