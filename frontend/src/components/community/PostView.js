@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import mockPosts from "../../data/mockPosts";
 import FinancialGraph from "./FinancialGraph";
 import "../../styles/community/PostView.css";
 import { apiClient } from "../../service/apiClient";
@@ -24,6 +23,7 @@ const PostView = () => {
   const [commentText, setCommentText] = useState("");
   const [tags, setTags] = useState([]);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
+
   const getUserName = async (userID) => {
     try {
       const userData = await apiClient.get(`/users/${userID}`);
@@ -64,7 +64,6 @@ const PostView = () => {
           })
         );
 
-        console.log("backedn, comment", backendComments);
         const loggedInUser = parseInt(UserService.getUserId(), 10);
         const userHasLiked = backendPost.liked_by.includes(loggedInUser);
         const normalizedPost = {
@@ -91,22 +90,10 @@ const PostView = () => {
     };
 
     if (postId) {
-      const fetchData = async () => {
-        const mockPost = mockPosts.find(
-          (post) => post["post-id"] === parseInt(postId)
-        );
-        if (mockPost) {
-          setPost(mockPost);
-          setTags(mockPost.tags);
-          setLoading(false);
-        } else {
-          await fetchBackendPost();
-        }
-      };
-
-      fetchData();
+      fetchBackendPost();
     }
   }, [postId]);
+
   const handleCommentChange = (e) => setCommentText(e.target.value);
 
   const handleSubmitComment = async () => {
