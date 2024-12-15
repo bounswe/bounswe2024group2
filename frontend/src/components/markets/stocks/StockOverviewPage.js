@@ -13,7 +13,6 @@ import CircleAnimation from "../../CircleAnimation";
 const StockOverviewPage = () => {
     const { indexId } = useParams();
     const [activeTab, setActiveTab] = useState("overview");
-
     const [stockData, setStockData] = useState(null);
     const [stockDetails, setStockDetails] = useState(null);
 

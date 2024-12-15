@@ -1,7 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
-import log from '../utils/logger';
 import { API_BASE_URL } from "./apiClient";
 
 
@@ -65,7 +64,6 @@ class UserService {
 
   static getTokenExpiration(token) {
     const decodedToken = jwtDecode(token);
-    log.debug("Decoded token:", decodedToken);
     return decodedToken.exp * 1000;
   }
 
