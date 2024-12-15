@@ -19,6 +19,12 @@ const transformStockItem = (stockItem) => {
     };
 }
 
+const transformStockDetails = (stockItem) => {
+    const details = stockItem.detail;
+    log.debug('Transforming stock details:', details);
+    return details;
+}
+
 export const StockService = {
     
     async fetchSimilarStocks(pattern, limit) {
@@ -47,10 +53,31 @@ export const StockService = {
             throw error;
         }
     },
-
     async fetchStockDetails(id) {
-        // Swap this with the real implementation
-        return mockStockDetails;
+        try {
+            const response = await apiClient.get(`/stocks/${id}/`);
+            console.log("response", response.data);
+            return transformStockDetails(response.data);
+        } catch (error) {
+            log.error(`Error fetching stock with ID ${id}:`, error);
+            throw error;
+        }
+    },
+
+    async fetchStockHistoricalData(id, period, interval) {
+        try {
+            const response = await apiClient.get(`/stocks/${id}/get_historical_data/`, {
+                params: {
+                    period: period,
+                    interval: interval
+                }
+            }
+            );
+            return response.data;
+        } catch (error) {
+            log.error(`Error fetching stock historical data with ID ${id}:`, error);
+            throw error;
+        }
     }
 
 };

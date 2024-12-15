@@ -2,70 +2,104 @@ import React, { useState, useEffect } from "react";
 import { createChart } from "lightweight-charts";
 import "../../../styles/markets/stocks/StockOverviewPage.css";
 import RandomUtil from "../../../utils/randomUtil";
+import { StockService } from "../../../service/stockService";
 
+// Options for periods
+// '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'."
 
-const StockChartSection = ({ indexId, stockData }) => {
+// Options for intervals
+// '1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo"
+const periods = ['1d', '1w', '1mo', '1y'];
+const intervals = ['15m', '1h', '1d', '1wk'];
+
+const StockChartSection = ({ indexId }) => {
     const [duration, setDuration] = useState("1D");
+    const [seriesesData, setSeriesesData] = useState(null);
 
-    const generateRandomData = (mean, deviation) => {
-        const data = new Map([
-            ["1D", []],
-            ["1W", []],
-            ["1M", []],
-            ["1Y", []],
-        ]);
-    
-        let value = mean;
-        let time = new Date(); // Start from the current date and time
-    
-        // Calculate the time for 1 year ago from today
-        const yearAgo = new Date();
-        yearAgo.setFullYear(yearAgo.getFullYear() - 1); // Set to 1 year ago
-    
-        const rng = RandomUtil.createGenerator(indexId);
-        // Loop through the time intervals and generate random data
-        // 1d: 30 min intervals
-        // 1w: 4h intervals
-        // 1m: 12h intervals
-        // 1y: 1d intervals
-        const step = [30, 240, 720, 1440];
-        const elapsedTimes = [1440, 10080, 43200, 525600];
-        const keys = ["1D", "1W", "1M", "1Y"];
-        for (let i = 0; i < step.length; i++) {
-            const interval = step[i];
-            time = new Date();
-            // 30 min floor
-            time.setMinutes(Math.floor(time.getMinutes() / interval) * interval);
-            value = mean;
-            while (time >= yearAgo) {
-                
-                console.log("Value:", value);
-                const timestamp = Math.floor(time.getTime() / 1000);
-                const elapsedTime = (new Date() - time) / (1000 * 60);
-                
-                if (elapsedTime <= elapsedTimes[i]) {
-                    data.get(keys[i]).push({ time: timestamp, value });
-                }
-                value = value + RandomUtil.generateRandomNumber(rng) * deviation - deviation / 2;
-                time = new Date(time - interval * 60 * 1000);
-            }
+    const getStockData = async () => {
+
+        let data = new Map([]);
+        for (let i = 0; i < periods.length; i++) {
+            data.set(periods[i].toUpperCase(), []);
         }
+
+        for (let i = 0; i < periods.length; i++) {
+            const period = periods[i];
+            const interval = intervals[i];
+            const response = await StockService.fetchStockHistoricalData(indexId, period, interval);
+            console.log("Response:", response);
+
+        }
+
+        return data;
+    }
+
+    // const generateRandomData = (mean, deviation) => {
+    //     const data = new Map([
+    //         ["1D", []],
+    //         ["1W", []],
+    //         ["1M", []],
+    //         ["1Y", []],
+    //     ]);
+    
+    //     let value = mean;
+    //     let time = new Date(); // Start from the current date and time
+    
+    //     // Calculate the time for 1 year ago from today
+    //     const yearAgo = new Date();
+    //     yearAgo.setFullYear(yearAgo.getFullYear() - 1); // Set to 1 year ago
+    
+    //     const rng = RandomUtil.createGenerator(indexId);
+    //     // Loop through the time intervals and generate random data
+    //     // 1d: 30 min intervals
+    //     // 1w: 4h intervals
+    //     // 1m: 12h intervals
+    //     // 1y: 1d intervals
+    //     const step = [30, 240, 720, 1440];
+    //     const elapsedTimes = [1440, 10080, 43200, 525600];
+    //     const keys = ["1D", "1W", "1M", "1Y"];
+    //     for (let i = 0; i < step.length; i++) {
+    //         const interval = step[i];
+    //         time = new Date();
+    //         // 30 min floor
+    //         time.setMinutes(Math.floor(time.getMinutes() / interval) * interval);
+    //         value = mean;
+    //         while (time >= yearAgo) {
+                
+    //             console.log("Value:", value);
+    //             const timestamp = Math.floor(time.getTime() / 1000);
+    //             const elapsedTime = (new Date() - time) / (1000 * 60);
+                
+    //             if (elapsedTime <= elapsedTimes[i]) {
+    //                 data.get(keys[i]).push({ time: timestamp, value });
+    //             }
+    //             value = value + RandomUtil.generateRandomNumber(rng) * deviation - deviation / 2;
+    //             time = new Date(time - interval * 60 * 1000);
+    //         }
+    //     }
         
 
-        data.forEach((seriesData, key) => {
-            data.set(key, seriesData.reverse());
-        });
+    //     data.forEach((seriesData, key) => {
+    //         data.set(key, seriesData.reverse());
+    //     });
 
 
-        console.log("Generated data:", data);
-        return data;
-    };
+    //     console.log("Generated data:", data);
+    //     return data;
+    // };
     
-    const mean = stockData.price;
-    const deviation = 0.2;
-    const seriesesData = generateRandomData(mean, deviation);
+    // const mean = stockData.price;
+    // const deviation = 0.2;
+    // const seriesesData = generateRandomData(mean, deviation);
 
-    useEffect(() => {
+    // function for handling series data update
+
+    const updateSeriesData = (data) => {
+        setSeriesesData(data);
+        renderChart();
+    };
+
+    const renderChart = () => {
         const container = document.getElementById('tradingview_chart');
         const chartOptions = {
             layout: {
@@ -76,7 +110,6 @@ const StockChartSection = ({ indexId, stockData }) => {
             height: 400,
         };
         const chart = createChart(container, chartOptions);
-
         const resizeHandler = () => {
             const width = container.offsetWidth;
             const height = container.offsetHeight;
@@ -85,13 +118,10 @@ const StockChartSection = ({ indexId, stockData }) => {
         };
         resizeHandler();
         window.addEventListener('resize', resizeHandler);
-
         function setChartInterval(interval) {
             chart.timeScale().fitContent();
         }
-
         setChartInterval(duration);
-
         const intervals = ['1D', '1W', '1M', '1Y'];
         intervals.forEach(interval => {
             // Create buttons if needed
@@ -170,7 +200,15 @@ const StockChartSection = ({ indexId, stockData }) => {
             window.removeEventListener('resize', resizeHandler);
             chart.remove();
         };
-    }, [duration]);
+    }
+
+    useEffect(() => {
+        getStockData().then((data) => {
+            updateSeriesData(data);
+        }).catch((error) => {
+            console.error("Error fetching stock data:", error);
+        });
+    }, []);
 
     return (
         <div className="stock-tab-section">
