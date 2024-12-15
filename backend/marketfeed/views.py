@@ -14,13 +14,19 @@ from drf_yasg import openapi
 from rest_framework.viewsets import ViewSet
 from .serializers import *
 from .models import *
-from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor
 from django.db.models import Q
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+import requests
+from rest_framework.views import APIView
+from django.conf import settings
+
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework.pagination import PageNumberPagination
+
 
 
 class StockResultsSetPagination(PageNumberPagination):
@@ -737,3 +743,85 @@ class SearchViewSet(ViewSet):
         results["portfolios"] = portfolio_serializer.data
 
         return Response(results)
+
+
+class ProxyAnnotationView(ViewSet):
+    serializer_class = MinimalAnnotationSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = MinimalAnnotationSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+        user = request.user
+        print(f"user id is {user.id}")
+        print(f"username is {user.username}")
+        user_id=user.id
+        username=user.username
+
+        enriched_data = {
+            "type": "Annotation",
+            "body": {
+                "type": "TextualBody",
+                "value": validated_data["value"],
+                "format": "text/plain",
+                "language": "en",
+                "purpose": "commenting"
+            },
+            "target": {
+                "type": "TextPositionSelector",
+                "source": f"{settings.BACKEND_SERVICE_URL}/posts/{validated_data['post_id']}",
+                "start": validated_data["start"],
+                "end": validated_data["end"]
+            },
+            "creator": {
+                "type": "Person",
+                "name": f"{username}",
+                "creator_id": f"{settings.BACKEND_SERVICE_URL}/users/{user_id}"
+            }
+        }
+
+        try:
+            annotations_service_url = f"{settings.ANNOTATIONS_SERVICE_URL}/annotations/"
+            print(annotations_service_url)
+            response = requests.post(annotations_service_url, json=enriched_data)
+
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_201_CREATED)
+            else:
+                return Response(response.json(), status=response.status_code)
+        except requests.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'], url_path='annotations-by-post/(?P<post_id>[^/.]+)')
+    def retrieve_annotations_by_posts(self, request, post_id=None):
+        annotations_service_url = f"{settings.ANNOTATIONS_SERVICE_URL}/annotations/source/{post_id}"
+        try:
+            response = requests.get(annotations_service_url, params={"source": post_id})
+            
+            if response.status_code != 200:
+                return Response(
+                    {"error": f"Failed to retrieve annotations: {response.text}"},
+                    status=response.status_code
+                )
+            
+            annotations = response.json()
+            formatted_annotations = self.format_annotations(annotations)
+            return Response(formatted_annotations, status=status.HTTP_200_OK)
+        
+        except requests.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def format_annotations(self, annotations):
+        return [
+            {
+                "post_id": int(annotation["target"]["source"].split("/")[-1]),
+                "start": annotation["target"]["start"],
+                "end": annotation["target"]["end"],
+                "value": annotation["body"]["value"],
+                "user_id": int(annotation["creator"]["creator_id"].split("/")[-1]),
+                "created_at": annotation["created"],
+                "updated_at": annotation["modified"],
+            }
+            for annotation in annotations
+        ]

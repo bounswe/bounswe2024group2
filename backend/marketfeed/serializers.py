@@ -304,6 +304,26 @@ class IndexSerializer(serializers.ModelSerializer):
             self.fields['name'].required = True
             self.fields['stocks'].required = False
 
+
+
+class MinimalAnnotationSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField()
+    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    start = serializers.IntegerField()
+    end = serializers.IntegerField()
+    value = serializers.CharField()
+
+    def validate_post_id(self, post_id):
+        if not Post.objects.filter(id=post_id).exists():
+            raise serializers.ValidationError(f"Post with id {post_id} does not exist.")
+        return post_id
+
+
+    def validate(self, data):
+        if data['start'] >= data['end']:
+            raise serializers.ValidationError("The 'start' position must be less than the 'end' position.")
+        return data
+         
 class PostStockAddSerializer(serializers.Serializer):
     post_id = serializers.IntegerField(help_text="ID of the post to which stocks will be added.")
     stock_ids = serializers.ListField(
@@ -335,3 +355,4 @@ class PostStockAddSerializer(serializers.Serializer):
         stocks = Stock.objects.filter(id__in=stock_ids)
         post.stocks.add(*stocks)
         return post
+
