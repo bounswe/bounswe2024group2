@@ -5,7 +5,7 @@ import "../../../styles/markets/stocks/StockOverviewPage.css";
 const StockAboutSection = ({ stockDetails }) => {
     return (
         <div className="stock-tab-section">
-            <h2>General Information</h2>
+            <h2>About</h2>
             <div className="stock-tab-section-content">
                 <div className="stock-tab-section-item">
                     <p><strong>Company:</strong> {stockDetails?.longName}</p>

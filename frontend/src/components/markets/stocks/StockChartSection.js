@@ -7,7 +7,6 @@ import CircleAnimation from "../../CircleAnimation";
 
 // Options for periods
 // '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'."
-
 // Options for intervals
 // '1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo"
 const periods = ['1d', '1w', '1mo', '1y'];
@@ -18,12 +17,10 @@ const StockChartSection = ({ indexId }) => {
     const [seriesesData, setSeriesesData] = useState(null);
 
     const getStockData = async () => {
-
         let data = new Map([]);
         for (let i = 0; i < periods.length; i++) {
             data.set(periods[i].toUpperCase(), []);
         }
-
         for (let i = 0; i < periods.length; i++) {
             const period = periods[i];
             const interval = intervals[i];
@@ -211,7 +208,7 @@ const StockChartSection = ({ indexId }) => {
 
     return (
         <div className="stock-tab-section">
-            <h3>Price Chart</h3>
+            <h3>Chart</h3>
             <div id="buttonsContainer" className="duration-buttons"></div>
             <div id="tradingview_chart"></div>
         </div>

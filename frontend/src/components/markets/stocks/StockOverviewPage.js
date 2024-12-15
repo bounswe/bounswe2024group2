@@ -47,7 +47,7 @@ const StockOverviewPage = () => {
         switch (activeTab) {
             case "chart":
                 return <StockChartSection indexId={indexId} stockData={stockData} />;
-            case "financials":
+            case "metrics":
                 return <StockMetricsSection stockDetails={stockDetails} />;
             case "about":
                 return <StockAboutSection stockDetails={stockDetails} />;

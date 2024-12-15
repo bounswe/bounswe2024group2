@@ -6,7 +6,7 @@ const StockMetricsSection = ({ stockDetails }) => {
 
     return (
         <div className="stock-tab-section">
-            <h2 className="section-title">Metrics</h2>
+            <h2>Metrics</h2>
             <div className="stock-tab-section-content">
 
                 {/* Price and Valuation */}
