@@ -9,6 +9,7 @@ import {
     TextInput,
     Modal,
     Alert,
+    ActivityIndicator,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import config from './config/config';
@@ -18,39 +19,28 @@ const Post = ({ navigation, route }) => {
     const { postId, author, userMap, post } = route.params;
     const { baseURL } = config;
     const { accessToken } = useAuth();
+    
 
     const [likes, setLikes] = useState(0);
     const [tooltip, setTooltip] = useState(null);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [comments, setComments] = useState([]);
-    //const [userMap, setUserMap] = useState([]);
+    const [stockData, setStockData] = useState([]); // Stores Close prices
+    const [stockDates, setStockDates] = useState([]); // Stores formatted dates
+    const [loading, setLoading] = useState(true);
+    const [interval, setInterval] = useState('1d'); // Default interval
+    const [timeRange, setTimeRange] = useState('1mo'); // Default time range
+    const [hasStockData, setHasStockData] = useState(false);
 
     useEffect(() => {
-        //fetchPost();
+        if(post.stocks.length != 0){
+            setHasStockData(true);
+            fetchStockData();
+        }    
         fetchComments();
-    }, [postId]);
+    }, [postId, timeRange]);
 
-    const fetchPost = async () => {
-        const postURL = `${baseURL}/posts/${postId}/`;
-        try {
-            const response = await fetch(postURL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.ok) {
-                const postData = await response.json();
-                setPost(postData);
-                setLikes(postData.liked_by.length || 0);
-            } else {
-                console.error(`Failed to fetch post: ${response.status}`);
-            }
-        } catch (error) {
-            console.error('Error fetching post:', error);
-        }
-    };
 
     const fetchComments = async () => {
         const postURL = `${baseURL}/comments/post-comments/${postId}/`;
@@ -99,6 +89,38 @@ const Post = ({ navigation, route }) => {
         }
     };
 
+    const fetchStockData = async () => {
+        setLoading(true); // Show loader
+        try {
+            const response = await fetch(`${baseURL}/stocks/${post.stocks[0]}/get_historical_data/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    period: timeRange, // Use selected period
+                    interval: interval, // Use selected interval
+                }),
+            });
+            const data = await response.json();
+            if (data.Close && data.Date) {
+                setStockData(data.Close); // Set Close prices for Y-axis
+                setStockDates(
+                    data.Date.map((date) =>
+                        new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    ) // Format dates for X-axis
+                );
+            } else {
+                console.error('Unexpected response structure:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+        } finally {
+            setLoading(false); // Hide loader
+        }
+    };
+
     const renderUsername = (comment) => {
         if(userMap[comment.user_id]){
             return userMap[comment.user_id].username;
@@ -136,17 +158,22 @@ const Post = ({ navigation, route }) => {
         setShowCommentInput(false);
     };
 
-    const stockData = [142, 145, 143, 141, 144, 140, 138, 139];
+
+
+
+    const intervals = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo'];
+    const timeRanges = ['1mo', '1y', '5y', '1wk'];
+
 
     if (!post) {
         return <Text>Loading...</Text>;
     }
 
     return (
-        //console.log("comment", comments),
-        //console.log("userMap", userMap),
-        //console.log(accessToken),
-        <ScrollView style={styles.container}>
+        //console.log("stockData", stockData),
+        //console.log("stockDates", stockDates),
+    <ScrollView style={styles.container}>
+        <View>
             <Text style={styles.title}>{post.title}</Text>
             <Text style={styles.author}>Author: {author ? author : 'Unknown'}</Text>
             <Text style={styles.date}>
@@ -164,47 +191,51 @@ const Post = ({ navigation, route }) => {
                 )}
             </View>
             <Text style={styles.content}>{post.content}</Text>
-            <Text style={styles.graphTitle}>Stock Price Chart</Text>
+            
             <View>
-                <LineChart
-                    data={{
-                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8'], // X-axis labels
-                        datasets: [
-                            {
-                                data: stockData, // Stock prices for the Y-axis
+            {hasStockData ? (
+                <><View>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#007BFF" />
+                ) : stockData.length > 0 && stockDates.length > 0 ? (
+                    <View>
+                        <Text style={styles.graphTitle}>Stock Price Chart</Text>
+                    <LineChart
+                        data={{
+                            labels: stockDates, // Use formatted dates for X-axis
+                            datasets: [
+                                {
+                                    data: stockData, // Use Close prices for Y-axis
+                                },
+                            ],
+                        }}
+                        width={Dimensions.get('window').width - 20} // Adjust to screen width
+                        height={300}
+                        yAxisLabel="$"
+                        verticalLabelRotation={60}
+                        chartConfig={{
+                            backgroundColor: 'white',
+                            backgroundGradientFrom: 'white',
+                            backgroundGradientTo: 'white',
+                            decimalPlaces: 2,
+                            color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
+                            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                            style: {
+                                borderRadius: 16,
                             },
-                        ],
-                    }}
-                    width={Dimensions.get('window').width - 20} // Adjust to screen width
-                    height={300}
-                    yAxisLabel="$"
-                    chartConfig={{
-                        backgroundColor: 'white',
-                        backgroundGradientFrom: 'white',
-                        backgroundGradientTo: 'white',
-                        decimalPlaces: 2,
-                        color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`, // Blue line color
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black label color
-                        style: {
-                            borderRadius: 16,
-                        },
-                        propsForDots: {
-                            r: '6',
-                            strokeWidth: '2',
-                           
-                        },
-                    }}
-                    bezier
-                    style={styles.chart}
-                    onDataPointClick={({ value, x, y, index }) => {
-                        setTooltip({
-                            value: `${value}`,
-                            x,
-                            y,
-                            index,
-                        });
-                    }}
-                />
+                            propsForDots: {
+                                r: '2',
+                                strokeWidth: '2',
+                            },
+                        }}
+                        bezier={false} // Ensure sharp lines
+                        style={styles.chart} />
+                    </View>
+
+                    
+                ) : (
+                    <Text>No stock data available.</Text>
+                )}
 
                 {/* Tooltip for the clicked point */}
                 {tooltip && (
@@ -220,7 +251,49 @@ const Post = ({ navigation, route }) => {
                         <Text style={styles.tooltipText}>{tooltip.value}</Text>
                     </View>
                 )}
+            </View><View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={styles.changeIntervalButton}
+                        onPress={() => {
+                            setTimeRange('5d');
+                            setInterval('1d');
+                        } }
+                    >
+                        <Text style={styles.buttonText}>5d</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.changeIntervalButton}
+                        onPress={() => {
+                            setTimeRange('1mo');
+                            setInterval('1d');
+                        } }
+                    >
+                        <Text style={styles.buttonText}>1mo</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.changeIntervalButton}
+                        onPress={() => {
+                            setTimeRange('1y');
+                            setInterval('1mo');
+                        } }
+                    >
+                        <Text style={styles.buttonText}>1y</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.changeIntervalButton}
+                        onPress={() => {
+                            setTimeRange('5y');
+                            setInterval('1mo');
+                        } }
+                    >
+                        <Text style={styles.buttonText}>5y</Text>
+                    </TouchableOpacity>
+                </View></>
+            ) : null}
+
             </View>
+            
+            
 
 
             <View style={styles.buttonContainer}>
@@ -275,7 +348,8 @@ const Post = ({ navigation, route }) => {
                     </View>
                 </View>
             </Modal>
-        </ScrollView>
+        </View>
+    </ScrollView>
     );
 };
 
@@ -429,6 +503,13 @@ const styles = StyleSheet.create({
         color: '#ffffff', // White text for visibility
         fontSize: 12,
         fontWeight: 'bold',
+    },
+    changeIntervalButton: {
+        backgroundColor: '#007BFF',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        marginBottom: 5,
     },
 });
 
