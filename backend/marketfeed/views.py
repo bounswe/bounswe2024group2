@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, status, permissions, generics
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import (
     IsAuthenticated,
     AllowAny,
     IsAuthenticatedOrReadOnly,
+    ValidationError,
 )
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -455,6 +457,13 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = PostSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_path='posts-by-stock/(?P<stock_id>[^/.]+)')
+    def posts_by_stock(self, request, stock_id=None):
+        stock = get_object_or_404(Stock, id=stock_id)
+        queryset = Post.objects.filter(stocks=stock)
+        serializer = PostSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -586,6 +595,14 @@ class PostDislikeView(generics.GenericAPIView):
         post.liked_by.remove(user)  # Ensure mutual exclusivity
         return Response({"detail": "Post disliked."}, status=status.HTTP_200_OK)
 
+class AddStocksToPostView(generics.GenericAPIView):
+    serializer_class = PostStockAddSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Stocks added successfully."}, status=status.HTTP_200_OK)
 
 class IndexViewSet(viewsets.ModelViewSet):
     queryset = Index.objects.all()
