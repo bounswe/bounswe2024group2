@@ -218,6 +218,7 @@ class PostSerializer(serializers.ModelSerializer):
         disliked_by = validated_data.pop('disliked_by', [])
         tags = validated_data.pop('tags', [])
         portfolios = validated_data.pop('portfolios', [])
+        stocks = validated_data.pop('stocks', [])
 
         post = Post.objects.create(**validated_data)
 
@@ -225,6 +226,7 @@ class PostSerializer(serializers.ModelSerializer):
         post.disliked_by.set(disliked_by)
         post.tags.set(tags)
         post.portfolios.set(portfolios)
+        post.stocks.set(stocks)
 
         return post
 
@@ -303,7 +305,6 @@ class IndexSerializer(serializers.ModelSerializer):
         elif request and request.method == 'POST':
             self.fields['name'].required = True
             self.fields['stocks'].required = False
-
 
 
 class MinimalAnnotationSerializer(serializers.Serializer):
