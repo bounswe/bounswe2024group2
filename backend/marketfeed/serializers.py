@@ -177,10 +177,11 @@ class PostSerializer(serializers.ModelSerializer):
     liked_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
     portfolios = serializers.PrimaryKeyRelatedField(queryset=Portfolio.objects.all(), many=True, required=False)
+    stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'disliked_by', 'tags', 'portfolios']
+        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'disliked_by', 'tags', 'portfolios', 'stocks']
 
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)
@@ -287,4 +288,35 @@ class IndexSerializer(serializers.ModelSerializer):
         elif request and request.method == 'POST':
             self.fields['name'].required = True
             self.fields['stocks'].required = False
-         
+
+class PostStockAddSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField(help_text="ID of the post to which stocks will be added.")
+    stock_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text="List of stock IDs to be added to the post."
+    )
+
+    def validate(self, data):
+        post_id = data.get('post_id')
+        stock_ids = data.get('stock_ids', [])
+
+        # Validate Post
+        try:
+            data['post'] = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            raise serializers.ValidationError({"post_id": "Post with this ID does not exist."})
+
+        # Validate Stocks
+        valid_stocks = Stock.objects.filter(id__in=stock_ids)
+        if len(stock_ids) != valid_stocks.count():
+            invalid_ids = set(stock_ids) - set(valid_stocks.values_list('id', flat=True))
+            raise serializers.ValidationError({"invalid_stock_ids": list(invalid_ids)})
+
+        return data
+
+    def save(self):
+        post = self.validated_data['post']
+        stock_ids = self.validated_data['stock_ids']
+        stocks = Stock.objects.filter(id__in=stock_ids)
+        post.stocks.add(*stocks)
+        return post

@@ -17,4 +17,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('like', PostLikeView.as_view(), name='post-like'),
     path('dislike', PostDislikeView.as_view(), name='post-dislike'),
+    path('post-add-stocks', AddStocksToPostView.as_view(), name='post-add-stocks'),
 ]
