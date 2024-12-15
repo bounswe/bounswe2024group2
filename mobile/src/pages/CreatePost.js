@@ -57,6 +57,7 @@ const CreatePost = ({ navigation }) => {
         setAvailableTags([...availableTags, tag]);
         setNewTag("");
         Alert.alert("Tag added successfully");
+        fetchTags();
       } else {
         console.error(response);
         console.error("Failed to add tag");
