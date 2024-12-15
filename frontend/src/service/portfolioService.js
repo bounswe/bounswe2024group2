@@ -120,7 +120,6 @@ export const PortfolioService = {
             // a list of portfolios
             const rawPortfolios = response.data;
             const transformedPortfolios = await Promise.all(rawPortfolios.map(transformPortfolioItem));
-            log.debug('Transformed portfolios:', transformedPortfolios);
             return transformedPortfolios;
         } catch (error) {
             log.error(`Error fetching portfolio with user ID ${userId}:`, error);
