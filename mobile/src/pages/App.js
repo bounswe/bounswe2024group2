@@ -26,12 +26,12 @@ const Drawer = createDrawerNavigator();
 
 // Custom Header
 const CustomHeader = ({ navigation }) => {
-  const { user } = useAuth();
-
+  
+  const { username, userId } = useAuth();
 
   const handleProfileNavigation = () => {
-    if (user) {
-      navigation.navigate('Profile', { username: user.username });
+    if (userId) {
+      navigation.navigate('Profile', { username: username });
     } else {
       navigation.navigate('Login&Register');
     }
@@ -72,7 +72,7 @@ const PostStack = () => {
   )
 }
 const DrawerNavigator = () => {
-  const { user } = useAuth();
+  const { username, userId } = useAuth();
 
 
 
@@ -89,7 +89,7 @@ const DrawerNavigator = () => {
               component={Home}  
                        
             />
-            { user  ? (
+            { userId  ? (
               <Drawer.Screen 
                 name="Profile" 
                 component={Profile} 

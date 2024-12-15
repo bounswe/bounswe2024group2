@@ -5,7 +5,7 @@
 
   export const AuthProvider = ({ children }) => {
     const [username, setUsername] = useState(null); // Store logged-in user
-    const [userId, setUserId] = useState(null); // Store logged-in user
+    const [userId, setUserId] = useState(0); 
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
     
