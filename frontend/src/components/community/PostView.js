@@ -268,9 +268,6 @@ const PostView = () => {
         >
           <FaThumbsUp /> {isLikedByUser ? " Liked" : " Like"}
         </button>
-        <button className="comment-button">
-          <FaComment /> Comment
-        </button>
       </div>
     </div>
   );
