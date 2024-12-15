@@ -26,4 +26,5 @@ urlpatterns = [
     path('annotations/post-annotations/<int:post_id>/', 
          ProxyAnnotationView.as_view({'get': 'retrieve_annotations_by_posts'}), 
          name='retrieve_annotations_by_postst'),
+    path('post-add-stocks', AddStocksToPostView.as_view(), name='post-add-stocks'),
 ]

@@ -123,8 +123,14 @@
   position: relative;
 }
 
+.tag-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .tag-search-input {
-  width: 100%;
+  flex: 1;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -215,6 +221,25 @@
 
 .color-3:hover {
   background-color: #e0a800;
+}
+
+.new-button {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary-gradient);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.new-button:hover {
+  opacity: 0.9;
+}
+
+body.dark-mode .new-button {
+  border: 1px solid var(--color-neutral-700);
 }
 
 /* Description */

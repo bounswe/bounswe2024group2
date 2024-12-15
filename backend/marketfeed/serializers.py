@@ -49,22 +49,37 @@ class StockCreateSerializer(serializers.ModelSerializer):
         if request and request.method == 'POST':
             self.fields['currency'].required = True
 
+class StockGetSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = Stock
+        fields = ['id', 'name', 'symbol', 'currency']
+        
+    
+    def __init__(self, *args, **kwargs):
+        super(StockGetSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+
 
 class StockHistoricDataSerializer(serializers.Serializer):
-    start_date = serializers.DateField()  # Start date of the interval
-    end_date = serializers.DateField()  # End date of the interval
+    start_date = serializers.DateField(required=False, default=None)  # Start date of the interval
+    end_date = serializers.DateField(required=False, default=None)  # End date of the interval
+    period = serializers.CharField(
+        required=False,
+        max_length=3,  # Adjust based on the maximum length of your options
+        help_text="'1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'."
+    )
+    interval = serializers.CharField(
+        max_length=3,  # Adjust based on the maximum length of your options
+        help_text="'1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo"
+    )
+    
 
     def validate_date(self, value):
-        two_years_ago = datetime.now() - timedelta(days=365*2)
-        today = datetime.now().date()
-        range = self.end_date - self.start_date
-        if self.start_date < two_years_ago or self.end_date < two_years_ago:
-            raise serializers.ValidationError("The given date/s cannot be older than 2 years.")
-        elif self.start_date > today or self.end_date > today:
-            raise serializers.ValidationError("The given date cannot be later than the current date.")
-        elif range.days > 365:
-            raise serializers.ValidationError("The date range must be less than or equal to one year.")
-
         return value
 
 class StockPatternSearchSerializer(serializers.Serializer):
@@ -177,10 +192,11 @@ class PostSerializer(serializers.ModelSerializer):
     liked_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True, required=False)
     portfolios = serializers.PrimaryKeyRelatedField(queryset=Portfolio.objects.all(), many=True, required=False)
+    stocks = serializers.PrimaryKeyRelatedField(queryset=Stock.objects.all(), many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'disliked_by', 'tags', 'portfolios']
+        fields = ['id', 'title', 'content', 'author', 'created_at', 'updated_at', 'liked_by', 'disliked_by', 'tags', 'portfolios', 'stocks']
 
     def __init__(self, *args, **kwargs):
         super(PostSerializer, self).__init__(*args, **kwargs)
@@ -289,6 +305,7 @@ class IndexSerializer(serializers.ModelSerializer):
             self.fields['stocks'].required = False
 
 
+
 class MinimalAnnotationSerializer(serializers.Serializer):
     post_id = serializers.IntegerField()
     user_id = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -307,3 +324,35 @@ class MinimalAnnotationSerializer(serializers.Serializer):
             raise serializers.ValidationError("The 'start' position must be less than the 'end' position.")
         return data
          
+class PostStockAddSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField(help_text="ID of the post to which stocks will be added.")
+    stock_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text="List of stock IDs to be added to the post."
+    )
+
+    def validate(self, data):
+        post_id = data.get('post_id')
+        stock_ids = data.get('stock_ids', [])
+
+        # Validate Post
+        try:
+            data['post'] = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            raise serializers.ValidationError({"post_id": "Post with this ID does not exist."})
+
+        # Validate Stocks
+        valid_stocks = Stock.objects.filter(id__in=stock_ids)
+        if len(stock_ids) != valid_stocks.count():
+            invalid_ids = set(stock_ids) - set(valid_stocks.values_list('id', flat=True))
+            raise serializers.ValidationError({"invalid_stock_ids": list(invalid_ids)})
+
+        return data
+
+    def save(self):
+        post = self.validated_data['post']
+        stock_ids = self.validated_data['stock_ids']
+        stocks = Stock.objects.filter(id__in=stock_ids)
+        post.stocks.add(*stocks)
+        return post
+

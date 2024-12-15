@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import mockPosts from "../../data/mockPosts";
 import FinancialGraph from "./FinancialGraph";
 import "../../styles/community/PostView.css";
-import {apiClient} from "../../service/apiClient";
+import { apiClient } from "../../service/apiClient";
 import CircleAnimation from "../CircleAnimation";
 import NotFound from "../notfound/NotFound";
+import UserService from "../../service/userService";
 import {
   FaNewspaper,
   FaImage,
@@ -22,68 +23,65 @@ const PostView = () => {
   const [post, setPost] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [tags, setTags] = useState([]);
-  const [users, setUsers] = useState({});
-  const [isUsersLoaded, setIsUsersLoaded] = useState(false);
-
-  const fetchTags = async (tags) => {
+  const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const getUserName = async (userID) => {
     try {
-      const tagPromises = tags.map((tag) => apiClient.get(`/tags/${tag.id}/`));
-      const responses = await Promise.all(tagPromises);
-      const tagNames = responses.map((response) => response.data.name);
-
-      setTags(tagNames);
+      const userData = await apiClient.get(`/users/${userID}`);
+      const userName = userData.data.username;
+      return userName;
     } catch (error) {
-      console.error("Error fetching tags:", error);
-      setTags([]);
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await apiClient.get("/users");
-      const usersById = response.data.reduce((acc, user) => {
-        acc[user.id] = user.username;
-        return acc;
-      }, {});
-      setUsers(usersById);
-      setIsUsersLoaded(true);
-    } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching user name:", error);
+      return "Unknown";
     }
   };
 
   const getColorForTag = (tag) => {
-    const asciiValue = tag.charCodeAt(0);
+    const tagName = typeof tag === "string" ? tag : tag.name;
+    const asciiValue = tagName.charCodeAt(0);
     const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
     return colors[asciiValue % 5];
   };
-
-  useEffect(() => {
-    if (!isUsersLoaded) {
-      fetchUsers();
-    }
-  }, [isUsersLoaded]);
 
   useEffect(() => {
     const fetchBackendPost = async () => {
       try {
         const response = await apiClient.get(`/posts/${postId}/`);
         const backendPost = response.data;
+        const commentsResponse = await apiClient.get(
+          `/comments/post-comments/${postId}`
+        );
+
+        const commentsData = commentsResponse.data;
+
+        const backendComments = await Promise.all(
+          commentsData.map(async (comment) => {
+            const username = await getUserName(comment.user_id);
+            return {
+              "comment-id": comment.id,
+              user: username,
+              comment: comment.content,
+            };
+          })
+        );
+
+        console.log("backedn, comment", backendComments);
+        const loggedInUser = parseInt(UserService.getUserId(), 10);
+        const userHasLiked = backendPost.liked_by.includes(loggedInUser);
+
         const normalizedPost = {
           "post-id": backendPost.id,
-          user: users[backendPost.author] || "Unknown",
+          user: await getUserName(backendPost.author),
           title: backendPost.title,
           content: [{ type: "plain-text", "plain-text": backendPost.content }],
-          comments: [],
+          comments: backendComments,
           likes: backendPost.liked_by.length,
           tags: backendPost.tags,
           "publication-date": new Date(
             backendPost.created_at
           ).toLocaleDateString(),
         };
-
+        setIsLikedByUser(userHasLiked);
         setPost(normalizedPost);
-        fetchTags(backendPost.tags);
       } catch (error) {
         console.error("Error fetching post:", error);
         setPost(null);
@@ -92,7 +90,7 @@ const PostView = () => {
       }
     };
 
-    if (isUsersLoaded) {
+    if (postId) {
       const fetchData = async () => {
         const mockPost = mockPosts.find(
           (post) => post["post-id"] === parseInt(postId)
@@ -100,28 +98,62 @@ const PostView = () => {
         if (mockPost) {
           setPost(mockPost);
           setTags(mockPost.tags);
+          setLoading(false);
         } else {
           await fetchBackendPost();
         }
-        setLoading(false);
       };
+
       fetchData();
     }
-  }, [isUsersLoaded, postId, users]);
+  }, [postId]);
   const handleCommentChange = (e) => setCommentText(e.target.value);
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = async () => {
     if (commentText.trim()) {
-      const newComment = {
-        "comment-id": Date.now(),
-        user: "Current User",
-        comment: commentText,
-      };
+      try {
+        const username = UserService.getUsername();
+
+        const payload = {
+          post_id: postId,
+          content: commentText.trim(),
+        };
+
+        await apiClient.post("/comments/", payload);
+
+        setPost((prevPost) => ({
+          ...prevPost,
+          comments: [
+            ...prevPost.comments,
+            {
+              "comment-id": Date.now(), // Temporary ID until refreshed
+              user: username,
+              comment: commentText.trim(),
+            },
+          ],
+        }));
+        setCommentText("");
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
+    }
+  };
+
+  const handleToggleLike = async () => {
+    try {
+      const endpoint = isLikedByUser ? `/like` : `/like`; // Reuse the same endpoint for toggling
+      const payload = { post_id: postId };
+
+      await apiClient.post(endpoint, payload);
+
       setPost((prevPost) => ({
         ...prevPost,
-        comments: [...prevPost.comments, newComment],
+        likes: isLikedByUser ? prevPost.likes - 1 : prevPost.likes + 1,
       }));
-      setCommentText("");
+
+      setIsLikedByUser((prevLiked) => !prevLiked);
+    } catch (error) {
+      console.error(`Error toggling like state: ${error.message}`);
     }
   };
 
@@ -152,13 +184,16 @@ const PostView = () => {
             <span
               key={index}
               className="tag"
-              style={{ backgroundColor: getColorForTag(tag), color: "#ffffff" }}
+              style={{
+                backgroundColor: getColorForTag(tag),
+                color: "#ffffff",
+              }}
             >
               {tag}
             </span>
           ))
         ) : (
-          <p>Loading tags...</p>
+          <p></p>
         )}
       </div>
       <div className="post-content">
@@ -227,8 +262,11 @@ const PostView = () => {
         </div>
       </div>
       <div className="post-actions">
-        <button className="like-button">
-          <FaThumbsUp /> Like
+        <button
+          className={`like-button ${isLikedByUser ? "liked" : ""}`}
+          onClick={handleToggleLike}
+        >
+          <FaThumbsUp /> {isLikedByUser ? " Liked" : " Like"}
         </button>
         <button className="comment-button">
           <FaComment /> Comment

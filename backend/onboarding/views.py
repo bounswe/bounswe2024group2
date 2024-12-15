@@ -204,6 +204,21 @@ class ProfileViewSet(viewsets.ModelViewSet):
         currency.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=False, methods=['get'], url_path='by-user-id/(?P<user_id>[^/.]+)')
+    def get_profile_by_user_id(self, request, user_id=None):
+        try:
+            profile = self.get_queryset().get(user__id=user_id)
+        except Profile.DoesNotExist:
+            # Create a user profile for that user
+            user = User.objects.get(id=user_id)
+            if not user:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            profile = Profile.objects.create(user=user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+
 User = get_user_model()
 
 class FollowView(generics.GenericAPIView):
