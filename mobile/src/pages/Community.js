@@ -8,37 +8,31 @@ import { useAuth } from './context/AuthContext';
 
 
 const Community = ({navigation}) => {
-    const { user } = useAuth();
+    const { userId } = useAuth();
     const { baseURL } = config;
     const [posts, setPosts] = useState([]);
     const [users, setUsers] = useState([]);
     const [userMap, setUserMap] = useState([]);
     const fetchPosts = async () => {
-        const postURL = baseURL + '/posts/';
+        const postURL = baseURL + '/posts/?page=1';
     
         try {
             const response = await fetch(postURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    /* 'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN' ,*/
                 },
             });
     
             if (response.ok) {
                 const jsonResponse = await response.json();
-                //console.log('Response:', jsonResponse);
                 setPosts(jsonResponse);
-               
             } else {
                 const errorResponse = await response.json();
                 console.log('Error Response:', errorResponse);
-              
                 throw new Error('Network response was not ok.');
-                
             }
         } catch (error) {
-          
             console.error('Error:', error);
         }
       };
@@ -52,15 +46,12 @@ const Community = ({navigation}) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    /* 'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN' ,*/
                 },
             });
     
             if (response.ok) {
                 const jsonResponse = await response.json();
-                //console.log('Response:', jsonResponse);
                 setUsers(jsonResponse);
-
                 const map = {};
                 jsonResponse.forEach((user) => {
                     map[user.id] = user;
@@ -76,7 +67,6 @@ const Community = ({navigation}) => {
                 
             }
         } catch (error) {
-          
             console.error('Error:', error);
         }
       };
@@ -90,11 +80,11 @@ const Community = ({navigation}) => {
 
 
     const handleViewPost = (post) => {
-        navigation.navigate('Post', { postId: post.id });
+        navigation.navigate('Post', { postId: post.id, author: userMap[post.author] ? userMap[post.author].username : post.author });
     };
 
     const handleCreatePost = () => {
-        if(!user){
+        if(!userId){
             Alert.alert('Please login to create a post');
             navigation.navigate('Login&Register');
         }else{
@@ -103,17 +93,25 @@ const Community = ({navigation}) => {
         
     }
 
+    const renderUsername = (post) => {
+        if(userMap[post.author]){
+            return userMap[post.author].username;
+        }else{
+            return post.author;
+        }
+    }
+
     const renderItem = ({ item: post }) => (
-        console.log(post),
+        console.log("post", post),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>
-                Published on: {post.date} by {userMap[post.author].username}
+                Published on: {new Date(post.created_at).toLocaleDateString()} by {renderUsername(post)}
             </Text>
             <Text style={styles.postContent}>{post.content}</Text>
             <View style={styles.tagsContainer}>
                 {post.tags.map((tag) => (
-                    <Text key={tag} style={styles.tag}>{tag}</Text>
+                    <Text key={tag.id} style={styles.tag}>{tag.name}</Text>
                 ))}
             </View>
             {post.graph && (
