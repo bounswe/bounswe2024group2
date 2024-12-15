@@ -58,14 +58,35 @@ class StockViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def list(self, request):
-        stocks = self.get_queryset()
-        serializer = self.get_serializer(stocks, many=True)
-        return Response(serializer.data)
+        queryset = self.paginate_queryset(self.get_queryset())
+        data = []
+        for stock in queryset:
+            serializer = self.get_serializer(stock)
+            serialized_data = serializer.data
+            print(serialized_data["currency"])
+            serialized_data['currency'] = stock.currency
+            data.append(serialized_data)
+
+        return Response(data)
 
     def retrieve(self, request, pk=None):
+        
+        if request.method == 'GET':
+            self.serializer_class = StockGetSerializer
+            
         stock = self.get_object()
         serializer = self.get_serializer(stock)
-        return Response(serializer.data)
+        serializerData = serializer.data
+        
+        ticker = serializerData['symbol']
+        if serializerData['currency']['code'] == 'TRY':
+            ticker += '.IS'
+        
+        detail = yf.Ticker(ticker).info
+
+        serializerData["detail"] = detail
+
+        return Response(serializerData)
 
     def create(self, request):
         if request.method == 'POST':

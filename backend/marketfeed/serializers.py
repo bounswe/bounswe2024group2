@@ -49,6 +49,21 @@ class StockCreateSerializer(serializers.ModelSerializer):
         if request and request.method == 'POST':
             self.fields['currency'].required = True
 
+class StockGetSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = Stock
+        fields = ['id', 'name', 'symbol', 'currency']
+        
+    
+    def __init__(self, *args, **kwargs):
+        super(StockGetSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+
 
 class StockHistoricDataSerializer(serializers.Serializer):
     start_date = serializers.DateField(required=False, default=None)  # Start date of the interval
