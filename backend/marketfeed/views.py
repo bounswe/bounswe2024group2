@@ -63,8 +63,6 @@ class StockViewSet(viewsets.ModelViewSet):
         for stock in queryset:
             serializer = self.get_serializer(stock)
             serialized_data = serializer.data
-            print(serialized_data["currency"])
-            serialized_data['currency'] = stock.currency
             data.append(serialized_data)
 
         return Response(data)
