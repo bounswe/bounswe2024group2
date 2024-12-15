@@ -45,6 +45,8 @@ services:
       EMAIL_PORT: '1025'      
       EMAIL_HOST_USER: 'test'  
       EMAIL_HOST_PASSWORD: 'test'
+      ANNOTATIONS_SERVICE_URL: "http://annotations-backend:8001"
+      BACKEND_SERVICE_URL: "http://159.223.28.163:30002"
     volumes:
       - ./backend:/backend
     ports:

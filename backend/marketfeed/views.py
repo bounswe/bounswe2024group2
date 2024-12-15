@@ -9,12 +9,14 @@ from drf_yasg import openapi
 from rest_framework.viewsets import ViewSet
 from .serializers import *
 from .models import *
-from rest_framework.decorators import action
 from drf_yasg.utils import swagger_auto_schema
 import yfinance as yf
 from concurrent.futures import ThreadPoolExecutor
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+import requests
+from rest_framework.views import APIView
+from django.conf import settings
 
 
 
@@ -509,7 +511,6 @@ class IndexViewSet(viewsets.ModelViewSet):
 
 
 class SearchViewSet(ViewSet):
-
     @action(detail=False, methods=['get'], url_path='posts/(?P<q>[^/.]+)')
     def search_posts(self, request, q=None):
         if not q:
@@ -557,3 +558,53 @@ class SearchViewSet(ViewSet):
         results['portfolios'] = portfolio_serializer.data 
 
         return Response(results)
+
+
+class ProxyAnnotationView(APIView):
+    serializer_class = MinimalAnnotationSerializer
+    def post(self, request, *args, **kwargs):
+
+        serializer = MinimalAnnotationSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+        user = request.user
+        print(f"user id is {user.id}")
+        print(f"username is {user.username}")
+        user_id=user.id
+        username=user.username
+
+        enriched_data = {
+            "type": "Annotation",
+            "body": {
+                "type": "TextualBody",
+                "value": validated_data["value"],
+                "format": "text/plain",
+                "language": "en",
+                "purpose": "commenting"
+            },
+            "target": {
+                "type": "TextPositionSelector",
+                "source": f"{settings.BACKEND_SERVICE_URL}/posts/{validated_data['post_id']}",
+                "start": validated_data["start"],
+                "end": validated_data["end"]
+            },
+            "creator": {
+                "type": "Person",
+                "name": f"{username}",
+                "creator_id": f"{settings.BACKEND_SERVICE_URL}/users/{user_id}"
+            }
+        }
+
+        try:
+            annotations_service_url = f"{settings.ANNOTATIONS_SERVICE_URL}/annotations/"
+            print(annotations_service_url)
+            response = requests.post(annotations_service_url, json=enriched_data)
+
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_201_CREATED)
+            else:
+                return Response(response.json(), status=response.status_code)
+        except requests.RequestException as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -287,4 +287,23 @@ class IndexSerializer(serializers.ModelSerializer):
         elif request and request.method == 'POST':
             self.fields['name'].required = True
             self.fields['stocks'].required = False
+
+
+class MinimalAnnotationSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField()
+    user_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    start = serializers.IntegerField()
+    end = serializers.IntegerField()
+    value = serializers.CharField()
+
+    def validate_post_id(self, post_id):
+        if not Post.objects.filter(id=post_id).exists():
+            raise serializers.ValidationError(f"Post with id {post_id} does not exist.")
+        return post_id
+
+
+    def validate(self, data):
+        if data['start'] >= data['end']:
+            raise serializers.ValidationError("The 'start' position must be less than the 'end' position.")
+        return data
          
