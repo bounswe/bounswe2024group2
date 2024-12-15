@@ -67,7 +67,6 @@ const PostView = () => {
         console.log("backedn, comment", backendComments);
         const loggedInUser = parseInt(UserService.getUserId(), 10);
         const userHasLiked = backendPost.liked_by.includes(loggedInUser);
-
         const normalizedPost = {
           "post-id": backendPost.id,
           user: await getUserName(backendPost.author),
@@ -82,6 +81,7 @@ const PostView = () => {
         };
         setIsLikedByUser(userHasLiked);
         setPost(normalizedPost);
+        setTags(backendPost.tags);
       } catch (error) {
         console.error("Error fetching post:", error);
         setPost(null);
@@ -189,7 +189,7 @@ const PostView = () => {
                 color: "#ffffff",
               }}
             >
-              {tag}
+              {tag.name}
             </span>
           ))
         ) : (
