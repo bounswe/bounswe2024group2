@@ -65,7 +65,51 @@ const ProfileService = {
     async fetchCommentsByProfileId(id) {
         console.log("Not implemented");
         return [];
+    },
+
+    async handleFollowToggle(username) {
+        // try to follow if not already following
+        // try to unfollow if already following
+        try {
+            await this.follow(username);
+            return "followed";
+        } catch (error) {
+            if (error.response?.status !== 400) {
+                throw error;
+            }
+        }
+
+        try {
+            await this.unfollow(username);
+            return "unfollowed";
+        }
+        catch (error) {
+            if (error.response?.status !== 400) {
+                throw error;
+            }
+        }
+    },
+
+    async follow(username) {
+        try {
+            const response = await apiClient.post(`/follow/`, { username: username });
+            return response.data;
+        } catch (error) {
+            log.error(`Error following user with ID ${username}:`, error);
+            throw error;
+        }
+    },
+
+    async unfollow(username) {
+        try {
+            const response = await apiClient.post(`/unfollow/`, { username: username });
+            return response.data;
+        } catch (error) {
+            log.error(`Error unfollowing user with ID ${username}:`, error);
+            throw error;
+        }
     }
+
 
     // async fetchCommentsByProfileId(id) {
     //     try {
