@@ -209,8 +209,13 @@ class ProfileViewSet(viewsets.ModelViewSet):
         try:
             profile = self.get_queryset().get(user__id=user_id)
         except Profile.DoesNotExist:
-            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
-
+            # Create a user profile for that user
+            user = User.objects.get(id=user_id)
+            if not user:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            profile = Profile.objects.create(user=user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data)
         serializer = self.get_serializer(profile)
         return Response(serializer.data)
 
