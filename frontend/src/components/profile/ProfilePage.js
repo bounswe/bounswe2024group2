@@ -8,55 +8,103 @@ import CircleAnimation from '../CircleAnimation';
 import { toast } from "react-toastify";
 import log from '../../utils/logger';
 
-// Sample data 
+// Sample data fallback
 const userProfilex = {
   name: 'Unknown',
   image: null,
   username: 'unknown',
-  followers: 0,
-  following: 0,
-  posts: 0,
-  portfolios: 0,
-  comments: 0,
-  badges: [
-    // { label: 'Highliked', icon: '🏅' },
-    // { label: 'Creatager', icon: '🏅' }
-  ]
+  followers: [],
+  following: [],
+  posts: [],
+  comments: [],
+  badges: []
 };
 
-const ProfilePage = ( ) => {
-
+const ProfilePage = () => {
   const { userId } = useParams();
-
   const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentTab, setCurrentTab] = useState('Posts');
+  const isCurrentUser = userId === UserService.getUserId();
 
   useEffect(() => {
-
-    // Get active user id
     if (!UserService.isLoggedIn()) {
       navigate('/login');
     }
-    // const userId = UserService.getUserId();
+
     log.debug('Fetching profile for user ID:', userId);
     setLoading(true);
-    // Fetch user profile
 
-    ProfileService.fetchProfileById(userId).then((profile) => {
-      setUserProfile(profile);
-      // setUserProfile(userProfilex);
-      console.log(profile);
-      setLoading(false);
+    ProfileService.fetchProfileById(userId)
+      .then((profile) => {
+        setUserProfile(profile);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching user profile:', error);
+        toast.error('Error fetching user profile');
+        setUserProfile(userProfilex);
+        setLoading(false);
+      });
+  }, [navigate, userId]);
 
-    }).catch((error) => {
-      console.error('Error fetching user profile:', error);
-      toast.error('Error fetching user profile');
-      setUserProfile(userProfilex);
-      setLoading(false);
+  const isFollowing = (user) => {
+    console.log("User:", user);
+    
+    return userProfile.following.some((u) => u.username === UserService.getUsername());
+  };
+
+  const renderListContent = () => {
+    if (!userProfile) return null;
+
+    const contentMap = {
+      Posts: userProfile.posts,
+      Comments: userProfile.comments,
+      Followers: userProfile.followers,
+      Following: userProfile.following
+    };
+
+    const content = contentMap[currentTab];
+    if (!content || content.length === 0) {
+      return <p>No {currentTab.toLowerCase()} available.</p>;
     }
+
+    return (
+      <ul className="list-content">
+        {content.map((item, index) => (
+          <li key={index}>
+            {currentTab === 'Followers' || currentTab === 'Following' ? (
+              <>
+                <span>{item.name}</span>
+                {isCurrentUser && (
+                  <button onClick={() => handleFollowToggle(item)}>
+                    {currentTab === 'Followers' ? 'Unfollow' : 'Follow'}
+                  </button>
+                )}
+              </>
+            ) : (
+              <span>{item}</span>
+            )}
+          </li>
+        ))}
+      </ul>
     );
-  }, [navigate]);
+  };
+
+  const handleFollowToggle = (user) => {
+    const action = isFollowing(user) ? 'Unfollow' : 'Follow';
+
+    ProfileService.handleFollowToggle(user.username)
+      .then((message) => {
+        toast.success(`${message} ${user.username}`);
+        // Optionally update the local state here
+      })
+      .catch((error) => {
+        console.error(`Failed to ${action.toLowerCase()} user:`, error);
+        toast.error(`Failed to ${action.toLowerCase()} user.`);
+      });
+  };
 
   if (loading) {
     return <CircleAnimation />;
@@ -67,33 +115,31 @@ const ProfilePage = ( ) => {
       <div className="profile-page">
         <div className="profile-container">
           <div className="profile-avatar">
-            {(userProfile.image) ?
-            <img src={userProfile.image} alt="Profile Avatar" />
-            : <span className="profile-avatar-placeholder">{userProfile.username.charAt(0).toUpperCase()}</span>
-            }
+            {userProfile.image ? (
+              <img src={userProfile.image} alt="Profile Avatar" />
+            ) : (
+              <span className="profile-avatar-placeholder">
+                {userProfile.username.charAt(0).toUpperCase()}
+              </span>
+            )}
           </div>
           <div className="profile-right-container">
             <div className="profile-stats">
-              <div className="stat-item">
-                <p>{userProfile.followersCnt} Followers</p>
-              </div>
-              <div className="stat-item">
-                <p>{userProfile.followingCnt} Following</p>
-              </div>
-              <div className="stat-item">
-                <p>{userProfile.postsCnt} Posts</p>
-              </div>
-              <div className="stat-item">
-                <p>{userProfile.portfoliosCnt} Portfolios</p>
-              </div>
-              <div className="stat-item">
-                <p>{userProfile.commentsCnt} Comments</p>
-              </div>
+              <div className="stat-item"><p>{userProfile.followersCnt} Followers</p></div>
+              <div className="stat-item"><p>{userProfile.followingCnt} Following</p></div>
+              <div className="stat-item"><p>{userProfile.postsCnt} Posts</p></div>
+              <div className="stat-item"><p>{userProfile.commentsCnt} Comments</p></div>
             </div>
             <div className="profile-info">
               <div className="profile-details">
-                <h1>{userProfile.name}</h1>
-                <p>@{userProfile.username}</p>
+                <h1>{userProfile.username}</h1>
+                {!isCurrentUser && (
+                  <button
+                    onClick={() => handleFollowToggle(userProfile)}
+                  >
+                    {isFollowing(userProfile) ? 'Unfollow' : 'Follow'}
+                  </button>
+                )}
               </div>
               <div className="profile-badges">
                 {userProfile.badges.map((badge, index) => (
@@ -108,13 +154,20 @@ const ProfilePage = ( ) => {
         </div>
 
         <nav className="profile-selector">
-          <button className="selector-item">Posts</button>
-          <button className="selector-item">Portfolios</button>
-          <button className="selector-item">Comments</button>
-          <button className="selector-item">Followers</button>
-          <button className="selector-item">Following</button>
-          <button className="selector-item">Settings</button>
+          {['Posts', 'Comments', 'Followers', 'Following'].map((tab) => (
+            <button
+              key={tab}
+              className={`selector-item ${currentTab === tab ? 'active' : ''}`}
+              onClick={() => setCurrentTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </nav>
+
+        <div className="profile-content">
+          {renderListContent()}
+        </div>
       </div>
     </div>
   );
