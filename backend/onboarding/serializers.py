@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from onboarding.models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -114,11 +115,3 @@ class ProfileSerializer(serializers.ModelSerializer):
 User = get_user_model()
 class FollowUnfollowSerializer(serializers.Serializer):
     username = serializers.CharField()
-
-    def validate_username(self, value):
-        # Ensure the username exists in the database
-        try:
-            user = User.objects.get(username=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(f"User with username '{value}' does not exist.")
-        return value

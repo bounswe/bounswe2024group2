@@ -49,22 +49,37 @@ class StockCreateSerializer(serializers.ModelSerializer):
         if request and request.method == 'POST':
             self.fields['currency'].required = True
 
+class StockGetSerializer(serializers.ModelSerializer):
+    currency = CurrencySerializer()
+
+    class Meta:
+        model = Stock
+        fields = ['id', 'name', 'symbol', 'currency']
+        
+    
+    def __init__(self, *args, **kwargs):
+        super(StockGetSerializer, self).__init__(*args, **kwargs)
+        
+        # Get the request method if available
+        request = self.context.get('request', None)
+        
+
 
 class StockHistoricDataSerializer(serializers.Serializer):
-    start_date = serializers.DateField()  # Start date of the interval
-    end_date = serializers.DateField()  # End date of the interval
+    start_date = serializers.DateField(required=False, default=None)  # Start date of the interval
+    end_date = serializers.DateField(required=False, default=None)  # End date of the interval
+    period = serializers.CharField(
+        required=False,
+        max_length=3,  # Adjust based on the maximum length of your options
+        help_text="'1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'."
+    )
+    interval = serializers.CharField(
+        max_length=3,  # Adjust based on the maximum length of your options
+        help_text="'1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo"
+    )
+    
 
     def validate_date(self, value):
-        two_years_ago = datetime.now() - timedelta(days=365*2)
-        today = datetime.now().date()
-        range = self.end_date - self.start_date
-        if self.start_date < two_years_ago or self.end_date < two_years_ago:
-            raise serializers.ValidationError("The given date/s cannot be older than 2 years.")
-        elif self.start_date > today or self.end_date > today:
-            raise serializers.ValidationError("The given date cannot be later than the current date.")
-        elif range.days > 365:
-            raise serializers.ValidationError("The date range must be less than or equal to one year.")
-
         return value
 
 class StockPatternSearchSerializer(serializers.Serializer):
