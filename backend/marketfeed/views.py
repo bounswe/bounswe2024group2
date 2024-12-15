@@ -117,31 +117,61 @@ class StockViewSet(viewsets.ModelViewSet):
         serializer = StockSerializer(stocks, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(request_body=StockHistoricDataSerializer)
+    @swagger_auto_schema(request_body=StockHistoricDataSerializer, operation_summary='''
+            Submit a request for historic stock data. 
+            Available time ranges: 
+            '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max', 
+            Available intervals: 
+            '1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo'.
+            ''',
+                         operation_description=(
+            '''
+            Submit a request for historic stock data. 
+            Available time ranges: 
+            '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max', 
+            Available intervals: 
+            '1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1wk', '1mo', '3mo'.
+            '''
+            
+        ))
     @action(detail=True, methods=['post'], serializer_class=StockHistoricDataSerializer)
     def get_historical_data(self, request, pk=None):
         stock = self.get_object()
         stock_symbol = stock.symbol
         serializer = StockHistoricDataSerializer(data=request.data)
+        
         serializer.is_valid(raise_exception=True)
+                
         start_date = serializer.validated_data['start_date']
         end_date = serializer.validated_data['end_date']
-
-        if not start_date or not end_date:
-            return Response({"error": "Start date and end date are required."}, status=status.HTTP_400_BAD_REQUEST)
-
+        period = serializer.validated_data['period']
+        interval = serializer.validated_data['interval']
+        
         if stock.currency.code == 'TRY':
             stock_symbol += '.IS'
+
+        if not start_date or not end_date:
+            try:
+                data = yf.Ticker(stock_symbol).history(period=period,interval=interval)
+                # download(tickers=stock_symbol, period=serializer.validated_data['period'], interval=serializer.validated_data['interval'])
+                data = data.drop(columns=['Dividends', 'Stock Splits'])
+                data = data.round(2)
+                data['Date'] = data.index
+                
+                data = data.reset_index(drop=True)  
+
+                return Response(data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": f"An error occurred while fetching data: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         try:
-            # Fetch stock data using yfinance
-            stock_data = yf.Ticker(stock_symbol)
-            data = stock_data.history(start=start_date, end=end_date)
-            data = data.drop(columns=['Volume', 'Dividends', 'Stock Splits'])
-            data['Date'] = data.index.date
+            data = yf.Ticker(stock_symbol).history(interval=interval, start=start_date, end=end_date)
+            data = data.drop(columns=['Dividends', 'Stock Splits'])
+            
             data = data.round(2)
+            data['Date'] = data.index
             data = data.reset_index(drop=True)  
-            data['Stock'] = stock.symbol
-        
+
             return Response(data, status=status.HTTP_200_OK)
         
         except Exception as e:
@@ -458,7 +488,6 @@ class IndexViewSet(viewsets.ModelViewSet):
             
         for index in serializerData:
             index['price'] = prices[index['symbol']]
-        print(serializerData)
         return Response(serializer.data)
 
 
