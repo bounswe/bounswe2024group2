@@ -3,8 +3,9 @@ import { createChart } from "lightweight-charts";
 import "../../../styles/markets/stocks/StockOverviewPage.css";
 import { StockService } from "../../../service/stockService";
 
+
 const periods = ['1d', '5d', '1mo', '3mo', '1y', '5y'];
-const intervals = ['15m', '1h', '1d', '1d', '1wk', '1mo'];
+const intervals = ['5m', '15m', '90m', '1d', '1d', '1wk'];
 const periodLabels = ['1D', '5D', '1M', '3M', '1Y', '5Y'];
 
 const StockChartSection = ({ indexId }) => {
