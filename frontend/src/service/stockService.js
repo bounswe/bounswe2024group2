@@ -1,20 +1,19 @@
 import { apiClient } from './apiClient';
 import log from '../utils/logger';
-import { mockStockDetails } from '../data/mockStockDetails';
 
 const transformStockItem = (stockItem) => {
     log.debug('Transforming stock item:', {
         id: stockItem.id,
         code: stockItem.symbol,
         name: stockItem.name,
-        price: stockItem.price,
+        price: stockItem.detail.currentPrice,
         currency: stockItem.currency
     });
     return {
         id: stockItem.id,
         code: stockItem.symbol,
         name: stockItem.name,
-        price: stockItem.price,
+        price: stockItem.detail.currentPrice,
         currency: stockItem.currency
     };
 }
@@ -66,13 +65,11 @@ export const StockService = {
 
     async fetchStockHistoricalData(id, period, interval) {
         try {
-            const response = await apiClient.get(`/stocks/${id}/get_historical_data/`, {
-                params: {
-                    period: period,
-                    interval: interval
-                }
-            }
-            );
+            const response = await apiClient.post(`/stocks/${id}/get_historical_data/`, {
+                period,
+                interval
+            });
+            
             return response.data;
         } catch (error) {
             log.error(`Error fetching stock historical data with ID ${id}:`, error);

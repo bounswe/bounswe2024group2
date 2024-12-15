@@ -3,6 +3,7 @@ import { createChart } from "lightweight-charts";
 import "../../../styles/markets/stocks/StockOverviewPage.css";
 import RandomUtil from "../../../utils/randomUtil";
 import { StockService } from "../../../service/stockService";
+import CircleAnimation from "../../CircleAnimation";
 
 // Options for periods
 // '1d', '5d', '1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd', 'max'."
@@ -28,9 +29,7 @@ const StockChartSection = ({ indexId }) => {
             const interval = intervals[i];
             const response = await StockService.fetchStockHistoricalData(indexId, period, interval);
             console.log("Response:", response);
-
         }
-
         return data;
     }
 
