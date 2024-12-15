@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 
-const Markets = () => {
-  const [selectedStock, setSelectedStock] = useState(null);
+const Markets = ({ navigation }) => {
   const [stocks, setStocks] = useState([]); // Store all loaded stocks
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false); // Loading state for pagination
@@ -11,28 +18,39 @@ const Markets = () => {
 
   const fetchStocks = async (pageNumber = 1) => {
     try {
-      const response = await fetch(`http://159.223.28.163:30002/stocks/?page=${pageNumber}`, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Basic ZnVya2Fuc2Vua2FsOkxvc29sdmlkYWRvcy41NQ==',
-          'X-CSRFToken': 'HN4gYGlxSnwtGKK91OG9c6WC6gr8091Pm5Kof3t0WoTHOe0Z2ToubTZUdlOkjR34',
-        },
-      });
+      const response = await fetch(
+        `http://159.223.28.163:30002/stocks/?page=${pageNumber}`,
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: 'Basic ZnVya2Fuc2Vua2FsOkxvc29sdmlkYWRvcy41NQ==',
+            'X-CSRFToken': 'HN4gYGlxSnwtGKK91OG9c6WC6gr8091Pm5Kof3t0WoTHOe0Z2ToubTZUdlOkjR34',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log(`Fetched stocks for page ${pageNumber}:`, data);
+      console.log("Fetched data IDs:", data.map(item => item.id));
 
       if (!Array.isArray(data) || data.length === 0) {
         setHasMore(false); // No more data to load
         return;
       }
 
-      setStocks((prevStocks) => [...prevStocks, ...data]); // Append new stocks to the list
+      // Deduplicate stocks by ID
+      setStocks((prevStocks) => {
+        const combinedStocks = [...prevStocks, ...data];
+        const uniqueStocks = Array.from(
+          new Map(combinedStocks.map((stock) => [stock.id, stock])).values()
+        );
+        console.log("Unique stock IDs:", uniqueStocks.map(stock => stock.id));
+        return uniqueStocks;
+      });
     } catch (error) {
       console.error('Error fetching stocks:', error);
       Alert.alert('Error', 'Unable to fetch stocks. Please try again later.');
@@ -59,20 +77,22 @@ const Markets = () => {
 
   const renderStockItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.stockItem}
-      onPress={() => setSelectedStock(item)}
+      style={styles.stockCard}
+      onPress={() => navigation.navigate('StockDetails', { id: item.id })}
     >
-      <Text style={styles.stockCode}>{item.symbol || 'N/A'}</Text>
-      <Text style={styles.stockName}>{item.name || 'No Name'}</Text>
+      <View>
+        <Text style={styles.stockCode}>{item.symbol || 'N/A'}</Text>
+        <Text style={styles.stockName}>{item.name || 'No Name'}</Text>
+      </View>
       <Text style={styles.stockPrice}>
-        ${parseFloat(item.price || 0).toFixed(2)}
+        {parseFloat(item.price || 0).toFixed(2)} {item.currency?.code || ''}
       </Text>
     </TouchableOpacity>
   );
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
@@ -84,7 +104,7 @@ const Markets = () => {
       <FlatList
         data={stocks}
         renderItem={renderStockItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()} // Ensure unique keys
         onEndReached={loadMoreStocks} // Trigger pagination when reaching the end
         onEndReachedThreshold={0.5} // Adjust how close to the bottom the user needs to be to trigger
         ListFooterComponent={
@@ -95,17 +115,6 @@ const Markets = () => {
           )
         }
       />
-
-      {/* Stock Details */}
-      {selectedStock && (
-        <View style={styles.detailsContainer}>
-          <Text style={styles.detailsTitle}>{selectedStock.symbol || 'No Symbol'}</Text>
-          <Text style={styles.detailsName}>{selectedStock.name || 'No Name'}</Text>
-          <Text style={styles.detailsPrice}>
-            Price: ${parseFloat(selectedStock.price || 0).toFixed(2)}
-          </Text>
-        </View>
-      )}
     </View>
   );
 };
@@ -113,50 +122,46 @@ const Markets = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F4F4F4',
+    padding: 10,
   },
-  stockItem: {
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stockCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
+    marginVertical: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   stockCode: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#007AFF',
   },
   stockName: {
-    color: '#555555',
+    fontSize: 14,
+    color: '#333333',
+    marginTop: 4,
   },
   stockPrice: {
-    color: '#007AFF',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4CAF50',
   },
   footer: {
     padding: 10,
     alignItems: 'center',
-  },
-  detailsContainer: {
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#DDDDDD',
-  },
-  detailsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#007AFF',
-  },
-  detailsName: {
-    fontSize: 16,
-    color: '#333333',
-  },
-  detailsPrice: {
-    fontSize: 14,
-    marginTop: 5,
-    color: '#555555',
   },
 });
 
