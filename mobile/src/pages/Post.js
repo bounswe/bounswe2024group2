@@ -1,38 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
+import {
+    ScrollView,
+    Text,
+    StyleSheet,
+    View,
+    Dimensions,
+    TouchableOpacity,
+    TextInput,
+    Modal,
+    Alert,
+} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import config from './config/config';
+import { useAuth } from './context/AuthContext';
 
-const Post = ({ route }) => {
-    const { postId, author } = route.params;
+const Post = ({ navigation, route }) => {
+    const { postId, author, userMap, post } = route.params;
     const { baseURL } = config;
+    const { accessToken } = useAuth();
 
-    const [post, setPost] = useState(null);
     const [likes, setLikes] = useState(0);
     const [tooltip, setTooltip] = useState(null);
-    //const [author, setAuthor] = useState(null);
+    const [showCommentInput, setShowCommentInput] = useState(false);
+    const [commentText, setCommentText] = useState('');
+    const [comments, setComments] = useState([]);
+    //const [userMap, setUserMap] = useState([]);
 
     useEffect(() => {
-        fetchPost();
+        //fetchPost();
+        fetchComments();
     }, [postId]);
-    
+
     const fetchPost = async () => {
         const postURL = `${baseURL}/posts/${postId}/`;
         try {
-            const response = await fetch(postURL);
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             if (response.ok) {
                 const postData = await response.json();
-    
-                // Use postData directly to fetch the author
                 setPost(postData);
                 setLikes(postData.liked_by.length || 0);
-    
-                // Fetch author data based on postData.author
-                /* if (postData.author) {
-                    fetchAuthor(postData.author);
-                } else {
-                    console.warn('Post does not contain an author field.');
-                } */
             } else {
                 console.error(`Failed to fetch post: ${response.status}`);
             }
@@ -41,25 +52,88 @@ const Post = ({ route }) => {
         }
     };
 
-
-
-    const fetchAuthor = async (authorId) => {
-        const authorURL = `${baseURL}/users/${authorId}/`; // Replace with your API's author endpoint
+    const fetchComments = async () => {
+        const postURL = `${baseURL}/comments/post-comments/${postId}/`;
         try {
-            const response = await fetch(authorURL);
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             if (response.ok) {
-                const authorData = await response.json();
-                setAuthor(authorData);
+                console.log("response", response);
+                const commentsList = await response.json();
+                setComments(commentsList);
+                
             } else {
-                console.error(`Failed to fetch author: ${response.status}`);
+                console.error(`Failed to fetch comments: ${response}`);
             }
         } catch (error) {
-            console.error('Error fetching author:', error);
+            console.error('Error fetching comments:', error);
         }
     };
 
+    const postComment = async (comment) => {
+        const commentURL = `${baseURL}/comments/`;
+        try {
+            const response = await fetch(commentURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(comment),
+            });
+            if (response.ok) {
+                const commentResponse = await response.json();
+                setComments([...comments, commentResponse]);    
+                setCommentText('');
+                Alert.alert('Comment added successfully');
+            } else {
+                console.error(response);
+                console.error(`Failed to post comment: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        }
+    };
+
+    const renderUsername = (comment) => {
+        if(userMap[comment.user_id]){
+            return userMap[comment.user_id].username;
+        }else{
+            return comment.user_id;
+        }
+    }
+
+
     const handleLike = () => {
         setLikes((prevLikes) => prevLikes + 1);
+    };
+    
+    const handleAddCommentButton = () => {
+        if(accessToken == null){
+            navigation.navigate('Login&Register');
+            Alert.alert('Please login to add a comment');
+            return;
+        }else{
+            setShowCommentInput(true);
+            
+        }
+    };
+
+    const handleAddComment = () => {
+    
+        if (commentText.trim() === '') {
+            return; // Ignore empty comments
+        }
+        const newComment = {
+            post_id: postId,
+            content: commentText,
+        };
+        postComment(newComment);
+        setShowCommentInput(false);
     };
 
     const stockData = [142, 145, 143, 141, 144, 140, 138, 139];
@@ -69,6 +143,9 @@ const Post = ({ route }) => {
     }
 
     return (
+        //console.log("comment", comments),
+        //console.log("userMap", userMap),
+        //console.log(accessToken),
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{post.title}</Text>
             <Text style={styles.author}>Author: {author ? author : 'Unknown'}</Text>
@@ -79,7 +156,7 @@ const Post = ({ route }) => {
                 {post.tags.length > 0 ? (
                     post.tags.map((tag) => (
                         <Text key={tag.id} style={styles.tag}>
-                            #{tag.name}
+                            {tag.name}
                         </Text>
                     ))
                 ) : (
@@ -87,67 +164,120 @@ const Post = ({ route }) => {
                 )}
             </View>
             <Text style={styles.content}>{post.content}</Text>
+            <Text style={styles.graphTitle}>Stock Price Chart</Text>
+            <View>
+                <LineChart
+                    data={{
+                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8'], // X-axis labels
+                        datasets: [
+                            {
+                                data: stockData, // Stock prices for the Y-axis
+                            },
+                        ],
+                    }}
+                    width={Dimensions.get('window').width - 20} // Adjust to screen width
+                    height={300}
+                    yAxisLabel="$"
+                    chartConfig={{
+                        backgroundColor: 'white',
+                        backgroundGradientFrom: 'white',
+                        backgroundGradientTo: 'white',
+                        decimalPlaces: 2,
+                        color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`, // Blue line color
+                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Black label color
+                        style: {
+                            borderRadius: 16,
+                        },
+                        propsForDots: {
+                            r: '6',
+                            strokeWidth: '2',
+                           
+                        },
+                    }}
+                    bezier
+                    style={styles.chart}
+                    onDataPointClick={({ value, x, y, index }) => {
+                        setTooltip({
+                            value: `${value}`,
+                            x,
+                            y,
+                            index,
+                        });
+                    }}
+                />
 
-           
+                {/* Tooltip for the clicked point */}
+                {tooltip && (
+                    <View
+                        style={[
+                            styles.tooltip,
+                            {
+                                left: tooltip.x - 20, // Center tooltip horizontally
+                                top: tooltip.y - 40, // Position tooltip above the point
+                            },
+                        ]}
+                    >
+                        <Text style={styles.tooltipText}>{tooltip.value}</Text>
+                    </View>
+                )}
+            </View>
 
-            {/* Buttons */}
+
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
                     <Text style={styles.buttonText}>👍 Like ({likes})</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.commentButton}>
+                <TouchableOpacity
+                    style={styles.commentButton}
+                    onPress={handleAddCommentButton}
+                >
                     <Text style={styles.buttonText}>💬 Add Comment</Text>
                 </TouchableOpacity>
             </View>
 
-            {/* Chart Section */}
-            <Text style={styles.graphTitle}>Stock Price Chart</Text>
-            <LineChart
-                data={{
-                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8'],
-                    datasets: [{ data: stockData }],
-                }}
-                width={Dimensions.get('window').width - 20}
-                height={300}
-                yAxisLabel="$"
-                chartConfig={{
-                    backgroundColor: '#1e2923',
-                    backgroundGradientFrom: '#1e2923',
-                    backgroundGradientTo: '#08130d',
-                    decimalPlaces: 2,
-                    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    style: {
-                        borderRadius: 16,
-                    },
-                    propsForDots: {
-                        r: '6',
-                        strokeWidth: '2',
-                        stroke: '#ffa726',
-                    },
-                }}
-                bezier
-                style={styles.chart}
-                onDataPointClick={({ value, x, y }) => setTooltip({ value, x, y })}
-            />
-            {tooltip && (
-                <View
-                    style={[
-                        styles.tooltip,
-                        {
-                            left: tooltip.x - 20,
-                            top: tooltip.y - 40,
-                        },
-                    ]}
-                >
-                    <Text style={styles.tooltipText}>${tooltip.value}</Text>
+            <View style={styles.comments}>
+
+                <Text style={styles.commentsTitle}>Comments</Text>
+                {comments.length > 0 ? (
+                    comments.map((comment) => (
+                        <View key={comment.id} style={styles.commentContainer}>
+                            <Text style={styles.commentAuthor}>{renderUsername(comment)}</Text>
+                            <Text style={styles.commentText}>{comment.content}</Text>
+                            
+                        </View>
+                    ))
+                ) : (
+                    <Text style={styles.noComments}>No comments yet.</Text>
+                )}
+            </View>
+
+
+            <Modal visible={showCommentInput} animationType="slide" transparent>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <TextInput
+                            style={styles.commentInput}
+                            value={commentText}
+                            onChangeText={setCommentText}
+                            placeholder="Write a comment..."
+                        />
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity style={styles.submitButton} onPress={handleAddComment}>
+                                <Text style={styles.buttonText}>Submit</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setShowCommentInput(false)}
+                            >
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-            )}
+            </Modal>
         </ScrollView>
     );
 };
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -217,6 +347,88 @@ const styles = StyleSheet.create({
     noTags: {
         fontSize: 14,
         color: '#aaa',
+    },
+    comments: {
+        marginBottom: 20,
+    },
+    commentsTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+    },
+    commentContainer: {
+        marginBottom: 15,
+        padding: 10,
+        backgroundColor: '#f9f9f9',
+        borderRadius: 10,
+    },
+    commentAuthor: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    commentText: {
+        marginBottom: 5,
+    },
+    commentDate: {
+        fontSize: 12,
+        color: '#999',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '90%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    commentInput: {
+        height: 100,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 15,
+        textAlignVertical: 'top',
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    submitButton: {
+        backgroundColor: '#28a745',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        marginRight: 5,
+    },
+    cancelButton: {
+        backgroundColor: '#dc3545',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        marginLeft: 5,
+    },
+    noComments: {
+        fontSize: 14,
+        color: '#aaa',
+        marginTop: 10,
+    },
+    tooltip: {
+        position: 'absolute',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background for contrast
+        padding: 5,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    tooltipText: {
+        color: '#ffffff', // White text for visibility
+        fontSize: 12,
+        fontWeight: 'bold',
     },
 });
 
