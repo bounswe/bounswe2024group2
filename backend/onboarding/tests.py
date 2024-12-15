@@ -267,34 +267,32 @@ class LogoutViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("refreshToken", response.data)
 
-'''
 class ProfileViewSetTest(APITestCase):
-    class ProfileViewSetTest(APITestCase):
-        def setUp(self):
-            # Create test users
-            self.user1 = User.objects.create_user(
-                username="profiletestuser1",
-                email="profiletestuser1@example.com",
-                password="Password123*"
-            )
-            self.user2 = User.objects.create_user(
-                username="profiletestuser2",
-                email="profiletestuser2@example.com",
-                password="Password123*"
-            )
-            self.client.force_authenticate(user=self.user1)  # Authenticate as user1
+    def setUp(self):
+        # Create test users
+        self.user1 = User.objects.create_user(
+            username="profiletestuser1",
+            email="profiletestuser1@example.com",
+            password="Password123*"
+        )
+        self.user2 = User.objects.create_user(
+            username="profiletestuser2",
+            email="profiletestuser2@example.com",
+            password="Password123*"
+        )
+        self.client.force_authenticate(user=self.user1)  # Authenticate as user1
 
-            # Create test profiles
-            self.profile1, _ = Profile.objects.get_or_create(
-                user=self.user1, defaults={"bio": "Test bio 1", "location": "Location 1"}
-            )
-            self.profile2, _ = Profile.objects.get_or_create(
-                user=self.user2, defaults={"bio": "Test bio 2", "location": "Location 2"}
-            )
+        # Create test profiles
+        self.profile1, _ = Profile.objects.get_or_create(
+            user=self.user1, defaults={"bio": "Test bio 1", "location": "Location 1"}
+        )
+        self.profile2, _ = Profile.objects.get_or_create(
+            user=self.user2, defaults={"bio": "Test bio 2", "location": "Location 2"}
+        )
 
-            # URL endpoints
-            self.profile_list_url = reverse('profile-list')
-            self.profile_detail_url = lambda pk: reverse('profile-detail', args=[pk])
+        # URL endpoints
+        self.profile_list_url = reverse('profile-list')
+        self.profile_detail_url = lambda pk: reverse('profile-detail', args=[pk])
 
     def test_list_profiles(self):
 
@@ -308,7 +306,7 @@ class ProfileViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['bio'], self.profile1.bio)
         self.assertEqual(response.data['location'], self.profile1.location)
-    
+    '''
     def test_create_profile(self):
 
         Profile.objects.filter(user=self.user2).delete()
@@ -322,7 +320,7 @@ class ProfileViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['bio'], new_profile_data['bio'])
         self.assertEqual(response.data['location'], new_profile_data['location'])
-    
+    '''
     def test_update_profile(self):
 
         updated_profile_data = {
@@ -340,7 +338,7 @@ class ProfileViewSetTest(APITestCase):
         response = self.client.delete(self.profile_detail_url(self.profile1.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Profile.objects.filter(id=self.profile1.id).exists())
-'''
+
 #User = get_user_model()
 
 from rest_framework_simplejwt.tokens import RefreshToken
