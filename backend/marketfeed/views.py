@@ -359,14 +359,18 @@ class PostViewSet(viewsets.ModelViewSet):
                 location=OpenApiParameter.PATH,
                 description='Comma-separated list of tag IDs (e.g., 1,2,3)',
                 required=True,
+            ),
+            OpenApiParameter(
+                name='type',
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description='Type of filter: "and" (all tags) or "or" (at least one tag)',
+                required=False,
             )
         ]
     )
     @action(detail=False, methods=['get'], url_path='posts-by-tags/(?P<tags>[^/.]+)')
     def posts_by_tags(self, request, tags=None):
-        """
-        Retrieve posts by multiple tag IDs (comma-separated in the `tags` path parameter).
-        """
         if not tags:
             return Response({'detail': 'No tags provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -379,7 +383,16 @@ class PostViewSet(viewsets.ModelViewSet):
         if not tags.exists():
             return Response({'detail': 'No posts found for the specified tags.'}, status=status.HTTP_404_NOT_FOUND)
 
-        posts = Post.objects.filter(tags__in=tags).distinct()
+        filter_type = request.query_params.get('type', 'or').lower()
+
+        if filter_type == 'and':
+            # Posts that have all the specified tags
+            for tag in tags:
+                posts = Post.objects.filter(tags=tag) if 'posts' not in locals() else posts.filter(tags=tag)
+        else:  # Default to "or" behavior
+            # Posts that have at least one of the specified tags
+            posts = Post.objects.filter(tags__in=tags).distinct()
+
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
