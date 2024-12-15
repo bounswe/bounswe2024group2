@@ -287,7 +287,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def list(self, request):
-        queryset = self.paginate_queryset(self.get_queryset())
+        queryset = self.get_queryset()
         data = []
         for post in queryset:
             serializer = self.get_serializer(post)
