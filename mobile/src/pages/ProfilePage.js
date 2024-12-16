@@ -5,7 +5,7 @@ import { useAuth } from './context/AuthContext'; // Import AuthContext
 
 const Profile = ({ navigation }) => {
 
-  const { user, logout } = useAuth(); // Access user and logout function from AuthContext
+  const { username, userId, logout } = useAuth(); // Access user and logout function from AuthContext
 
 
 
@@ -53,9 +53,9 @@ const Profile = ({ navigation }) => {
           source={require('../../assets/stock-logos/Profile.png')}
           style={styles.profilePhoto}
         />
-        <Text style={styles.username}>@{user.username}</Text>
+        <Text style={styles.username}>@{username}</Text>
         <Text style={styles.followerCount}>
-          Followers: {user.followers || '0'} {/* Follower count should be rendered properly */}
+          Followers: {username.followers || '0'} {/* Follower count should be rendered properly */}
         </Text>
         <TouchableOpacity onPress={handleLogout}>
           <Text style={styles.logoutText}>Logout</Text>

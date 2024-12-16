@@ -1,54 +1,63 @@
 import React from 'react';
-import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import config from './config/config';
+import { useAuth } from './context/AuthContext';
+
 
 
 const Community = ({navigation}) => {
-    /*
-    const posts = [
-        {
-            id: 1,
-            title: 'Lilium\'un yan kuruluşları iflas tehlikesiyle karşı karşıya, "pennystock" olur mu',
-            author: 'Hüsnü Çoban',
-            date: '10/12/2024',
-            tags: ['Lilium', 'Hisse Analizi', 'Amerika'],
-            content: `Alman hava taksisi geliştiricisi Lilium, bugün iki yan kuruluşunun iflas başvurusunda bulunacağını duyurdu. Bu haber, şirketin ABD borsasında işlem gören hisselerinde sert düşüşe neden oldu ve hisseler %57 değer kaybetti.`,
-            graph: null, // No graph for this post
-            likes: 45,
-            comments: 12
-        },
-        {
-            id: 2,
-            title: 'Borsa İstanbul’da kazandıran hisse senetleri',
-            author: 'Ahmet Atak',
-            date: '10/12/2024',
-            tags: ['BIST', 'Yatırım', 'Hisse Senedi'],
-            content: `BIST 100, pozitif açılışın ardından yükselişine devam ederken gün içinde 8.920 puana kadar yükseldi.`,
-            graph: 'https://via.placeholder.com/150', // Placeholder image
-            likes: 32,
-            comments: 8
-        }
-    ];
-*/
+    const { userId } = useAuth();
+    const { baseURL } = config;
     const [posts, setPosts] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [userMap, setUserMap] = useState([]);
     const fetchPosts = async () => {
-        const baseURL = 'http://159.223.28.163:30002';
-        const postURL = baseURL + '/posts/';
+        const postURL = baseURL + '/posts/?page=1';
     
         try {
             const response = await fetch(postURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': 'WTyfHMRCB4yI4D5IhdreWdnFDe6skYPyBbenY9Z5F5VWc7lyii9zV0qXKjtEDGRN',
                 },
             });
     
             if (response.ok) {
                 const jsonResponse = await response.json();
-                //console.log('Response:', jsonResponse);
                 setPosts(jsonResponse);
+            } else {
+                const errorResponse = await response.json();
+                console.log('Error Response:', errorResponse);
+                throw new Error('Network response was not ok.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+      };
+
+
+      const fetchUsers = async () => {
+        const postURL = baseURL + '/users/';
+    
+        try {
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                setUsers(jsonResponse);
+                const map = {};
+                jsonResponse.forEach((user) => {
+                    map[user.id] = user;
+                });
+                setUserMap(map);
+
                
             } else {
                 const errorResponse = await response.json();
@@ -58,38 +67,51 @@ const Community = ({navigation}) => {
                 
             }
         } catch (error) {
-          
             console.error('Error:', error);
         }
-
-
-        
       };
-      useFocusEffect(
-        React.useCallback(() => {
-          fetchPosts();
-        }, [])
-      );
+    useFocusEffect(
+    React.useCallback(() => {
+        fetchPosts();
+        fetchUsers();
+    }, [])
+    );
+
 
 
     const handleViewPost = (post) => {
-        navigation.navigate('Post', { postId: post.id });
+        navigation.navigate('Post', { postId: post.id, author: userMap[post.author] ? userMap[post.author].username : post.author });
     };
 
     const handleCreatePost = () => {
-        navigation.navigate('CreatePost');
+        if(!userId){
+            Alert.alert('Please login to create a post');
+            navigation.navigate('Login&Register');
+        }else{
+            navigation.navigate('CreatePost');
+        }
+        
+    }
+
+    const renderUsername = (post) => {
+        if(userMap[post.author]){
+            return userMap[post.author].username;
+        }else{
+            return post.author;
+        }
     }
 
     const renderItem = ({ item: post }) => (
+        console.log("post", post),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>
-                Published on: {post.date} by {post.author}
+                Published on: {new Date(post.created_at).toLocaleDateString()} by {renderUsername(post)}
             </Text>
             <Text style={styles.postContent}>{post.content}</Text>
             <View style={styles.tagsContainer}>
                 {post.tags.map((tag) => (
-                    <Text key={tag} style={styles.tag}>{tag}</Text>
+                    <Text key={tag.id} style={styles.tag}>{tag.name}</Text>
                 ))}
             </View>
             {post.graph && (
