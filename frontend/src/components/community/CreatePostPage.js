@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/community/CreatePostPage.css";
 import { apiClient } from "../../service/apiClient";
 import userService from "../../service/userService";
+import { useAlertModal } from "../alert/AlertModalContext";
 
 const CreatePostPage = () => {
   const navigate = useNavigate();
+  const { showModal } = useAlertModal();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState("");
   const [availableTags, setAvailableTags] = useState([]);
@@ -15,6 +17,7 @@ const CreatePostPage = () => {
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [navigation, setNavigation] = useState(false);
   const tagSearchRef = useRef(null);
   const colors = ["#3498db", "#e74c3c", "#2ecc71", "#f1c40f", "#9b59b6"];
 
@@ -24,10 +27,19 @@ const CreatePostPage = () => {
       setToken(storedToken);
       setIsLoggedIn(true);
     } else {
-      alert("You must be logged in to create a post.");
-      navigate("/login");
+      if (!navigation) {
+        showModal(
+          "You must be logged in to create a post.",
+          () => navigate("/login"),
+          () => navigate("/home"),
+          true,
+          "Home",
+          "Login"
+        );
+        setNavigation(true);
+      }
     }
-  }, [navigate]);
+  }, [navigate, showModal, navigation]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -38,7 +50,6 @@ const CreatePostPage = () => {
         console.error("Failed to fetch tags!", error);
       }
     };
-
     fetchTags();
   }, []);
 
@@ -85,7 +96,14 @@ const CreatePostPage = () => {
 
   const handlePost = async () => {
     if (!isLoggedIn) {
-      alert("You must be logged in to create a post.");
+      showModal(
+        "You must be logged in to create a post.",
+        () => navigate("/login"),
+        () => navigate("/home"),
+        true,
+        "Home",
+        "Login"
+      );
       return;
     }
 
@@ -103,8 +121,14 @@ const CreatePostPage = () => {
     try {
       const response = await apiClient.post("/posts/", postData);
       console.log("Post created successfully:", response.data);
-      alert("Post created successfully!");
-      navigate("/community");
+      showModal(
+        "Post created successfully!",
+        () => navigate("/community"),
+        null,
+        false,
+        "",
+        "Ok"
+      );
     } catch (error) {
       console.error("Error creating post:", error);
 
@@ -199,7 +223,10 @@ const CreatePostPage = () => {
 
       <div className="right-section">
         <div className="action-buttons">
-          <button className="cancel-button" onClick={() => navigate("/home")}>
+          <button
+            className="cancel-button"
+            onClick={() => navigate("/community")}
+          >
             Cancel
           </button>
           <button className="preview-button">Preview</button>

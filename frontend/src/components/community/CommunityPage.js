@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import mockPosts from "../../data/mockPosts";
 import { FaSearch } from "react-icons/fa";
 import "../../styles/community/CommunityPage.css";
 import PostCard from "./PostCard";
@@ -64,24 +63,13 @@ const CommunityPage = () => {
         setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setPosts(mockPosts);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const filteredPosts = [...mockPosts, ...posts]
-    .map((post) => {
-      if (mockPosts.some((mock) => mock["post-id"] === post["post-id"])) {
-        return post;
-      } else {
-        return {
-          ...post,
-          user: users[post.author] || post.user,
-        };
-      }
-    })
+  const filteredPosts = posts
     .filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
     )
