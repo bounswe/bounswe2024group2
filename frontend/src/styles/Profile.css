@@ -165,3 +165,13 @@
 .follow-button.following {
   background-color: var(--color-neutral-600);
 }
+
+.list-content {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+  display: grid;
+  gap: 20px;
+}
+
+

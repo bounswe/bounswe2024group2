@@ -49,7 +49,7 @@ const ProfileService = {
 
     async fetchPostsByProfileId(id) {
         try {
-            const response = await apiClient.get(`/posts/post-by-user/${id}/`);
+            const response = await apiClient.get(`/posts/posts-by-user/${id}/`);
             return response.data;
         } catch (error) {
             log.error(`Error fetching posts for profile with ID ${id}:`, error);

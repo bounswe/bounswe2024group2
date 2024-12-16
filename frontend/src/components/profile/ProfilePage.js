@@ -7,6 +7,7 @@ import ProfileService from '../../service/profileService';
 import CircleAnimation from '../CircleAnimation';
 import { toast } from "react-toastify";
 import log from '../../utils/logger';
+import UserCard from './UserCard';
 
 // Sample data fallback
 const userProfilex = {
@@ -94,15 +95,9 @@ const ProfilePage = () => {
       <ul className="list-content">
         {content.map((item, index) => (
           <li key={index}>
-            {currentTab === 'Followers' || currentTab === 'Following' ? (
-              <>
-                <span>{item.name}</span>
-                {isCurrentUser && (
-                  <button onClick={() => handleFollowToggle(item)}>
-                    {currentTab === 'Followers' ? 'Unfollow' : 'Follow'}
-                  </button>
-                )}
-              </>
+            {currentTab === 'Following' || currentTab === 'Followers' ? (
+              <UserCard userId={item} />
+
             ) : (
               <span>{item}</span>
             )}
