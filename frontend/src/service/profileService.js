@@ -25,6 +25,17 @@ const transformProfile = (userData, profile, posts, comments, portfolios) => {
 
 const ProfileService = {
 
+
+    async getUsers() {
+        try {
+            const response = await apiClient.get('/users/');
+            return response.data;
+        } catch (error) {
+            log.error('Error fetching users:', error);
+            throw error;
+        }
+    },
+
     async fetchUserById(id) {
         try {
             const response = await apiClient.get(`/users/${id}/`);
