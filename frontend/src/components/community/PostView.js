@@ -234,9 +234,6 @@ const PostView = () => {
       <div className="post-author">
         <p>By: {post["user"]}</p>
         <p>Published on: {post["publication-date"]}</p>
-        <button className="follow-button">
-          <FaUserPlus /> Follow Author
-        </button>
       </div>
       <div className="tags">
         {tags.length > 0 ? (
