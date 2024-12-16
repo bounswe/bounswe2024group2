@@ -5,14 +5,15 @@ from marketfeed.models import Post
 from onboarding.models import User
 
 class Command(BaseCommand):
-    help = 'Generate fake data for the Post model'
-
-    def add_arguments(self, parser):
-        parser.add_argument('total', type=int, help='Number of fake posts to generate')
+    help = 'Generate fake data for the Post model if there are fewer than 100 posts in the database'
 
     def handle(self, *args, **kwargs):
         fake = Faker()
-        total = kwargs['total']
+        existing_posts = Post.objects.count()
+
+        if existing_posts>=100:
+            self.stdout.write(self.style.SUCCESS('There are already 100 or more posts in the database. No new posts created.'))
+            return
 
         economy_topics = [
             f"Why is everyone talking about {fake.bs()}?"[:100],
@@ -61,10 +62,11 @@ class Command(BaseCommand):
 
         users = list(User.objects.all())
         if not users:
-            self.stdout.write(self.style.ERROR('No users found in the database. Please create some users first.'))
-            return
+            fake_user = User.objects.create_user(username=fake.user_name(), email=fake.email(), password="Password123*")
+            users = [fake_user]
+            self.stdout.write(self.style.WARNING('No users found in the database. A new user has been created.'))
 
-        for _ in range(total):
+        for _ in range(100):
             title = random.choice(economy_topics)
             content = random.choice(economy_contents)
             author = random.choice(users)
@@ -78,4 +80,5 @@ class Command(BaseCommand):
             )
             post.save()
 
-        self.stdout.write(self.style.SUCCESS(f'Successfully created {total} fake posts.'))
+        self.stdout.write(self.style.SUCCESS(f'Successfully created 100 fake posts.'))
+

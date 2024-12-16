@@ -124,17 +124,23 @@ const Markets = ({ navigation }) => {
 
   const renderStockItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.stockCard}
-      onPress={() => navigation.navigate('StockDetails', { id: item.id })}
-    >
-      <View>
-        <Text style={styles.stockCode}>{item.symbol || 'N/A'}</Text>
-        <Text style={styles.stockName}>{item.name || 'No Name'}</Text>
-      </View>
-      <Text style={styles.stockPrice}>
-        {parseFloat(item.price || 0).toFixed(2)} {item.currency?.code || ''}
-      </Text>
-    </TouchableOpacity>
+  style={styles.stockCard}
+  onPress={() => navigation.navigate('StockDetails', { id: item.id })}
+>
+  <View style={styles.stockTextContainer}>
+    <Text style={styles.stockCode}>{item.symbol || 'N/A'}</Text>
+    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.stockName}>
+      {item.name || 'No Name'}
+    </Text>
+  </View>
+  <View>
+    <Text style={styles.stockPrice}>
+      {parseFloat(item.price || 0).toFixed(2)}{' '}
+      {item.currency === 2 ? 'TRY' : item.currency === 3 ? 'USD' : 'N/A'}
+    </Text>
+  </View>
+</TouchableOpacity>
+
   );
 
   if (loading) {
@@ -216,6 +222,22 @@ const styles = StyleSheet.create({
   searchLoader: {
     marginBottom: 10,
   },
+  stockTextContainer: {
+    flex: 1, // Ensures the name and code take up available space
+    marginRight: 10, // Adds spacing between the name and the price
+  },
+  stockName: {
+    fontSize: 14,
+    color: '#333333',
+    marginTop: 5, // Adds spacing between the code and name
+  },
+  stockPrice: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4CAF50',
+    textAlign: 'right', // Aligns the price text to the right
+  },
+  
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -243,7 +265,7 @@ const styles = StyleSheet.create({
   stockName: {
     fontSize: 14,
     color: '#333333',
-    marginTop: 4,
+    paddingTop: 20,
   },
   stockPrice: {
     fontSize: 16,
