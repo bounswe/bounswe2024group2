@@ -19,6 +19,9 @@ import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
 import StockDetails from './StockDetails';
+import Portfolio from './Portfolio';
+import PortfolioDetails from './PortfolioDetails';
+import CreatePortfolio from './CreatePortfolio';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -89,6 +92,31 @@ const MarketsStack = () => (
   </Stack.Navigator>
 );
 
+const PortfolioStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Markets1"
+      component={Portfolio}
+      options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} /> }}
+    />
+    <Stack.Screen
+      name="StockDetails"
+      component={StockDetails}
+      options={{ headerShown: true, title: 'Stock Details' }}
+    />
+    <Stack.Screen     
+      name="PortfolioDetails"
+      component={PortfolioDetails}
+      options={{ headerShown: true, title: 'Portfolio Details' }}
+    />
+    <Stack.Screen     
+      name="CreatePortfolio"
+      component={CreatePortfolio}
+      options={{ headerShown: true, title: 'Create Portfolio' }}
+    />
+  </Stack.Navigator>
+);
+
 const DrawerNavigator = () => {
   const { username, userId } = useAuth();
 
@@ -134,8 +162,21 @@ const DrawerNavigator = () => {
             <Drawer.Screen
               name="News"
               component={News}
-               
             />
+            { userId  ? (
+              <Drawer.Screen 
+                name="Portfolio" 
+                component={PortfolioStack}
+                options={{ headerShown: false }}
+                
+              />
+              ) : (
+              <Drawer.Screen 
+                name="Portfolio" 
+                component={LoginStack} 
+                options={{ headerShown: false }}   
+              />
+            )}
             
           </Drawer.Navigator>
       );
