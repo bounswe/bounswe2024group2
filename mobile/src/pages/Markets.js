@@ -29,8 +29,7 @@ const Markets = ({ navigation }) => {
           method: 'GET',
           headers: {
             accept: 'application/json',
-            Authorization: 'Basic ZnVya2Fuc2Vua2FsOkxvc29sdmlkYWRvcy41NQ==',
-            'X-CSRFToken': 'HN4gYGlxSnwtGKK91OG9c6WC6gr8091Pm5Kof3t0WoTHOe0Z2ToubTZUdlOkjR34',
+            
           },
         }
       );
@@ -77,9 +76,9 @@ const Markets = ({ navigation }) => {
         method: 'POST',
         headers: {
           accept: 'application/json',
-          Authorization: 'Basic ZnVya2Fuc2Vua2FsOkxvc29sdmlkYWRvcy41NQ==',
+          
           'Content-Type': 'application/json',
-          'X-CSRFToken': 'xGhS17H7qedbZRMF0ULpzKQhKe6mG11WcYX0iuPAufAp7l2v1ZtKyxTzRjtyZJ3b',
+          
         },
         body: JSON.stringify({
           pattern: query,

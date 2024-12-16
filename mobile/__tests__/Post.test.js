@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { render, waitFor, fireEvent } from '@testing-library/react-native';
-import Post from '../src/pages/Post'; // Adjust the import as necessary
+import Post from '../src/pages/Post'; 
 
 jest.mock('node-fetch', () => require('jest-fetch-mock'));
 
