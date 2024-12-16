@@ -40,20 +40,13 @@ class Command(BaseCommand):
                     stock_name = stock_element.find("a", class_="vcell").text.strip() if stock_element.find("a", class_="vcell") else None
             
                     if stock_name:
-                        stock_symbols.append(stock_name)
-            
-            
+                        stock_symbols.append(stock_name)     
             
             stocks_in_index = Stock.objects.filter(symbol__in=stock_symbols)
-            #stocks_in_index = list(stocks_in_index.values_list('id', flat=True))
             currency = Currency.objects.get(code='TRY')
             symbol = indices[index_name]
             
-            print(stocks_in_index)
-            print(currency)
-            print(symbol)
-            print(index_name)
-        
+
             try:
                 index_obj, created = Index.objects.update_or_create(
                     name = index_name,
