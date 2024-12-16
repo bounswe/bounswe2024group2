@@ -12,7 +12,10 @@ module.exports = {
       "src/**/*.{js,jsx,ts,tsx}", // Adjust the pattern to match your project structure
       "!src/**/*.test.{js,jsx,ts,tsx}", // Exclude test files
       "!src/serviceWorker.js", // Exclude specific files if needed
-      "!src/index.js" // Exclude specific files if needed
+      "!src/index.js", // Exclude specific files if needed
+      "!src/service/**", // Exclude the src/service directory
+      "!src/data/**", // Exclude the src/data directory
+      "!src/App.js" // Exclude the App.js file
     ],
     coverageDirectory: "coverage",
     coverageReporters: ["text", "lcov"],
