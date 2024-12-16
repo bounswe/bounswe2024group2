@@ -8,6 +8,7 @@ import CircleAnimation from '../CircleAnimation';
 import { toast } from "react-toastify";
 import log from '../../utils/logger';
 import UserCard from './UserCard';
+import PostCard from '../community/PostCard';
 
 // Sample data fallback
 const userProfilex = {
@@ -85,26 +86,30 @@ const ProfilePage = () => {
       Followers: userProfile.followers,
       Following: userProfile.following
     };
+    
+    console.log("contentMap", contentMap);
 
     const content = contentMap[currentTab];
     if (!content || content.length === 0) {
       return <p>No {currentTab.toLowerCase()} available.</p>;
     }
 
-    return (
-      <ul className="list-content">
-        {content.map((item, index) => (
-          <li key={index}>
-            {currentTab === 'Following' || currentTab === 'Followers' ? (
-              <UserCard userId={item} />
-
-            ) : (
-              <span>{item}</span>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
+return (
+  <ul className="list-content">
+    {content.map((item, index) => (
+      <li key={index}>
+        {currentTab === 'Following' || currentTab === 'Followers' ? (
+          <UserCard userId={item} />
+        ) : currentTab === 'Posts' ? (
+          <PostCard post={item} />
+        ) : (
+          <span>Comment</span>
+          // <CommentCard comment={item} />
+        )}
+      </li>
+    ))}
+  </ul>
+);
   };
 
   const handleFollowToggle = (user) => {

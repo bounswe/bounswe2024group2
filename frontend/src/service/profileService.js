@@ -1,5 +1,6 @@
 import { apiClient } from './apiClient';
 import log from '../utils/logger';
+import { transformPost } from './postService';
 
 const transformProfile = (userData, profile, posts, comments, portfolios) => {
     console.log("Transforming profile data:", userData, profile, posts, comments, portfolios);
@@ -10,6 +11,9 @@ const transformProfile = (userData, profile, posts, comments, portfolios) => {
         badges: [
         ],
         name: "Not Set",
+        posts: posts,
+        comments: comments,
+        portfolios: portfolios,
         followingCnt: profile?.following?.length || 0,
         followersCnt: profile?.followers?.length || 0,
         postsCnt: posts.length || 0,
@@ -35,12 +39,15 @@ const ProfileService = {
         try {
             const userData = await this.fetchUserById(id);
             const posts = await this.fetchPostsByProfileId(id);
+            
+            const transformedPosts = await Promise.all(
+                posts.map(async (post) => transformPost(post))
+            );
             const comments = await this.fetchCommentsByProfileId(id);
             const portfolios = await this.fetchPortfoliosByProfileId(id);
-
             const response = await apiClient.get(`/profiles/by-user-id/${id}/`);
             
-            return transformProfile(userData, response.data, posts, comments, portfolios);
+            return transformProfile(userData, response.data, transformedPosts, comments, portfolios);
         } catch (error) {
             log.error(`Error fetching profile with ID ${id}:`, error);
             throw error;
