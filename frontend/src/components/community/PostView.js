@@ -122,7 +122,7 @@ const PostView = () => {
         const commentsData = commentsResponse.data;
 
         const backendComments = await Promise.all(
-          commentsData.map(async (comment) => {
+          commentsData.reverse().map(async (comment) => {
             const username = await getUserName(comment.user_id);
             return {
               "comment-id": comment.id,
@@ -179,12 +179,12 @@ const PostView = () => {
         setPost((prevPost) => ({
           ...prevPost,
           comments: [
-            ...prevPost.comments,
             {
               "comment-id": Date.now(), // Temporary ID until refreshed
               user: username,
               comment: commentText.trim(),
             },
+            ...prevPost.comments, // Prepend the new comment
           ],
         }));
         setCommentText("");
