@@ -59,7 +59,6 @@ const PortfolioPage = () => {
   }, []);
 
   const handleDeletePortfolio = async (portfolioId) => {
-    log.debug('Deleting portfolio:', portfolioId);
     showModal(
       'Are you sure you want to delete this portfolio?',
       async () => {
@@ -115,7 +114,6 @@ const PortfolioPage = () => {
   }
 
   const handleAddAsset = async (data) => {
-    console.log(data);
     const stock = await StockService.fetchStockById(data.stockId);
     const asset = {
       id: data.stockId,
