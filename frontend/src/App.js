@@ -36,7 +36,7 @@ function App() {
               path="/"
               element={<Dashboard /*user={{ name: "John Doe" }}*/ />}
             >
-              <Route path="home" element={<HomePage />} />
+              {/* <Route path="home" element={<HomePage />} /> */}
               <Route path="community" element={<CommunityPage />} />
               <Route path="community/create-post" element={<CreatePostPage />} />
               <Route path="markets" element={<MarketsPage />} />
@@ -48,7 +48,7 @@ function App() {
               <Route path="profile/:userId" element={<ProfilePage />} />
 
               <Route path="/post/:postId" element={<PostView />} />
-              <Route path="/" element={<Navigate to="/home" />} />
+              <Route path="/" element={<Navigate to="/community" />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

@@ -16,3 +16,5 @@ feedparser
 yfinance
 requests
 beautifulsoup4
+Faker==18.11.1
+

@@ -2,27 +2,43 @@ import { apiClient } from './apiClient';
 import log from '../utils/logger';
 import { transformPost } from './postService';
 
-const transformProfile = (userData, profile, posts, comments, portfolios) => {
+const transformProfile = async (userData, profile, posts, comments) => {
     profile = {
         ...profile,
         username: userData.username,
-        // TODO list
-        badges: [
-        ],
+        badges: [],
         name: "Not Set",
         posts: posts,
         comments: comments,
-        portfolios: portfolios,
         followingCnt: profile?.following?.length || 0,
         followersCnt: profile?.followers?.length || 0,
         postsCnt: posts.length || 0,
         commentsCnt: comments.length || 0,
-        portfoliosCnt: portfolios.length || 0,
     };
+
+    console.log(profile);
+    profile.following = await Promise.all(
+        profile.following.map(async (profileId) => await ProfileService.userIdByProfileId(profileId))
+    );
+    profile.followers = await Promise.all(
+        profile.followers.map(async (profileId) => await ProfileService.userIdByProfileId(profileId))
+    );
+
     return profile;
 };
 
 const ProfileService = {
+
+
+    async getUsers() {
+        try {
+            const response = await apiClient.get('/users/');
+            return response.data;
+        } catch (error) {
+            log.error('Error fetching users:', error);
+            throw error;
+        }
+    },
 
     async fetchUserById(id) {
         try {
@@ -37,16 +53,17 @@ const ProfileService = {
     async fetchProfileById(id) {
         try {
             const userData = await this.fetchUserById(id);
+            // Convert followers and following from porfile id to user id
+    
             const posts = await this.fetchPostsByProfileId(id);
             
             const transformedPosts = await Promise.all(
                 posts.map(async (post) => transformPost(post))
             );
             const comments = await this.fetchCommentsByProfileId(id);
-            const portfolios = await this.fetchPortfoliosByProfileId(id);
             const response = await apiClient.get(`/profiles/by-user-id/${id}/`);
             
-            return transformProfile(userData, response.data, transformedPosts, comments, portfolios);
+            return await transformProfile(userData, response.data, transformedPosts, comments);
         } catch (error) {
             log.error(`Error fetching profile with ID ${id}:`, error);
             throw error;
@@ -63,19 +80,12 @@ const ProfileService = {
         }
     },
 
-    async fetchPortfoliosByProfileId(id) {
-        console.log("Not implemented");
-        return [];
-    },
-
     async fetchCommentsByProfileId(id) {
         console.log("Not implemented");
         return [];
     },
 
     async handleFollowToggle(username) {
-        // try to follow if not already following
-        // try to unfollow if already following
         try {
             await this.follow(username);
             return "followed";
@@ -84,7 +94,6 @@ const ProfileService = {
                 throw error;
             }
         }
-
         try {
             await this.unfollow(username);
             return "unfollowed";
@@ -136,8 +145,6 @@ const ProfileService = {
         }
     },
 
-    // is user following target user 
-    // all props with id
     async isFollowing(user, target) {
         try{
             const response = await apiClient.get(`/profiles/by-user-id/${target}/`);
@@ -153,17 +160,6 @@ const ProfileService = {
             throw error;
         }
     },
-
-    // async fetchCommentsByProfileId(id) {
-    //     try {
-    //         const response = await apiClient.get(`/profiles/${id}/comments/`);
-    //         return response.data;
-    //     } catch (error) {
-    //         log.error(`Error fetching comments for profile with ID ${id}:`, error);
-    //         throw error;
-    //     }
-    // }
-
 };
 
 export default ProfileService;
