@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import "../../styles/AlertModal.css";
 
 const AlertModal = ({
-  message,
-  onConfirm,
-  onCancel,
-  isDanger,
+  message = "",
+  onConfirm = null,
+  onCancel = null,
+  isDanger = false, 
   textCancel = "Cancel",
   textConfirm = "Confirm",
 }) => {

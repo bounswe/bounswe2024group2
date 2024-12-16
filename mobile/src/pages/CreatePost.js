@@ -23,7 +23,7 @@ const CreatePost = ({ navigation }) => {
   useEffect(() => {
     console.log("CreatePost access", userId);
     fetchTags();
-    fetchStocks(1); // Fetch the first page of stocks on mount
+    fetchStocks(1); 
   }, []);
 
   const fetchTags = async () => {
@@ -82,7 +82,7 @@ const CreatePost = ({ navigation }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          /* Authorization: `Bearer ${accessToken}`, */
         },
         body: JSON.stringify({ pattern: query, limit: 10 }),
       });

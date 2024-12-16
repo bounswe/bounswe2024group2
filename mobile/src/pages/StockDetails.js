@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import { View, Dimensions, Text, StyleSheet, ActivityIndicator, ScrollView, Alert } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
 
 const StockDetails = ({ route }) => {
   const { id } = route.params; // Get the stock ID from navigation params
   const [stockDetails, setStockDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stockData, setStockData] = useState([]);
+  const [stockDates, setStockDates] = useState([]);
+  const [graphLoading, setGraphLoading] = useState(false);
 
   const fetchStockDetails = async () => {
     const url = `http://159.223.28.163:30002/stocks/${id}/`;
@@ -33,9 +37,47 @@ const StockDetails = ({ route }) => {
       setLoading(false);
     }
   };
+  // Fetch historical stock data
+  const fetchStockData = async () => {
+    setGraphLoading(true);
+    try {
+      const response = await fetch(
+        `http://159.223.28.163:30002/stocks/${id}/get_historical_data/`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ZnVya2Fuc2Vua2FsOkxvc29sdmlkYWRvcy41NQ==',
+          },
+          body: JSON.stringify({
+            period: '1mo', // Default time range
+            interval: '1d', // Default interval
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.Close && data.Date) {
+        setStockData(data.Close); // Set closing prices
+        setStockDates(
+          data.Date.map((date) =>
+            new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          )
+        );
+      } else {
+        console.error('Unexpected response structure:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching stock data:', error);
+      Alert.alert('Error', 'Unable to fetch historical stock data.');
+    } finally {
+      setGraphLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchStockDetails();
+    fetchStockData();
   }, [id]);
 
   if (loading) {
@@ -91,6 +133,47 @@ const StockDetails = ({ route }) => {
         </Text>
         <Text style={styles.subDetail}>Current Price</Text>
       </View>
+      {/* Historical Stock Data Graph */}
+      <View style={[styles.section, styles.graphSection]}>
+      <Text style={styles.sectionTitle}>Stock Price History</Text>
+        {graphLoading ? (
+        <ActivityIndicator size="large" color="#007AFF" />
+        ) : stockData.length > 0 && stockDates.length > 0 ? (
+        <View style={styles.graphContainer}>
+        <LineChart
+        data={{
+          labels: stockDates,
+          datasets: [{ data: stockData }],
+        }}
+        width={Dimensions.get('window').width - 50} // Adjust width with padding
+        height={300}
+        yAxisLabel= {`${currencyCode}`}
+        verticalLabelRotation={60}
+        chartConfig={{
+          backgroundColor: '#fff',
+          backgroundGradientFrom: '#fff',
+          backgroundGradientTo: '#fff',
+          decimalPlaces: 2,
+          color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+          propsForDots: {
+            r: '4',
+            strokeWidth: '2',
+            stroke: '#007AFF',
+          },
+        }}
+        bezier
+        style={styles.chart}
+      />
+    </View>
+  ) : (
+    <Text style={styles.noDataText}>No historical stock data available.</Text>
+  )}
+</View>
+
 
       {/* Stock Highlights */}
       <View style={styles.section}>
@@ -159,6 +242,26 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
   },
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  graphSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  graphContainer: {
+    alignSelf: 'center', // Center the graph horizontally
+    paddingHorizontal: 8, // Add padding for the graph container
+    marginTop: 10,
+  },
+  noDataText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#555',
+    marginTop: 10,
+  },
+  
   container: {
     padding: 16,
     backgroundColor: '#f4f4f4',

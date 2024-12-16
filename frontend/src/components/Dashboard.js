@@ -206,9 +206,9 @@ const Dashboard = () => {
           </div>
 
           <ul className="nav-links">
-            <li>
+            {/* <li>
               <Link to="/home">Home</Link>
-            </li>
+            </li> */}
             <li>
               <Link to="/community">Community</Link>
             </li>

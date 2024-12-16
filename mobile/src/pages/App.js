@@ -130,6 +130,11 @@ const DrawerNavigator = () => {
         }}
           
         >
+            <Drawer.Screen
+              name="Community"
+              component={PostStack}
+              options={{ headerShown: false }}   
+            />
             <Drawer.Screen 
               name="Home" 
               component={Home}  
@@ -154,11 +159,7 @@ const DrawerNavigator = () => {
               options={{ headerShown: false }} 
               
             />
-            <Drawer.Screen
-              name="Community"
-              component={PostStack}
-              options={{ headerShown: false }}   
-            />
+            
             <Drawer.Screen
               name="News"
               component={News}
