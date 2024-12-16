@@ -131,10 +131,11 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'black',
   },
   followerCount: {
     fontSize: 16,
-    color: '#555',
+    color: 'black',
   },
   logoutText: {
     color: '#FF0000',
@@ -148,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   badge: {
     backgroundColor: '#f0f0f0',
@@ -163,6 +165,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 14,
+    color: 'black',
   },
   portfolioContainer: {
     marginBottom: 20,
@@ -176,6 +179,7 @@ const styles = StyleSheet.create({
   portfolioName: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: 'black',
   },
   incrementRateContainer: {
     flexDirection: 'row',
@@ -189,13 +193,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 10,
+    color: 'black',
   },
   stockList: {
     marginTop: 5,
   },
   stockText: {
     fontSize: 12,
-    color: '#555',
+
+    color: 'black',
   },
 });
 
