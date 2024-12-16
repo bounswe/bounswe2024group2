@@ -45,7 +45,6 @@ const UserCard = ({ userId }) => {
       </div>
       <div className="user-info">
         <h3>{user.username}</h3>
-        {/* <p>{user.name || 'Anonymous User'}</p> */}
       </div>
     </div>
   );
