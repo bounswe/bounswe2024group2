@@ -28,7 +28,8 @@ const PortfolioDetails = ({ route, navigation }) => {
   const [selectedStock, setSelectedStock] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
 
-  const predefinedColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'];
+
+  const predefinedColors = ['#1E90FF', '#FFD700', '#8A2BE2', '#FF8C00', '#00CED1'];
 
   const generateColor = () => {
     let color;
@@ -384,7 +385,7 @@ const PortfolioDetails = ({ route, navigation }) => {
 
           <TextInput
             style={styles.input}
-            placeholder="Price Bought (TRY)"
+            placeholder={`Price Bought (${selectedStock?.currency === 2 ? 'TRY' : selectedStock?.currency === 3 ? 'USD' : ''})`}
             keyboardType="numeric"
             placeholderTextColor="#000"
             value={priceBought}

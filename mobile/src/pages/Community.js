@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, ScrollView, Modal, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import config from './config/config';
@@ -14,6 +15,10 @@ const Community = ({navigation}) => {
     const [userMap, setUserMap] = useState([]);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [commentText, setCommentText] = useState('');
+    const [selectedTag, setSelectedTag] = useState(''); // Selected tag for filtering
+    const [allTags, setAllTags] = useState([]); // List of all available tags
+    const [searchQuery, setSearchQuery] = useState('');
+
 
     const fetchPosts = async () => {
         const postURL = baseURL + '/posts/?page=1';
@@ -39,6 +44,24 @@ const Community = ({navigation}) => {
         }
       };
 
+      const fetchTags = async () => {
+        try {
+          const response = await fetch(`${baseURL}/tags/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setAllTags(data);
+          } else {
+            console.error("Failed to fetch tags");
+          }
+        } catch (error) {
+          console.error("Error fetching tags:", error);
+        }
+      };
 
       const fetchUsers = async () => {
         const postURL = baseURL + '/users/';
@@ -132,6 +155,7 @@ const Community = ({navigation}) => {
         React.useCallback(() => {
             fetchPosts();
             fetchUsers();
+            fetchTags();
         }, [])
     );
 
@@ -186,9 +210,20 @@ const Community = ({navigation}) => {
             return post.author;
         }
     }
+    const filteredPosts = posts.filter((post) => {
+        const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              post.content.toLowerCase().includes(searchQuery.toLowerCase());
+    
+        const matchesTag = selectedTag === 'All' || post.tags.some(tag => tag.name === selectedTag);
+    
+        return matchesSearch && matchesTag;
+    });
+    
+    
+
 
     const renderItem = ({ item: post }) => (
-        //console.log("post", post),
+        console.log(allTags),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>
@@ -235,12 +270,29 @@ const Community = ({navigation}) => {
             <TextInput
                 style={styles.searchBar}
                 placeholder="Search posts..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
             />
+
+            <View style={styles.filterContainer}>
+                <Text style={styles.filterLabel}>Filter by Tag:</Text>
+                <Picker
+                    selectedValue={selectedTag}
+                    onValueChange={(itemValue) => setSelectedTag(itemValue)}
+                    style={styles.picker}
+                >
+                    <Picker.Item label="All Tags" value="" />
+                    {allTags.map((tag) => (
+                        <Picker.Item key={tag.id} label={tag.name} value={tag.name} />
+                    ))}
+                </Picker>
+            </View>
             <FlatList
-                data={posts}
+                data={filteredPosts}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
             />
+
             <Modal visible={showCommentInput} animationType="slide" transparent>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
@@ -279,6 +331,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginVertical: 20,
+        color: 'black',
     },
     createPostButton: {
         backgroundColor: '#007BFF',
@@ -425,6 +478,28 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    filterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        paddingHorizontal: 10,
+    },
+    filterLabel: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 10,
+        color: 'black',
+    },
+    picker: {
+        flex: 1,
+        height: 40,
+        marginLeft: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
+    
 });
 
 export default Community;

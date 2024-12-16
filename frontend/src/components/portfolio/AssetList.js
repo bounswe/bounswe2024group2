@@ -26,9 +26,7 @@ const AssetList = ({ assets, setAssets }) => {
 
   const saveEdit = (index) => {
     const updatedAssets = [...assets];
-    console.log(editData);
     updatedAssets[index] = { ...updatedAssets[index], ...editData };
-    console.log(updatedAssets);
     setAssets(updatedAssets);
     setEditIndex(null);
   };
@@ -48,7 +46,6 @@ const AssetList = ({ assets, setAssets }) => {
   };
 
   const calculateProfitLoss = (asset) => {
-    console.log("profit val", asset);
     const profitLoss = (parseFloat(asset.currentPrice) - parseFloat(asset.boughtPrice)) * parseFloat(asset.quantity);
     return profitLoss.toFixed(2);
   };

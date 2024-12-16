@@ -28,7 +28,6 @@ const StockOverviewPage = () => {
         // Fetch stock details
         StockService.fetchStockDetails(indexId).then((details) => {
             setStockDetails(details);
-            console.log("Stock details:", details);
         }
         ).catch((error) => {
             console.error("Error fetching stock details:", error);

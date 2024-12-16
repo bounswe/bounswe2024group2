@@ -33,11 +33,13 @@ const Post = ({ navigation, route }) => {
     const [interval, setInterval] = useState('1d'); 
     const [timeRange, setTimeRange] = useState('1mo'); 
     const [hasStockData, setHasStockData] = useState(false);
+    const [stock, setStock] = useState(null);
 
     useEffect(() => {
         if(defPost.stocks.length != 0){
             setHasStockData(true);
             fetchStockData();
+            fetchStock();
         }    
         fetchComments();
     }, [postId, timeRange]);
@@ -113,6 +115,29 @@ const Post = ({ navigation, route }) => {
             }
         } catch (error) {
             console.error('Error posting comment:', error);
+        }
+    };
+
+    const fetchStock = async () => {
+        const stockURL = `${baseURL}/stocks/${defPost.stocks[0]}/`;
+        try {
+            const response = await fetch(stockURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (response.ok) {
+                console.log("response", response);
+                const stock = await response.json();
+                setStock(stock);
+                
+            } else {
+                console.error(`Failed to fetch stock: ${response}`);
+            }
+        } catch (error) {
+            console.error('Error fetching stock:', error);
         }
     };
 
@@ -252,11 +277,16 @@ const Post = ({ navigation, route }) => {
             <View>
             {hasStockData ? (
                 <><View>
+                    <Text style={styles.graphTitle}>
+                        {stock 
+                            ? `${stock.symbol}: ${stock.price} ${stock.currency.code}` 
+                            : "Stock"}
+                    </Text>
                 {loading ? (
                     <ActivityIndicator size="large" color="#007BFF" />
                 ) : stockData.length > 0 && stockDates.length > 0 ? (
                     <View>
-                        <Text style={styles.graphTitle}>{}</Text>
+                        
                     <LineChart
                         data={{
                             labels: stockDates, // Use formatted dates for X-axis
@@ -267,9 +297,10 @@ const Post = ({ navigation, route }) => {
                             ],
                         }}
                         width={Dimensions.get('window').width - 20} // Adjust to screen width
-                        height={300}
-                        yAxisLabel="TL"
+                        height={350}
+                        yAxisLabel="TRY"
                         verticalLabelRotation={60}
+
                         chartConfig={{
                             backgroundColor: 'white',
                             backgroundGradientFrom: 'white',
@@ -620,6 +651,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 5,
     },
+    graphTitle:{
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'black',
+    }
 });
 
 export default Post;
