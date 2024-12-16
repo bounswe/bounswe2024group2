@@ -15,8 +15,7 @@ const PostCard = ({ post }) => {
 
   useEffect(() => {
     console.log(post.tags);
-  }
-  , [post]);
+  }, [post]);
 
   const navigateToPost = (postId) => {
     navigate(`/post/${postId}`);
@@ -39,7 +38,7 @@ const PostCard = ({ post }) => {
             <FaHeart className="icon like-icon" /> {post.likes}
           </span>
           <span className="comments-box">
-            <FaComment className="icon comment-icon" /> {post.comments.length}
+            <FaComment className="icon comment-icon" />
           </span>
         </div>
         <button
