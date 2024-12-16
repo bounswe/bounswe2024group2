@@ -1,133 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { createChart } from "lightweight-charts";
 import "../../../styles/markets/stocks/StockOverviewPage.css";
-import RandomUtil from "../../../utils/randomUtil";
+import { StockService } from "../../../service/stockService";
 
 
-const StockChartSection = ({ indexId, stockData }) => {
-    const [duration, setDuration] = useState("1D");
+const periods = ['1d', '5d', '1mo', '3mo', '1y', '5y'];
+const intervals = ['5m', '15m', '90m', '1d', '1d', '1wk'];
+const periodLabels = ['1D', '5D', '1M', '3M', '1Y', '5Y'];
 
-    const generateRandomData = (mean, deviation) => {
-        const data = new Map([
-            ["1D", []],
-            ["1W", []],
-            ["1M", []],
-            ["1Y", []],
-        ]);
-    
-        let value = mean;
-        let time = new Date(); // Start from the current date and time
-    
-        // Calculate the time for 1 year ago from today
-        const yearAgo = new Date();
-        yearAgo.setFullYear(yearAgo.getFullYear() - 1); // Set to 1 year ago
-    
-        const rng = RandomUtil.createGenerator(indexId);
-        // Loop through the time intervals and generate random data
-        // 1d: 30 min intervals
-        // 1w: 4h intervals
-        // 1m: 12h intervals
-        // 1y: 1d intervals
-        const step = [30, 240, 720, 1440];
-        const elapsedTimes = [1440, 10080, 43200, 525600];
-        const keys = ["1D", "1W", "1M", "1Y"];
-        for (let i = 0; i < step.length; i++) {
-            const interval = step[i];
-            time = new Date();
-            // 30 min floor
-            time.setMinutes(Math.floor(time.getMinutes() / interval) * interval);
-            value = mean;
-            while (time >= yearAgo) {
-                
-                console.log("Value:", value);
-                const timestamp = Math.floor(time.getTime() / 1000);
-                const elapsedTime = (new Date() - time) / (1000 * 60);
-                
-                if (elapsedTime <= elapsedTimes[i]) {
-                    data.get(keys[i]).push({ time: timestamp, value });
-                }
-                value = value + RandomUtil.generateRandomNumber(rng) * deviation - deviation / 2;
-                time = new Date(time - interval * 60 * 1000);
-            }
-        }
-        
+const StockChartSection = ({ indexId }) => {
+    const [duration, setDuration] = useState("1d");
+    const [seriesesData, setSeriesesData] = useState(null);
 
-        data.forEach((seriesData, key) => {
-            data.set(key, seriesData.reverse());
-        });
+    const fetchStockData = useCallback(async (index) => {
+        const data = new Map(periods.map(period => [period, []]));
 
+        await Promise.all(periods.map(async (period, i) => {
+            const interval = intervals[i];
+            const response = await StockService.fetchStockHistoricalData(index, period, interval);
+            const close = response.Close;
+            const date = response.Date;
 
-        console.log("Generated data:", data);
+            const periodData = close.map((value, j) => ({
+                time: Math.floor(new Date(date[j]).getTime() / 1000),
+                value,
+            }));
+
+            data.set(period, periodData);
+        }));
+
         return data;
-    };
-    
-    const mean = stockData.price;
-    const deviation = 0.2;
-    const seriesesData = generateRandomData(mean, deviation);
+    }, []);
 
     useEffect(() => {
-        const container = document.getElementById('tradingview_chart');
-        const chartOptions = {
+        fetchStockData(indexId).then(setSeriesesData).catch(console.error);
+    }, [indexId, fetchStockData]);
+
+    const initializeChart = useCallback((container) => {
+        return createChart(container, {
             layout: {
                 textColor: 'black',
                 background: { type: 'solid', color: 'white' },
-
             },
             height: 400,
-        };
-        const chart = createChart(container, chartOptions);
-
-        const resizeHandler = () => {
-            const width = container.offsetWidth;
-            const height = container.offsetHeight;
-            chart.applyOptions({ width, height });
-            chart.timeScale().fitContent();
-        };
-        resizeHandler();
-        window.addEventListener('resize', resizeHandler);
-
-        function setChartInterval(interval) {
-            chart.timeScale().fitContent();
-        }
-
-        setChartInterval(duration);
-
-        const intervals = ['1D', '1W', '1M', '1Y'];
-        intervals.forEach(interval => {
-            // Create buttons if needed
-            let button = document.getElementById(interval);
-            if (button) {
-                return;
-            }
-            button = document.createElement('button');
-            button.id = interval;
-            button.innerText = interval;
-            button.addEventListener('click', () => {
-                setDuration(interval);
-                setChartInterval(interval);
-            });
-            document.getElementById('buttonsContainer').appendChild(button);
-        });
-
-        // first vs last point comparison
-        const inProfit = seriesesData.get(duration)[0].value < seriesesData.get(duration)[seriesesData.get(duration).length - 1].value;
-        // porfit ratio
-        const profitRatio = (seriesesData.get(duration)[seriesesData.get(duration).length - 1].value - seriesesData.get(duration)[0].value) / seriesesData.get(duration)[0].value;
-        // Gradient color
-        console.log("Profit ratio:", profitRatio);
-        // First value
-        console.log("First value:", seriesesData.get(duration)[0].value);
-        // Last value
-        console.log("Last value:", seriesesData.get(duration)[seriesesData.get(duration).length - 1].value);
-        console.log("Last date in readable:", new Date(seriesesData.get(duration)[seriesesData.get(duration).length - 1].time * 1000).toLocaleDateString());
-        console.log("First date in readable:", new Date(seriesesData.get(duration)[0].time * 1000).toLocaleDateString());
-
-        const topAreaColor = inProfit ? 'rgba(0, 150, 136, 0.3)' : 'rgba(255, 82, 82, 0.3)';
-        // Gradient fading
-        const bottomAreaColor = inProfit ? 'rgba(0, 150, 136, 0)' : 'rgba(255, 82, 82, 0)';
-        const lineColor = inProfit ? 'rgba(0, 150, 136, 1)' : 'rgba(255, 82, 82, 1)';
-
-        chart.applyOptions({
             handleScroll: false,
             handleScale: false,
             timeScale: {
@@ -147,35 +62,63 @@ const StockChartSection = ({ indexId, stockData }) => {
                 },
             },
             grid: {
-                vertLines: {
-                    visible: false,
-                },
-                horzLines: {
-                    visible: false,
-                },
+                vertLines: { visible: false },
+                horzLines: { visible: false },
             },
         });
-        
-        const areaSeries = chart.addAreaSeries({
-            topColor: topAreaColor,
-            bottomColor: bottomAreaColor,
-            lineColor: lineColor,
-            lineWidth: 2,
-            crossHairMarkerVisible: false,
-        });
+    }, []);
 
-        areaSeries.setData(seriesesData.get(duration));
+    const renderChart = useCallback((chart, data, period) => {
+        const inProfit = data[0].value < data[data.length - 1].value;
+        const areaSeries = chart.addAreaSeries({
+            topColor: inProfit ? 'rgba(0, 150, 136, 0.3)' : 'rgba(255, 82, 82, 0.3)',
+            bottomColor: inProfit ? 'rgba(0, 150, 136, 0)' : 'rgba(255, 82, 82, 0)',
+            lineColor: inProfit ? 'rgba(0, 150, 136, 1)' : 'rgba(255, 82, 82, 1)',
+            lineWidth: 2,
+        });
+        areaSeries.setData(data);
+        chart.timeScale().fitContent();
+    }, []);
+
+    useEffect(() => {
+        const container = document.getElementById('tradingview_chart');
+        const chart = initializeChart(container);
+
+        const resizeHandler = () => {
+            chart.applyOptions({
+                width: container.offsetWidth,
+                height: container.offsetHeight,
+            });
+            chart.timeScale().fitContent();
+        };
+
+        window.addEventListener('resize', resizeHandler);
+        if (seriesesData) {
+            const data = seriesesData.get(duration);
+            renderChart(chart, data, duration);
+        }
 
         return () => {
             window.removeEventListener('resize', resizeHandler);
             chart.remove();
         };
-    }, [duration]);
+    }, [initializeChart, renderChart, duration, seriesesData]);
 
     return (
         <div className="stock-tab-section">
-            <h3>Price Chart</h3>
-            <div id="buttonsContainer" className="duration-buttons"></div>
+            <h3>Chart</h3>
+            <div id="buttonsContainer" className="duration-buttons">
+                {periodLabels.map((label, i) => (
+                    <button
+                        key={periods[i]}
+                        id={periods[i]}
+                        onClick={() => setDuration(periods[i])}
+                        className={duration === periods[i] ? "active" : ""}
+                    >
+                        {label}
+                    </button>
+                ))}
+            </div>
             <div id="tradingview_chart"></div>
         </div>
     );

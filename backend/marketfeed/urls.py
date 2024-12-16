@@ -13,8 +13,18 @@ router.register(r'indices', IndexViewSet)
 router.register(r'portfolio-stocks', PortfolioStockViewSet, basename='portfolio-stocks')
 router.register(r'search', SearchViewSet, basename='search')
 
+proxy_annotation_view = ProxyAnnotationView.as_view({
+    'post': 'post', 
+    'get': 'retrieve_annotations_by_posts',
+})
+
 urlpatterns = [
     path('', include(router.urls)),
     path('like', PostLikeView.as_view(), name='post-like'),
     path('dislike', PostDislikeView.as_view(), name='post-dislike'),
+    path('annotations/', proxy_annotation_view, name='create-annotation'),
+    path('annotations/post-annotations/<int:post_id>/', 
+         ProxyAnnotationView.as_view({'get': 'retrieve_annotations_by_posts'}), 
+         name='retrieve_annotations_by_postst'),
+    path('post-add-stocks', AddStocksToPostView.as_view(), name='post-add-stocks'),
 ]

@@ -13,7 +13,6 @@ import CircleAnimation from "../../CircleAnimation";
 const StockOverviewPage = () => {
     const { indexId } = useParams();
     const [activeTab, setActiveTab] = useState("overview");
-
     const [stockData, setStockData] = useState(null);
     const [stockDetails, setStockDetails] = useState(null);
 
@@ -29,6 +28,7 @@ const StockOverviewPage = () => {
         // Fetch stock details
         StockService.fetchStockDetails(indexId).then((details) => {
             setStockDetails(details);
+            console.log("Stock details:", details);
         }
         ).catch((error) => {
             console.error("Error fetching stock details:", error);
@@ -46,7 +46,7 @@ const StockOverviewPage = () => {
         switch (activeTab) {
             case "chart":
                 return <StockChartSection indexId={indexId} stockData={stockData} />;
-            case "financials":
+            case "metrics":
                 return <StockMetricsSection stockDetails={stockDetails} />;
             case "about":
                 return <StockAboutSection stockDetails={stockDetails} />;
@@ -56,7 +56,7 @@ const StockOverviewPage = () => {
             default:
                 return (
                     <>
-                        <StockChartSection indexId={indexId} stockData={stockData} />
+                        <StockChartSection indexId={indexId} />
                         <StockMetricsSection stockDetails={stockDetails} />
                         <StockAboutSection stockDetails={stockDetails} />
                         <StockRelatedPostsSection indexId={indexId} />

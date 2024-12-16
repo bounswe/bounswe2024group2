@@ -95,6 +95,7 @@ class Post(models.Model):
     disliked_by = models.ManyToManyField(User, related_name="disliked_posts", blank=True)
     tags = models.ManyToManyField(Tag, verbose_name="list of tags")
     portfolios = models.ManyToManyField(Portfolio, verbose_name="list of portfolios")
+    stocks = models.ManyToManyField('Stock', verbose_name="associated stocks", blank=True)
     def like_count(self):
         return self.liked_by.count()
 

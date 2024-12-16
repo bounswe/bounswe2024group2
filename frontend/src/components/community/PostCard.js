@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaHeart, FaComment } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../../styles/community/PostCard.css";
@@ -12,6 +12,11 @@ const getColorForTag = (tag) => {
 
 const PostCard = ({ post }) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(post.tags);
+  }
+  , [post]);
 
   const navigateToPost = (postId) => {
     navigate(`/post/${postId}`);
@@ -51,7 +56,7 @@ const PostCard = ({ post }) => {
             className="post-tag"
             style={{ backgroundColor: getColorForTag(tag) }}
           >
-            {tag}
+            {tag.name}
           </span>
         ))}
       </div>
