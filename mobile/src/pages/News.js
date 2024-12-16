@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import config from './config/config';
 
 // Mock Data for some categories
 const newsData = [
@@ -46,8 +47,10 @@ const decodeHtmlEntities = (str) => {
 
 // Fetch News Data from API
 const fetchNews = async (feedName) => {
+  const { baseURL } = config;
+  const newsURL = `${baseURL}/news/`;
   try {
-    const response = await fetch('http://159.223.28.163:30002/news/', {
+    const response = await fetch(newsURL, {
       method: 'POST',
       headers: {
         accept: 'application/json',

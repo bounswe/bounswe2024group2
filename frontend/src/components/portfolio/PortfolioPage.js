@@ -44,6 +44,10 @@ const PortfolioPage = () => {
         const fetchedPortfolios = await PortfolioService.fetchPortfolioByUserId(userId);
         log.debug('Fetched portfolios:', fetchedPortfolios);
         setPortfolios(fetchedPortfolios);
+        // Select the first portfolio by default
+        if (fetchedPortfolios.length > 0) {
+          handleSelectPortfolio(fetchedPortfolios[0]);
+        }
       } catch (err) {
         console.error('Error fetching portfolios:', err);
       } finally {
