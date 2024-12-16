@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
+import config from './config/config';
 
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ const Register = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { baseURL } = config;
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -24,7 +26,7 @@ const Register = ({ navigation }) => {
     }
 
     // Backend URL for registration
-    const registerUrl = 'http://159.223.28.163:30002/register/';
+    const registerUrl = `${baseURL}/register/`;
 
     // Registration data
     const registerData = {
@@ -71,7 +73,7 @@ const Register = ({ navigation }) => {
 
   const handleEmailVerification = async () => {
     // Backend URL for email verification
-    const verifyUrl = 'http://159.223.28.163:30002/email-verify/';
+    const verifyUrl = `${baseURL}/verify-email/`;
 
     try {
       // Make the GET request to verify the email

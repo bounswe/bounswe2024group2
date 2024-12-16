@@ -2,8 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faArrowDown, faClipboardList, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/portfolio/PortfolioDetailsCard.css';
+import CircleAnimation from '../CircleAnimation';
 
-const PortfolioDetailsCard = ({ numAssets, totalValue, totalProfit }) => {
+const PortfolioDetailsCard = ({ loading, numAssets, totalValue, totalProfit }) => {
+  
+  if (loading) {
+    return <div className="portfolio-details-card"><CircleAnimation relative={true}/></div>;
+  }
+
   return (
     <div className="portfolio-details-card">
       <h3>Portfolio Details</h3>

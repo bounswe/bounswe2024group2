@@ -13,5 +13,8 @@ drf-spectacular==0.27.2
 django-cors-headers==4.5.0
 Pillow
 feedparser
-beautifulsoup4
 yfinance
+requests
+beautifulsoup4
+Faker==18.11.1
+

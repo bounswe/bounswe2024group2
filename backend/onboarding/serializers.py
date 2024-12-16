@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from onboarding.models import *
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -71,7 +73,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'profile_picture', 'followers', 'following', 'bio', 'location']
+        fields = ['id', 'user', 'profile_picture', 'followers', 'following', 'bio', 'location']
 
     def __init__(self, *args, **kwargs):
         super(ProfileSerializer, self).__init__(*args, **kwargs)
@@ -109,3 +111,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             instance.following.set(following)
 
         return super().update(instance, validated_data)
+
+User = get_user_model()
+class FollowUnfollowSerializer(serializers.Serializer):
+    username = serializers.CharField()

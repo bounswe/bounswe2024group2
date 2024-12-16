@@ -7,7 +7,7 @@ const MarketsPage = () => {
     const navigate = useNavigate();
 
     const handleIndexClick = (id) => {
-        navigate(`/stocks/${id}`);
+        navigate(`/indices/${id}`);
     };
 
     return (

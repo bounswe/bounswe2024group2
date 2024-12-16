@@ -70,6 +70,10 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
+.like-button.liked {
+  background-color: var(--color-success-700);
+}
+
 .like-button:hover,
 .comment-button:hover,
 .follow-button:hover {
@@ -208,4 +212,78 @@ h1 {
 
 .comment-box button:hover {
   background-color: var(--color-primary-300);
+}
+
+.annotated-text {
+  background-color: rgba(255, 255, 0, 0.5); /* Light yellow */
+  cursor: pointer;
+}
+
+.annotated-text:hover {
+  background-color: rgba(255, 255, 0, 0.7); /* Brighter on hover */
+}
+.annotations {
+  margin-top: 20px;
+}
+
+.annotation {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+.annotation-date {
+  color: #888888;
+  font-size: 0.9em;
+}
+
+.annotation p {
+  margin: 5px 0;
+}
+
+.annotated-text {
+  background-color: rgba(255, 215, 0, 0.3);
+  cursor: pointer;
+  border-bottom: 1px dashed rgba(255, 165, 0, 0.7);
+}
+
+.annotated-text:hover {
+  background-color: rgba(255, 165, 0, 0.5);
+}
+
+.annotation-tooltip {
+  display: none;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 200px;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  transform: translateY(5px);
+  white-space: pre-line;
+}
+
+.annotation-details {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.toggle-annotations {
+  padding: 10px 15px;
+  margin: 10px 0;
+  background-color: var(--color-primary-500);
+  border: none;
+  cursor: pointer;
+}
+.toggle-annotations:focus {
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
 }

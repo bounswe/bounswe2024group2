@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import config from './config/config';
 
-// Mock Data for some categories
-const newsData = [
-    { id: '1', source: 'Economic Times', time: '2 hours ago', title: 'GDP Growth Forecasts Revised', category: 'global economy', description: 'Recent reports indicate that GDP growth forecasts for major economies have been revised upwards.', published: new Date().toISOString(), imageUrl: 'https://via.placeholder.com/150' },
-    { id: '2', source: 'Market Watch', time: '3 hours ago', title: 'Major Indices Reach All-Time Highs', category: 'stock market', description: 'The stock market sees a significant uptick as major indices reach all-time highs.', published: new Date().toISOString(), imageUrl: 'https://via.placeholder.com/150' },
-    { id: '3', source: 'CoinDesk', time: '1 hour ago', title: 'Bitcoin Surges Past $60,000', category: 'cryptocurrency', description: 'Bitcoin’s value has surged past $60,000 amid increased institutional adoption.', published: new Date().toISOString(), imageUrl: 'https://via.placeholder.com/150' },
-    { id: '4', source: 'Bloomberg', time: '4 hours ago', title: 'Rising Costs Impact Consumers', category: 'inflation', description: 'Inflation rates are rising, leading to increased costs for consumers on everyday items.', published: new Date().toISOString(), imageUrl: 'https://via.placeholder.com/150' },
-    { id: '5', source: 'The Wall Street Journal', time: '5 hours ago', title: 'Unemployment Rates Hit Record Low', category: 'job market', description: 'Unemployment rates have hit record lows, reflecting a strengthening job market.', published: new Date().toISOString(), imageUrl: 'https://via.placeholder.com/150' },
-];
+
 
 // Helper Function to Calculate Time Difference
 const calculateTimeDifference = (date) => {
@@ -46,8 +40,10 @@ const decodeHtmlEntities = (str) => {
 
 // Fetch News Data from API
 const fetchNews = async (feedName) => {
+  const { baseURL } = config;
+  const newsURL = `${baseURL}/news/`;
   try {
-    const response = await fetch('http://159.223.28.163:30002/news/', {
+    const response = await fetch(newsURL, {
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -85,22 +81,35 @@ const News = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [financialTimesData, setFinancialTimesData] = useState([]);
   const [cryptoData, setCryptoData] = useState([]);
+  const [CFNData, setCFNData] = useState([]);
+  const [financeasiaData, setFinanceasiaData] = useState([]);
+  const [expertData, setExpertData] = useState([]);
+  const [turkeyData, setTurkeyData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // Categories
-  const categories = ['All', 'Financial Times', 'Cryptocurrency', 'Stock Market', 'Global Economy', 'Inflation', 'Job Market'];
+  const categories = ['All', 'Financial Times', 'Cryptocurrency', 'Comprehensive Financial News', 'Financeasia', 'Expert Analysis', 'Turkey'];
 
   // Fetch data on page focus
   useFocusEffect(
     React.useCallback(() => {
       const loadData = async () => {
         setLoading(true); // Show loading indicator
-        const [financialData, cryptoNews] = await Promise.all([
+        const [financialData, cryptoNews, CFN, financeasia, expertanalysis, turkey] = await Promise.all([
           fetchNews('financial times'),
           fetchNews('cryptocurrency'),
+          fetchNews('comprehensive financial news'),
+          fetchNews('financeasia'),
+          fetchNews('expert analysis'),
+          fetchNews('turkey'),
+          
         ]);
         setFinancialTimesData(financialData);
         setCryptoData(cryptoNews);
+        setCFNData(CFN);
+        setFinanceasiaData(financeasia);
+        setExpertData(expertanalysis);
+        setTurkeyData(turkey);
         setLoading(false); // Hide loading indicator
       };
 
@@ -112,7 +121,10 @@ const News = () => {
   const combinedData = [
     ...financialTimesData,
     ...cryptoData,
-    ...newsData,
+    ...CFNData,
+    ...financeasiaData,
+    ...expertData,
+    ...turkeyData
   ].sort((a, b) => b.published - a.published); // Sort by newest first
 
   // Filtered data based on selected category
