@@ -81,28 +81,62 @@
   display: flex;
   gap: 10px;
 }
+.profile-selector {
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  margin-top: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-primary-500);
+}
 
 .selector-item {
+  position: relative;
   background: none;
   border: none;
   color: var(--color-neutral-800);
   cursor: pointer;
   font-size: 16px;
   padding: 10px 15px;
-  transition: color 0.3s, border-bottom 0.3s;
+  transition: color 0.3s ease;
 }
 
-.selector-item:focus {
-  border-bottom: 2px solid var(--color-primary-500);
-  outline: none;
-}
-
-.selector-item:hover {
+.selector-item:hover,
+.selector-item.active {
   color: var(--color-primary-700);
 }
 
+.selector-item::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0%;
+  height: 2px;
+  background: var(--color-primary-500);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.selector-item.active::after,
+.selector-item:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-selector {
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .selector-item {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
 .stat-item {
-  margin-top: 12px;
   align-items: center;
   background-color: var(--color-primary-300);
   border-radius: 15px;
@@ -114,4 +148,21 @@
   padding-left: 15px;
   padding-right: 15px;
   text-align: center;
+}
+
+/* followed and unfollowed button */
+/*                   <button className= {`follow-button ${isFollowing ? 'following' : ''}`} */
+.follow-button {
+  background-color: var(--color-primary-500);
+  border: none;
+  margin-top: 8px;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.follow-button.following {
+  background-color: var(--color-neutral-600);
 }
