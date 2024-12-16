@@ -26,7 +26,12 @@
 .custom-modal-actions {
   margin-top: 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
+}
+
+.custom-modal-actions button {
+  min-width: 80px;
 }
 
 .cancel-btn,
@@ -37,6 +42,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s;
+  text-align: center;
 }
 
 .cancel-btn {
@@ -69,6 +75,9 @@
   transform: scale(1.05);
 }
 
+.custom-modal-actions.single-button {
+  justify-content: flex-end;
+}
 @keyframes fadeIn {
   from {
     opacity: 0;
