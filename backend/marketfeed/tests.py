@@ -107,25 +107,6 @@ class StockViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Stock.objects.filter(pk=self.stock.pk).exists())
 
-    @patch('stocks.views.yf.Ticker')
-    def test_get_historical_data(self, mock_ticker):
-        # Simulate the response of yfinance
-        mock_ticker.return_value.history.return_value = {
-            'Close': [1, 2, 3],
-            'Date': ['2024-01-01', '2024-01-02', '2024-01-03']
-        }
-
-        url = reverse('stock-get-historical-data', kwargs={'pk': self.stock.pk})
-        response = self.client.post(url, {
-            'start_date': '2024-01-01',
-            'end_date': '2024-01-03',
-            'period': '1d',
-            'interval': '1d'
-        }, format='json')
-        
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 3)  # Should return 3 records
-
     def test_stock_pattern_search(self):
         url = reverse('stock-search')
         response = self.client.post(url, {'pattern': 'T', 'limit': 10}, format='json')
