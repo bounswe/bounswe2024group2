@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, Text, FlatList, ScrollView, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, Modal, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import config from './config/config';
 import { useAuth } from './context/AuthContext';
 
 
-
 const Community = ({navigation}) => {
-    const { userId } = useAuth();
+    const { userId, accessToken } = useAuth();
     const { baseURL } = config;
     const [posts, setPosts] = useState([]);
     const [users, setUsers] = useState([]);
     const [userMap, setUserMap] = useState([]);
+    const [showCommentInput, setShowCommentInput] = useState(false);
+    const [commentText, setCommentText] = useState('');
+
     const fetchPosts = async () => {
         const postURL = baseURL + '/posts/?page=1';
     
@@ -70,17 +72,48 @@ const Community = ({navigation}) => {
             console.error('Error:', error);
         }
       };
+
+      const postComment = async (comment) => {
+        const commentURL = `${baseURL}/comments/`;
+        try {
+            const response = await fetch(commentURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify(comment),
+            });
+            if (response.ok) {
+                const commentResponse = await response.json();   
+                setCommentText('');
+                Alert.alert('Comment added successfully');
+            } else {
+                console.error(response);
+                console.error(`Failed to post comment: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        }
+    };
+
+
     useFocusEffect(
-    React.useCallback(() => {
-        fetchPosts();
-        fetchUsers();
-    }, [])
+        React.useCallback(() => {
+            fetchPosts();
+            fetchUsers();
+        }, [])
     );
 
 
 
     const handleViewPost = (post) => {
-        navigation.navigate('Post', { postId: post.id, author: userMap[post.author] ? userMap[post.author].username : post.author });
+        navigation.navigate('Post', { 
+            postId: post.id, 
+            author: userMap[post.author] ? userMap[post.author].username : post.author,
+            userMap: userMap,
+            post: post,
+        });
     };
 
     const handleCreatePost = () => {
@@ -93,6 +126,29 @@ const Community = ({navigation}) => {
         
     }
 
+    const handleAddCommentButton = () => {
+        if(accessToken == null){
+            navigation.navigate('Login&Register');
+            Alert.alert('Please login to add a comment');
+            return;
+        }else{
+            setShowCommentInput(true);
+            
+        }
+    };
+
+    const handleAddComment = (postId) => {
+        if (commentText.trim() === '') {
+            return; // Ignore empty comments
+        }
+        const newComment = {
+            post_id: postId,
+            content: commentText,
+        };
+        postComment(newComment);
+        setShowCommentInput(false);
+    };
+
     const renderUsername = (post) => {
         if(userMap[post.author]){
             return userMap[post.author].username;
@@ -102,7 +158,7 @@ const Community = ({navigation}) => {
     }
 
     const renderItem = ({ item: post }) => (
-        console.log("post", post),
+        //console.log("post", post),
         <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
             <Text style={styles.postMeta}>
@@ -114,14 +170,12 @@ const Community = ({navigation}) => {
                     <Text key={tag.id} style={styles.tag}>{tag.name}</Text>
                 ))}
             </View>
-            {post.graph && (
-                <Image source={{ uri: post.graph }} style={styles.graph} />
-            )}
+
             <View style={styles.actions}>
                 <TouchableOpacity style={styles.actionButton}>
-                    <Text>👍 {post.likes}</Text>
+                    <Text>👍 {post.liked_by.length}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity style={styles.actionButton} onPress={handleAddCommentButton}>
                     <Text>💬 {post.comments}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
@@ -152,6 +206,29 @@ const Community = ({navigation}) => {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id.toString()}
             />
+            <Modal visible={showCommentInput} animationType="slide" transparent>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <TextInput
+                            style={styles.commentInput}
+                            value={commentText}
+                            onChangeText={setCommentText}
+                            placeholder="Write a comment..."
+                        />
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity style={styles.submitButton} onPress={handleAddComment}>
+                                <Text style={styles.buttonText}>Submit</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.cancelButton}
+                                onPress={() => setShowCommentInput(false)}
+                            >
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -201,14 +278,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
+        color: 'black',
     },
     postMeta: {
-        color: '#777',
+        color: 'black',
         marginBottom: 10,
     },
     postContent: {
         fontSize: 16,
         marginBottom: 10,
+        color: 'black',
     },
     tagsContainer: {
         flexDirection: 'row',
@@ -248,6 +327,51 @@ const styles = StyleSheet.create({
     viewPostButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '90%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    commentInput: {
+        height: 100,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 15,
+        textAlignVertical: 'top',
+    },
+    modalButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    submitButton: {
+        backgroundColor: '#28a745',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        marginRight: 5,
+    },
+    cancelButton: {
+        backgroundColor: '#dc3545',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        marginLeft: 5,
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
