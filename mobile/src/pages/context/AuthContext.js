@@ -4,10 +4,10 @@
   const AuthContext = createContext();
 
   export const AuthProvider = ({ children }) => {
-    const [username, setUsername] = useState(null); // Store logged-in user
+    const [username, setUsername] = useState(""); // Store logged-in user
     const [userId, setUserId] = useState(0); 
-    const [accessToken, setAccessToken] = useState(null);
-    const [refreshToken, setRefreshToken] = useState(null);
+    const [accessToken, setAccessToken] = useState("");
+    const [refreshToken, setRefreshToken] = useState("");
     
     
 
