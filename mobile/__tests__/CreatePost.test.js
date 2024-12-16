@@ -1,12 +1,11 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import CreatePost from '../src/pages/CreatePost'; // Adjust the import as necessary
-import { useAuth } from '../src/hooks/useAuth'; // Adjust the import path as necessary
+import CreatePost from '../src/pages/CreatePost'; 
+import { useAuth } from '../src/hooks/useAuth'; 
 
-// Mock useAuth hook
 jest.mock('../src/hooks/useAuth', () => ({
   useAuth: () => ({
-    accessToken: 'mockAccessToken', // Provide a default or mock value
+    accessToken: 'mockAccessToken', 
     userId: 'mockUserId',
   }),
 }));
@@ -18,7 +17,7 @@ describe('CreatePost Component', () => {
   it('toggles tag selection', () => {
     const { getByText, getByTestId } = render(<CreatePost />);
 
-    const tagChip = getByText('Tech'); // Assuming 'Tech' is the text of the tag chip
+    const tagChip = getByText('Tech'); 
     fireEvent.press(tagChip);
 
     expect(getByText("Tech").props.style.backgroundColor).toBe("#007BFF");
