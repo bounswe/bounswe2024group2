@@ -158,7 +158,7 @@ const App = () => {
 const styles = StyleSheet.create({
   customHeader: {
     height: 60,
-    backgroundColor: '#0077B6',
+    backgroundColor: '#007BFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
