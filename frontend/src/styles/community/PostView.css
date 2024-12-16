@@ -275,3 +275,15 @@ h1 {
   margin-top: 4px;
   display: block;
 }
+
+.toggle-annotations {
+  padding: 10px 15px;
+  margin: 10px 0;
+  background-color: var(--color-primary-500);
+  border: none;
+  cursor: pointer;
+}
+.toggle-annotations:focus {
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}

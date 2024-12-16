@@ -26,6 +26,7 @@ const PostView = () => {
   const [isLikedByUser, setIsLikedByUser] = useState(false);
   const [annotations, setAnnotations] = useState([]);
   const [usernameCache, setUsernameCache] = useState(new Map());
+  const [annotationsVisible, setAnnotationsVisible] = useState(true);
 
   const getUserName = async (userID) => {
     if (usernameCache.has(userID)) {
@@ -70,11 +71,11 @@ const PostView = () => {
   };
 
   const handleTextSelection = async () => {
+    if (annotationsVisible) return; // Block annotation interaction when annotations are enabled.
+
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
-      console.log("range", range);
-      // Normalize to prevent capturing whitespace:
       const cleanText = range.toString().trim();
       const cleanStart = range.startOffset + range.toString().search(/\S/);
       const cleanEnd = cleanStart + cleanText.length;
@@ -88,8 +89,6 @@ const PostView = () => {
             end: cleanEnd,
             value: note,
           };
-
-          console.log("Payload to be sent:", annotationPayload);
 
           try {
             await apiClient.post("/annotations/", annotationPayload);
@@ -258,6 +257,14 @@ const PostView = () => {
         )}
       </div>
       <div className="post-content">
+        <button
+          style={{ color: "white" }}
+          className="toggle-annotations"
+          onClick={() => setAnnotationsVisible((prev) => !prev)}
+        >
+          {annotationsVisible ? "Disable Annotations" : "Enable Annotations"}
+        </button>
+
         {post.content.map((content, index) => (
           <div className="timeline-item" key={index}>
             <span className="timeline-dot">
@@ -269,13 +276,15 @@ const PostView = () => {
             <div className="timeline-content">
               {content.type === "plain-text" && (
                 <div
-                  onMouseUp={handleTextSelection} // Detect selection for annotation
+                  onMouseUp={!annotationsVisible ? handleTextSelection : null} // Disable text selection if annotationsVisible is true
                   className="annotated-content"
                 >
-                  {renderContentWithAnnotations(
-                    content["plain-text"],
-                    annotations
-                  )}
+                  {annotationsVisible
+                    ? renderContentWithAnnotations(
+                        content["plain-text"],
+                        annotations
+                      )
+                    : content["plain-text"]}
                 </div>
               )}
               {content.type === "news" && (
