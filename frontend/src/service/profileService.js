@@ -108,8 +108,34 @@ const ProfileService = {
             log.error(`Error unfollowing user with ID ${username}:`, error);
             throw error;
         }
-    }
+    },
 
+    async profileIdByUserId(userId) {
+        try {
+            const response = await apiClient.get(`/profiles/by-user-id/${userId}/`);
+            return response.data.id;
+        } catch (error) {
+            log.error(`Error fetching profile ID for user with ID ${userId}:`, error);
+            throw error;
+        }
+    },
+
+    async userIdByProfileId(profileId) {
+        try {
+            const response = await apiClient.get(`/profiles/${profileId}/`);
+            return response.data.user;
+        } catch (error) {
+            log.error(`Error fetching user ID for profile with ID ${profileId}:`, error);
+            throw error;
+        }
+    },
+
+    // is user following target user 
+    // all props with id
+    async isFollowing(user, target) {
+        
+
+    }
 
     // async fetchCommentsByProfileId(id) {
     //     try {
