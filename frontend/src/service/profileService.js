@@ -2,7 +2,7 @@ import { apiClient } from './apiClient';
 import log from '../utils/logger';
 import { transformPost } from './postService';
 
-const transformProfile = (userData, profile, posts, comments) => {
+const transformProfile = async (userData, profile, posts, comments) => {
     profile = {
         ...profile,
         username: userData.username,
@@ -15,6 +15,15 @@ const transformProfile = (userData, profile, posts, comments) => {
         postsCnt: posts.length || 0,
         commentsCnt: comments.length || 0,
     };
+
+    console.log(profile);
+    profile.following = await Promise.all(
+        profile.following.map(async (profileId) => await ProfileService.userIdByProfileId(profileId))
+    );
+    profile.followers = await Promise.all(
+        profile.followers.map(async (profileId) => await ProfileService.userIdByProfileId(profileId))
+    );
+
     return profile;
 };
 
@@ -45,13 +54,7 @@ const ProfileService = {
         try {
             const userData = await this.fetchUserById(id);
             // Convert followers and following from porfile id to user id
-            userData.following = await Promise.all(
-                userData.following.map(async (profileId) => await this.userIdByProfileId(profileId))
-            );
-            userData.followers = await Promise.all(
-                userData.followers.map(async (profileId) => await this.userIdByProfileId(profileId))
-            );
-
+    
             const posts = await this.fetchPostsByProfileId(id);
             
             const transformedPosts = await Promise.all(
@@ -60,7 +63,7 @@ const ProfileService = {
             const comments = await this.fetchCommentsByProfileId(id);
             const response = await apiClient.get(`/profiles/by-user-id/${id}/`);
             
-            return transformProfile(userData, response.data, transformedPosts, comments);
+            return await transformProfile(userData, response.data, transformedPosts, comments);
         } catch (error) {
             log.error(`Error fetching profile with ID ${id}:`, error);
             throw error;
