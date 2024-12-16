@@ -32,7 +32,11 @@ const PostCard = ({ post }) => {
           by <span>{post["user"]}</span>
         </p>
       </div>
-      <p>{post.content[0]["plain-text"]}</p>
+      <p>{
+      (post.content[0]["plain-text"] ? post.content[0]["plain-text"].substring(0, 200) : "")
+      + (post.content[0]["plain-text"] && post.content[0]["plain-text"].length > 200 ? "..." : "")
+        
+        }</p>
       <div className="post-info">
         <div className="post-stats">
           <span className="likes">

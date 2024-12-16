@@ -45,7 +45,7 @@ function App() {
               
               <Route path="news" element={<NewsPage />} />
               <Route path="portfolio" element={<PortfolioPage />} />
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile/:userId" element={<ProfilePage />} />
 
               <Route path="/post/:postId" element={<PostView />} />
               <Route path="/" element={<Navigate to="/home" />} />

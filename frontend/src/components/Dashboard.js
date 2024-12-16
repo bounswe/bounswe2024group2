@@ -47,7 +47,12 @@ const Dashboard = () => {
   };
 
   const handleProfile = () => {
-    navigate("/profile");
+    if (UserService.isLoggedIn()) {
+      navigate(`/profile/${UserService.getUserId()}`);
+    } else {
+      toast.warn("Please sign in to view your profile.");
+      navigate("/login");
+    }
   };
 
   const toggleDarkMode = () => {
@@ -91,7 +96,7 @@ const Dashboard = () => {
           {isLoggedIn ? (
             <div className="user-profile">
               <FaUserCircle className="user-icon" onClick={handleProfile} />
-              <span className="user-name">{userName}</span>
+              <span className="user-name" onClick={handleProfile}> {userName} </span>
               <button onClick={handleSignOut} className="auth-button">
                 Sign Out
               </button>

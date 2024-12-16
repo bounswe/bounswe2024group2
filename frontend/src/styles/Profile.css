@@ -1,25 +1,66 @@
-.profile-page {
-  width: 100%;
-  padding: 20px;
-  margin-top: 0;
-  position: relative;
+.badge {
+  align-items: center;
+  border: 5px solid #4a90e2;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 10px;
 }
 
-.profile-container {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
+.badge-icon {
+  font-size: 3em;
+}
+
+.badge-label {
+  color: #333;
+  font-size: 14px;
 }
 
 .profile-avatar {
-  width: 150px;
-  height: 150px;
-  background-color: #ddd;
+  align-items: center;
+  aspect-ratio: 1/1;
+  background-color: var(--color-primary-500);
   border-radius: 50%;
   display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 3em;
+  height: 150px;
+  justify-content: center;
+  width: 150px;
+}
+
+.profile-avatar-placeholder {
+  color: var(--color-neutral-white);
+  font-size: 5rem;
+}
+
+.profile-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-container {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  padding: 24px 0px;
+}
+
+.profile-details h1 {
+  margin: 0;
+}
+
+.profile-info {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.profile-page {
+  margin-top: 16px;
+  padding: 32px;
+  position: relative;
+  width: 100%;
 }
 
 .profile-right-container {
@@ -29,83 +70,108 @@
   width: 100%;
 }
 
+.profile-selector {
+  border-bottom: 2px solid var(--color-primary-500);
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
 .profile-stats {
   display: flex;
   gap: 10px;
 }
-
-.stat-item {
-  height: 30px;
-  background-color: #4a90e2;
-  color: white;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-radius: 15px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  min-width: 80px;
-}
-
-.profile-info {
-  display: flex;
-  align-items: center;
-  margin-top: 15px;
-  gap: 20px;
-}
-
-.profile-details h1 {
-  margin: 0;
-}
-
-.profile-badges {
-  display: flex;
-  gap: 10px;
-}
-
-.badge {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border: 5px solid #4a90e2;
-  border-radius: 10px;
-  padding: 5px 10px;
-}
-
-.badge-icon {
-  font-size: 3em;
-}
-
-.badge-label {
-  font-size: 14px;
-  color: #333;
-}
-
 .profile-selector {
   display: flex;
-  gap: 20px;
+  justify-content: space-evenly;
+  position: relative;
   margin-top: 20px;
-  border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-primary-500);
 }
 
 .selector-item {
+  position: relative;
   background: none;
   border: none;
-  padding: 10px 15px;
-  font-size: 16px;
-  color: #333;
+  color: var(--color-neutral-800);
   cursor: pointer;
-  transition: color 0.3s, border-bottom 0.3s;
+  font-size: 16px;
+  padding: 10px 15px;
+  transition: color 0.3s ease;
 }
 
-.selector-item:hover {
-  color: #4a90e2;
+.selector-item:hover,
+.selector-item.active {
+  color: var(--color-primary-700);
 }
 
-.selector-item:focus {
-  color: #4a90e2;
-  border-bottom: 2px solid #4a90e2;
-  outline: none;
+.selector-item::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0%;
+  height: 2px;
+  background: var(--color-primary-500);
+  transition: width 0.3s ease, left 0.3s ease;
 }
+
+.selector-item.active::after,
+.selector-item:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-selector {
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .selector-item {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+.stat-item {
+  align-items: center;
+  background-color: var(--color-primary-300);
+  border-radius: 15px;
+  color: var(--color-neutral-white);
+  display: flex;
+  font-size: 12px;
+  height: 30px;
+  min-width: 80px;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+}
+
+.follow-button {
+  background-color: var(--color-primary-500);
+  border: none;
+  margin-top: 8px;
+  border-radius: 5px;
+  color: var(--color-neutral-white);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.follow-button.following {
+  background-color: var(--color-neutral-600);
+}
+
+.list-content {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+  display: grid;
+  gap: 20px;
+}
+
+
