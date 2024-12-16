@@ -3,7 +3,6 @@ import log from '../utils/logger';
 import { transformPost } from './postService';
 
 const transformProfile = (userData, profile, posts, comments, portfolios) => {
-    console.log("Transforming profile data:", userData, profile, posts, comments, portfolios);
     profile = {
         ...profile,
         username: userData.username,
@@ -144,8 +143,6 @@ const ProfileService = {
             const response = await apiClient.get(`/profiles/by-user-id/${target}/`);
             const userProfileId = await this.profileIdByUserId(user);
             const followers = response.data.followers;
-            console.log("followers", followers);
-            console.log("userProfileId", userProfileId);
             if (followers.includes(userProfileId)) {
                 return true;
             }
