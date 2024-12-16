@@ -634,8 +634,9 @@ class IndexViewSet(viewsets.ModelViewSet):
             )
             for index in serializerData
         ]
+        if not symbols:
+            return Response([], status=status.HTTP_200_OK)
         data = yf.download(tickers=symbols, period="1d", interval="1d")
-
         prices = {
             symbol.split(".")[0]: float(data["Close"][symbol]) for symbol in symbols
         }
