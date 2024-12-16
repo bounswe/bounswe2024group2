@@ -14,6 +14,7 @@
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
+    "jwt-decode": "^4.0.0",
     "react": "18.3.1",
     "react-native": "0.75.4",
     "react-native-chart-kit": "^6.12.0",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@react-native/babel-preset": "0.75.4",

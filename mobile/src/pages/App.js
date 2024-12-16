@@ -18,6 +18,8 @@ import Markets from './Markets';
 import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
+import StockDetails from './StockDetails';
+
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 
@@ -71,6 +73,22 @@ const PostStack = () => {
     
   )
 }
+
+const MarketsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Markets1"
+      component={Markets}
+      options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} /> }}
+    />
+    <Stack.Screen
+      name="StockDetails"
+      component={StockDetails}
+      options={{ headerShown: true, title: 'Stock Details' }}
+    />
+  </Stack.Navigator>
+);
+
 const DrawerNavigator = () => {
   const { username, userId } = useAuth();
 
@@ -104,7 +122,8 @@ const DrawerNavigator = () => {
             )}
             <Drawer.Screen
               name="Markets"
-              component={Markets}
+              component={MarketsStack}
+              options={{ headerShown: false }} 
               
             />
             <Drawer.Screen
