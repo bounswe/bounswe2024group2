@@ -44,6 +44,14 @@ const ProfileService = {
     async fetchProfileById(id) {
         try {
             const userData = await this.fetchUserById(id);
+            // Convert followers and following from porfile id to user id
+            userData.following = await Promise.all(
+                userData.following.map(async (profileId) => await this.userIdByProfileId(profileId))
+            );
+            userData.followers = await Promise.all(
+                userData.followers.map(async (profileId) => await this.userIdByProfileId(profileId))
+            );
+
             const posts = await this.fetchPostsByProfileId(id);
             
             const transformedPosts = await Promise.all(
