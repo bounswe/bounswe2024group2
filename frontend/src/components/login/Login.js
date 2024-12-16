@@ -22,7 +22,6 @@ function Login() {
     setError("");
     setLoading(false);
 
-    
     loadingTimeout.current = setTimeout(() => {
       setLoading(true);
     }, 1000); 
