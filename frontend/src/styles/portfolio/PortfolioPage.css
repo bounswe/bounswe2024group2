@@ -1,16 +1,45 @@
+.delete-portfolio-button {
+    background-color: var(--color-error-500);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-neutral-white);
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.delete-portfolio-button:hover {
+    background-color: var(--color-error-700);
+}
+
+.divider {
+    background-color: transparent;
+    border: none;
+    flex-grow: 1;
+    height: 1px;
+    margin: 0 15px;
+}
+
 .add-assets-button {
     background-color: var(--color-primary-500);
     border: none;
     border-radius: 5px;
     color: var(--color-neutral-white);
     cursor: pointer;
-    margin-top: 20px;
     padding: 10px 15px;
     transition: background-color 0.3s ease;
 }
 
 .add-assets-button:hover {
     background-color: var(--color-primary-700);
+}
+
+.button-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    width: 100%;
 }
 
 .create-portfolio-button {
@@ -66,7 +95,7 @@
 
 .portfolio-card {
     background-color: var(--color-neutral-100);
-     border: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     color: var(--color-neutral-800);
     padding: 20px;
@@ -108,7 +137,7 @@
 
 .portfolio-tab {
     background-color: var(--color-neutral-100);
-     border: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
     border-radius: 5px;
     color: var(--color-neutral-800);
     cursor: pointer;
@@ -119,7 +148,7 @@
 
 .portfolio-tab.selected {
     background-color: var(--color-neutral-300);
-     border: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
     color: var(--color-neutral-800);
 }
 

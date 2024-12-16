@@ -1,46 +1,44 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import mockPosts from "../../data/mockPosts";
 import { FaSearch } from "react-icons/fa";
 import "../../styles/community/CommunityPage.css";
 import PostCard from "./PostCard";
 import "../../styles/Page.css";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../service/apiClient";
+import { transformPost } from "../../service/postService";
 
 const CommunityPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("dsc");
   const [searchActive, setSearchActive] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/posts`
+        const response = await apiClient.get("/posts");
+        const usersResponse = await apiClient.get("/users");
+        const usersById = usersResponse.data.reduce((acc, user) => {
+          acc[user.id] = user.username;
+          return acc;
+        }, {});
+        setUsers(usersById);
+
+        const transformedPosts = await Promise.all(
+          response.data.map(async (post) => transformPost(post))
         );
-        const transformedPosts = response.data.map((post) => ({
-          "post-id": post.id,
-          user: post.author.username || "Unknown",
-          title: post.title,
-          content: [{ type: "plain-text", "plain-text": post.content }],
-          comments: [],
-          likes: post.liked_by.length,
-          tags: post.tags,
-          "publication-date": new Date(post.created_at).toLocaleDateString(),
-        }));
         setPosts(transformedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        setPosts(mockPosts);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const filteredPosts = [...mockPosts, ...posts]
+  const filteredPosts = posts
     .filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
     )

@@ -29,7 +29,7 @@ const mockPosts = [
       },
     ],
     likes: 52,
-    tags: ["AI", "Finance", "Investment"],
+    tags: [],
     "publication-date": "2024-02-10",
   },
   {
@@ -63,7 +63,7 @@ const mockPosts = [
       },
     ],
     likes: 37,
-    tags: ["Market Trends", "Data Analysis", "Investment Strategy"],
+    tags: [],
     "publication-date": "2024-08-15",
   },
   {
@@ -97,7 +97,7 @@ const mockPosts = [
       },
     ],
     likes: 28,
-    tags: ["Global Market", "Investing", "Emerging Markets"],
+    tags: [],
     "publication-date": "2024-07-20",
   },
   {
@@ -137,7 +137,7 @@ const mockPosts = [
       },
     ],
     likes: 45,
-    tags: ["Stock Market", "Investment Tips", "Beginners"],
+    tags: [],
     "publication-date": "2024-06-12",
   },
   {
@@ -175,7 +175,7 @@ const mockPosts = [
       },
     ],
     likes: 63,
-    tags: ["Trading Tools", "Market Analysis", "Investing"],
+    tags: [],
     "publication-date": "2024-09-25",
   },
   {
@@ -208,7 +208,7 @@ const mockPosts = [
       },
     ],
     likes: 75,
-    tags: ["THY", "Hisse Analizi", "Yatırım"],
+    tags: [],
     "publication-date": "2024-10-10",
   },
   {
@@ -242,7 +242,7 @@ const mockPosts = [
       },
     ],
     likes: 80,
-    tags: ["BIMAS", "Hisse Analizi", "Yatırım"],
+    tags: [],
     "publication-date": "2024-10-12",
   },
 ];

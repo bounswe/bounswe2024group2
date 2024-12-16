@@ -1,10 +1,10 @@
 import React from "react";
 import "../styles/CircleAnimation.css";
 
-const CircleAnimation = () => {
+const CircleAnimation = ({ relative = false }) => {
   return (
-    <div className="spinner-container">
-      <div className="spinner"></div>
+    <div className={`spinner-container ${relative ? "spinner-container-relative" : ""}`}>
+      <div className={relative ? "spinner-relative" : "spinner"}></div>
     </div>
   );
 };

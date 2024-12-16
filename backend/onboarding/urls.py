@@ -20,5 +20,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth_register'),
     path('email-verify/', VerifyEmail.as_view(), name='email-verify'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('follow/', FollowView.as_view(), name='follow'),
+    path('unfollow/', UnfollowView.as_view(), name='unfollow'),
     path('', include(router.urls)),
     ]

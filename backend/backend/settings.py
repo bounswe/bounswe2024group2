@@ -154,3 +154,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD =os.environ.get('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = 'onboarding.User'
+
+ANNOTATIONS_SERVICE_URL = os.environ.get("ANNOTATIONS_SERVICE_URL", "http://localhost:8001")
+BACKEND_SERVICE_URL = os.environ.get("BACKEND_SERVICE_URL", "http://localhost:8000")

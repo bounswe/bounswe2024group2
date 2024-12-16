@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode";
 import CircleAnimation from "../CircleAnimation";
+import UserService from "../../service/userService";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -21,52 +22,31 @@ function Login() {
     setError("");
     setLoading(false);
 
-    const loginData = {
-      username: username,
-      password: password,
-    };
-
+    
     loadingTimeout.current = setTimeout(() => {
       setLoading(true);
     }, 1000); 
 
     try {
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/login/`,
-        loginData,
-        {
-          headers: { 
-            "Content-Type": "application/json" },
-        }
-      );
-
+      const response = await UserService.login(username, password);
+      console.log(response);
+      if (response.success) {
+        toast.success("Login successful!");
+        
+        navigate("/home");
+      } else {
+        setError(response.error || "Login failed! Please ensure that your username and password are correct.");
+        toast.error(response.error || "Login failed! Please ensure that your username and password are correct.");
+      }
+      
       clearTimeout(loadingTimeout.current);
       setLoading(false);
 
-      const { access, refresh } = response.data;
-      // console.log("token expiration", getTokenExpiration(access));
-
-      // Storing tokens in localStorage
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem("userName", username);
-
-      // Setting up token refresh timer
-      setRefreshTimer(access);
-
-      // Display success toast
-      toast.success("Login successful!");
-      
-      // Navigating to the home page if login successful
-      navigate("/home");
     } catch (error) {
       clearTimeout(loadingTimeout.current);
       setLoading(false);
       console.error("Login failed!", error);
-      toast.error(
-        "Login failed! Please ensure that your username and password are correct."
-      );
+      toast.error("Login failed! Please ensure that your username and password are correct.");
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PortfolioModal from './PortfolioModal';
 import AssetModal from './AssetModal';
 import AssetList from './AssetList';
@@ -6,41 +6,141 @@ import PortfolioDetailsCard from './PortfolioDetailsCard';
 import { Chart } from 'react-google-charts';
 import '../../styles/portfolio/PortfolioPage.css';
 import '../../styles/portfolio/AssetList.css';
-import mockStocks from '../../data/mockStocks';
 import '../../index.css';
+import UserService from '../../service/userService';
+import { PortfolioService } from '../../service/portfolioService';
+import CircleAnimation from '../CircleAnimation';
+import { useNavigate } from "react-router-dom";
+import log from '../../utils/logger';
+import { useAlertModal } from '../alert/AlertModalContext';
+import { debug } from 'loglevel';
+import { StockService } from '../../service/stockService';
+
 
 const PortfolioPage = () => {
+  const navigate = useNavigate();
+  const { showModal } = useAlertModal();
   const [portfolios, setPortfolios] = useState([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState(null);
   const [showPortfolioModal, setShowPortfolioModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [calculatingPortfolioStats, setCalculatingPortfolioStats] = useState(true);
+  const [numAssets, setNumAssets] = useState(0);
+  const [totalValue, setTotalValue] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0);
 
-  const handleCreatePortfolio = (portfolioName) => {
-    const newPortfolio = { name: portfolioName, assets: [] };
-    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
-    setSelectedPortfolio(newPortfolio);
-    setShowPortfolioModal(false);
+  // Fetch portfolios when the component mounts
+  useEffect(() => {
+    const fetchPortfolios = async () => {
+      setLoading(true);
+      try {
+        const userLoggedIn = UserService.isLoggedIn();
+        if (!userLoggedIn) {
+          setLoading(false);
+          return;
+        }
+        const userId = UserService.getUserId();
+        const fetchedPortfolios = await PortfolioService.fetchPortfolioByUserId(userId);
+        log.debug('Fetched portfolios:', fetchedPortfolios);
+        setPortfolios(fetchedPortfolios);
+        // Select the first portfolio by default
+        if (fetchedPortfolios.length > 0) {
+          handleSelectPortfolio(fetchedPortfolios[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching portfolios:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPortfolios();
+  }, []);
+
+  const handleDeletePortfolio = async (portfolioId) => {
+    log.debug('Deleting portfolio:', portfolioId);
+    showModal(
+      'Are you sure you want to delete this portfolio?',
+      async () => {
+        try {
+          await PortfolioService.deletePortfolio(portfolioId);
+          setPortfolios((prevPortfolios) =>
+            prevPortfolios.filter((portfolio) => portfolio.id !== portfolioId)
+          );
+          if (selectedPortfolio && selectedPortfolio.id === portfolioId) {
+            handleSelectPortfolio(null);
+          }
+        } catch (err) {
+          log.error('Error deleting portfolio:', err);
+        }
+      },
+      () => {
+        log.debug('Delete portfolio cancelled');
+      },
+      true,
+      "Cancel",
+      "Delete"
+    );
+  };
+
+
+  const handleCreatePortfolio = async (portfolioName) => {
+    try {
+      const newPortfolio = await PortfolioService.createPortfolio({
+        name: portfolioName,
+        description: "This is a new portfolio",
+        stocks: [],
+      });
+      setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+      handleSelectPortfolio(newPortfolio);
+    } catch (err) {
+      log.error('Error creating portfolio:', err);
+    } finally {
+      setShowPortfolioModal(false);
+    }
   };
 
   const handleSelectPortfolio = (portfolio) => {
     setSelectedPortfolio(portfolio);
+    calculatePortfolioStats(portfolio);
   };
 
-  const handleAddAsset = (asset) => {
-    const existingAssetIndex = selectedPortfolio.assets.findIndex(a => a.stockCode === asset.stockCode);
+  const handleCreatePortfolioModal = () => {
+    if (!UserService.isLoggedIn()) {
+      navigate('/login');
+    } else {
+      setShowPortfolioModal(true);
+    }
+  }
+
+  const handleAddAsset = async (data) => {
+    console.log(data);
+    const stock = await StockService.fetchStockById(data.stockId);
+    const asset = {
+      id: data.stockId,
+      code: data.stockCode,
+      name: stock.name,
+      quantity: data.quantity,
+      boughtPrice: data.stockPrice,
+      currentPrice: stock.price,
+    };
+    const existingAssetIndex = selectedPortfolio.stocks.findIndex(a => a.id === asset.id);
+    log.debug("handleAddAsset", asset, existingAssetIndex);
 
     if (existingAssetIndex !== -1) {
-      const existingAsset = selectedPortfolio.assets[existingAssetIndex];
+      const existingAsset = selectedPortfolio.stocks[existingAssetIndex];
       const newQuantity = existingAsset.quantity + asset.quantity;
-      const totalCost = (existingAsset.stockPrice * existingAsset.quantity) + (asset.stockPrice * asset.quantity);
+      const totalCost = (existingAsset.boughtPrice * existingAsset.quantity) + (asset.boughtPrice * asset.quantity);
       const newAveragePrice = totalCost / newQuantity;
 
-      const updatedAssets = selectedPortfolio.assets.map((a, index) => {
+      const updatedAssets = selectedPortfolio.stocks.map((a, index) => {
         if (index === existingAssetIndex) {
           return {
             ...a,
             quantity: newQuantity,
-            stockPrice: newAveragePrice,
+            boughtPrice: newAveragePrice,
+
           };
         }
         return a;
@@ -48,29 +148,32 @@ const PortfolioPage = () => {
 
       const updatedPortfolio = {
         ...selectedPortfolio,
-        assets: updatedAssets,
+        stocks: updatedAssets,
       };
+      await PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
+      log.debug('Updated portfolio:', updatedPortfolio);
 
       setPortfolios((prevPortfolios) =>
         prevPortfolios.map((p) =>
-          p.name === selectedPortfolio.name ? updatedPortfolio : p
+          p.id === selectedPortfolio.id ? updatedPortfolio : p
         )
       );
-
-      setSelectedPortfolio(updatedPortfolio);
+      handleSelectPortfolio(updatedPortfolio);
     } else {
       const updatedPortfolio = {
         ...selectedPortfolio,
-        assets: [...selectedPortfolio.assets, asset],
+        stocks: [...selectedPortfolio.stocks, asset],
       };
+
+      await PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
 
       setPortfolios((prevPortfolios) =>
         prevPortfolios.map((p) =>
-          p.name === selectedPortfolio.name ? updatedPortfolio : p
+          p.id === selectedPortfolio.id ? updatedPortfolio : p
         )
       );
 
-      setSelectedPortfolio(updatedPortfolio);
+      handleSelectPortfolio(updatedPortfolio);
     }
 
     setShowAssetModal(false);
@@ -79,45 +182,49 @@ const PortfolioPage = () => {
   const handleUpdateAssets = (updatedAssets) => {
     const updatedPortfolio = {
       ...selectedPortfolio,
-      assets: updatedAssets,
+      stocks: updatedAssets,
     };
-
+    log.debug('Updated portfolio:', updatedPortfolio);
+    PortfolioService.patchPortfolioStocks(selectedPortfolio.id, updatedPortfolio);
     setPortfolios((prevPortfolios) =>
       prevPortfolios.map((p) =>
-        p.name === selectedPortfolio.name ? updatedPortfolio : p
+        p.id === selectedPortfolio.id ? updatedPortfolio : p
       )
     );
-
-    setSelectedPortfolio(updatedPortfolio);
+    handleSelectPortfolio(updatedPortfolio);
   };
 
-  const calculatePortfolioStats = () => {
-    if (!selectedPortfolio || selectedPortfolio.assets.length === 0) {
-      return { numAssets: 0, totalValue: 0, totalProfit: 0 };
+  const calculatePortfolioStats = (portfolio) => {
+    log.debug('Calculating portfolio stats');
+    setCalculatingPortfolioStats(true);
+    if (!portfolio || portfolio.stocks.length === 0) {
+      log.debug('No assets to calculate');
+      setCalculatingPortfolioStats(false);
+      setNumAssets(0);
+      setTotalValue(0);
+      setTotalProfit(0);
+      return;
     }
-
-    const numAssets = selectedPortfolio.assets.length;
-    const totalValue = selectedPortfolio.assets.reduce((acc, asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-      return acc + (currentStockPrice * asset.quantity);
+    const numAssets = portfolio.stocks.length;
+    const totalValue = portfolio.stocks.reduce((acc, asset) => {
+      return acc + (asset.currentPrice * asset.quantity);
+    }, 0);
+    const totalProfit = portfolio.stocks.reduce((acc, asset) => {
+      return acc + ((asset.currentPrice - asset.boughtPrice) * asset.quantity);
     }, 0);
 
-    const totalProfit = selectedPortfolio.assets.reduce((acc, asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-      return acc + ((currentStockPrice - asset.stockPrice) * asset.quantity);
-    }, 0);
-
-    return { numAssets, totalValue, totalProfit };
+    setCalculatingPortfolioStats(false);
+    setNumAssets(numAssets);
+    setTotalValue(totalValue);
+    setTotalProfit(totalProfit);
   };
 
-  const { numAssets, totalValue, totalProfit } = calculatePortfolioStats();
 
   const chartData = [
     ['Stock', 'Value'],
-    ...(selectedPortfolio?.assets ?? []).map((asset) => {
-      const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-      const value = currentStockPrice * asset.quantity;
-      return [asset.stockCode, value];
+    ...(selectedPortfolio?.stocks ?? []).map((asset) => {
+      const value = asset.currentPrice * asset.quantity;
+      return [asset.code, value];
     })
   ];
 
@@ -126,9 +233,9 @@ const PortfolioPage = () => {
   };
 
   const getSliceColor = (asset) => {
-    const currentStockPrice = mockStocks.find(stock => stock.code === asset.stockCode)?.price || 0;
-    const profit = (currentStockPrice - asset.stockPrice) * asset.quantity;
-    const profitPercentage = (profit / (asset.stockPrice * asset.quantity)) * 100;
+    const currentStockPrice = asset.currentPrice;
+    const profit = (currentStockPrice - asset.boughtPrice) * asset.quantity;
+    const profitPercentage = (profit / (asset.boughtPrice * asset.quantity)) * 100;
 
     if (profitPercentage <= -90) {
       return getCssVariable('--color-error-900');
@@ -154,7 +261,7 @@ const PortfolioPage = () => {
   const chartOptions = {
     title: 'Portfolio Distribution',
     pieSliceText: 'value',
-    slices: selectedPortfolio?.assets.map((asset, index) => ({
+    slices: selectedPortfolio?.stocks.map((asset, index) => ({
       offset: 0.1,
       color: getSliceColor(asset),
     })),
@@ -164,22 +271,24 @@ const PortfolioPage = () => {
     backgroundColor: 'transparent',
   };
 
-  return (
+  if (loading) {
+    return <CircleAnimation />;
+  }
 
+  return (
     <div className="page">
-              {portfolios.length === 0 ? (
-      <div className="page-header">
-        <h1 className="page-title">You have no portfolios yet</h1>
+      {portfolios.length === 0 ? (
+        <div className="page-header">
+          <h1 className="page-title">You have no portfolios yet</h1>
           <h2 className="page-subtitle">Create a new portfolio to get started</h2>
-        
-      </div>
-    ) : (<div></div>)}
+        </div>
+      ) : (<div></div>)}
 
       <div className="page-content">
 
         {portfolios.length === 0 ? (
           <div className="empty-portfolio">
-            <button className="create-portfolio-button" onClick={() => setShowPortfolioModal(true)}>
+            <button className="create-portfolio-button" onClick={() => handleCreatePortfolioModal()}>
               Create Portfolio
             </button>
           </div>
@@ -189,7 +298,7 @@ const PortfolioPage = () => {
               {portfolios.map((portfolio, index) => (
                 <div
                   key={index}
-                  className={`portfolio-tab ${portfolio.name === selectedPortfolio?.name ? 'selected' : ''}`}
+                  className={`portfolio-tab ${portfolio.id === selectedPortfolio?.id ? 'selected' : ''}`}
                   onClick={() => handleSelectPortfolio(portfolio)}
                 >
                   {portfolio.name}
@@ -203,21 +312,31 @@ const PortfolioPage = () => {
               {selectedPortfolio ? (
                 <div className="portfolio-layout">
                   <div className="asset-list-container portfolio-card">
-                    <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
-                      Add Assets
-                    </button>
-                    {selectedPortfolio.assets.length > 0 && (
-                      <AssetList assets={selectedPortfolio.assets} setAssets={handleUpdateAssets} />
+                    <div className="button-container">
+                      <button onClick={() => setShowAssetModal(true)} className="add-assets-button">
+                        Add Assets
+                      </button>
+                      <hr className="divider" />
+                      <button
+                        onClick={() => handleDeletePortfolio(selectedPortfolio.id)}
+                        className="delete-portfolio-button"
+                      >
+                        Delete Portfolio
+                      </button>
+                    </div>
+                    {selectedPortfolio.stocks.length > 0 && (
+                      <AssetList assets={selectedPortfolio.stocks} setAssets={handleUpdateAssets} />
                     )}
                   </div>
                   <div className="portfolio-details portfolio-card">
                     <PortfolioDetailsCard
+                      loading={calculatingPortfolioStats}
                       numAssets={numAssets}
                       totalValue={totalValue}
                       totalProfit={totalProfit}
                     />
                     <div className="portfolio-chart">
-                      {selectedPortfolio.assets.length > 0 ? (
+                      {selectedPortfolio.stocks.length > 0 ? (
                         <Chart
                           className='portfolio-chart'
                           chartType="PieChart"
@@ -249,7 +368,6 @@ const PortfolioPage = () => {
           <AssetModal
             onClose={() => setShowAssetModal(false)}
             onSubmit={handleAddAsset}
-            stockData={mockStocks}
           />
         )}
       </div>

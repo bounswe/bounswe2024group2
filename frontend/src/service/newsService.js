@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import { apiClient } from './apiClient';
 import log from '../utils/logger';
 
 const transformNewsItem = (newsItem) => {
