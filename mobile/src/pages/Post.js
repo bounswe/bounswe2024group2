@@ -17,30 +17,57 @@ import { useAuth } from './context/AuthContext';
 
 const Post = ({ navigation, route }) => {
     const { postId, author, userMap, post } = route.params;
+    console.log("post", post);  
     const { baseURL } = config;
-    const { accessToken } = useAuth();
-    
+    const { userId, accessToken } = useAuth();
 
+    const [defPost, setDefPost] = useState(post);
     const [likes, setLikes] = useState(0);
     const [tooltip, setTooltip] = useState(null);
     const [showCommentInput, setShowCommentInput] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [comments, setComments] = useState([]);
-    const [stockData, setStockData] = useState([]); // Stores Close prices
-    const [stockDates, setStockDates] = useState([]); // Stores formatted dates
+    const [stockData, setStockData] = useState([]); 
+    const [stockDates, setStockDates] = useState([]); 
     const [loading, setLoading] = useState(true);
-    const [interval, setInterval] = useState('1d'); // Default interval
-    const [timeRange, setTimeRange] = useState('1mo'); // Default time range
+    const [interval, setInterval] = useState('1d'); 
+    const [timeRange, setTimeRange] = useState('1mo'); 
     const [hasStockData, setHasStockData] = useState(false);
 
     useEffect(() => {
-        if(post.stocks.length != 0){
+        if(defPost.stocks.length != 0){
             setHasStockData(true);
             fetchStockData();
         }    
         fetchComments();
     }, [postId, timeRange]);
 
+    useEffect(() => {
+        fetchPost();
+    }, [likes]);
+
+    const fetchPost = async () => {
+        const postURL = `${baseURL}/posts/${postId}/`;
+        try {
+            const response = await fetch(postURL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                console.log("response", response);
+                const postData = await response.json();
+                setDefPost(postData);
+                
+            } else {
+                console.error(`Failed to fetch comments: ${response}`);
+            }
+        } catch (error) {
+            console.error('Error fetching post:', error);
+
+        }
+    };    
 
     const fetchComments = async () => {
         const postURL = `${baseURL}/comments/post-comments/${postId}/`;
@@ -92,24 +119,24 @@ const Post = ({ navigation, route }) => {
     const fetchStockData = async () => {
         setLoading(true); // Show loader
         try {
-            const response = await fetch(`${baseURL}/stocks/${post.stocks[0]}/get_historical_data/`, {
+            const response = await fetch(`${baseURL}/stocks/${defPost.stocks[0]}/get_historical_data/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
-                    period: timeRange, // Use selected period
-                    interval: interval, // Use selected interval
+                    period: timeRange, 
+                    interval: interval, 
                 }),
             });
             const data = await response.json();
             if (data.Close && data.Date) {
-                setStockData(data.Close); // Set Close prices for Y-axis
+                setStockData(data.Close); 
                 setStockDates(
                     data.Date.map((date) =>
                         new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                    ) // Format dates for X-axis
+                    ) 
                 );
             } else {
                 console.error('Unexpected response structure:', data);
@@ -121,6 +148,29 @@ const Post = ({ navigation, route }) => {
         }
     };
 
+    const postLike = async () => {
+        const likeURL = `${baseURL}/like`;
+        try {
+            const response = await fetch(likeURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ post_id: postId }),
+            });
+            if (response.ok) {
+                setLikes((prevLikes) => prevLikes + 1);
+                //Alert.alert('Liked successfully!');
+            } else {
+                console.error(`Failed to like the post: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error liking the post:', error);
+        }
+    };
+    
+
     const renderUsername = (comment) => {
         if(userMap[comment.user_id]){
             return userMap[comment.user_id].username;
@@ -131,11 +181,16 @@ const Post = ({ navigation, route }) => {
 
 
     const handleLike = () => {
-        setLikes((prevLikes) => prevLikes + 1);
+        if (!accessToken) {
+            navigation.navigate('Login&Register');
+            Alert.alert('Please login to like the post');
+            return;
+        }
+        postLike();
     };
     
     const handleAddCommentButton = () => {
-        if(accessToken == null){
+        if(!accessToken){
             navigation.navigate('Login&Register');
             Alert.alert('Please login to add a comment');
             return;
@@ -165,23 +220,25 @@ const Post = ({ navigation, route }) => {
     const timeRanges = ['1mo', '1y', '5y', '1wk'];
 
 
-    if (!post) {
+    if (!defPost) {
         return <Text>Loading...</Text>;
     }
 
     return (
+        console.log("defPost", defPost),
+        console.log("userid", userId),
         //console.log("stockData", stockData),
         //console.log("stockDates", stockDates),
     <ScrollView style={styles.container}>
         <View>
-            <Text style={styles.title}>{post.title}</Text>
+            <Text style={styles.title}>{defPost.title}</Text>
             <Text style={styles.author}>Author: {author ? author : 'Unknown'}</Text>
             <Text style={styles.date}>
-                {new Date(post.created_at).toLocaleDateString()} at {new Date(post.created_at).toLocaleTimeString()}
+                {new Date(defPost.created_at).toLocaleDateString()} at {new Date(defPost.created_at).toLocaleTimeString()}
             </Text>
             <View style={styles.tagsContainer}>
-                {post.tags.length > 0 ? (
-                    post.tags.map((tag) => (
+                {defPost.tags.length > 0 ? (
+                    defPost.tags.map((tag) => (
                         <Text key={tag.id} style={styles.tag}>
                             {tag.name}
                         </Text>
@@ -190,7 +247,7 @@ const Post = ({ navigation, route }) => {
                     <Text style={styles.noTags}>No tags available</Text>
                 )}
             </View>
-            <Text style={styles.content}>{post.content}</Text>
+            <Text style={styles.content}>{defPost.content}</Text>
             
             <View>
             {hasStockData ? (
@@ -199,7 +256,7 @@ const Post = ({ navigation, route }) => {
                     <ActivityIndicator size="large" color="#007BFF" />
                 ) : stockData.length > 0 && stockDates.length > 0 ? (
                     <View>
-                        <Text style={styles.graphTitle}>Stock Price Chart</Text>
+                        <Text style={styles.graphTitle}>{}</Text>
                     <LineChart
                         data={{
                             labels: stockDates, // Use formatted dates for X-axis
@@ -211,7 +268,7 @@ const Post = ({ navigation, route }) => {
                         }}
                         width={Dimensions.get('window').width - 20} // Adjust to screen width
                         height={300}
-                        yAxisLabel="$"
+                        yAxisLabel="TL"
                         verticalLabelRotation={60}
                         chartConfig={{
                             backgroundColor: 'white',
@@ -251,44 +308,45 @@ const Post = ({ navigation, route }) => {
                         <Text style={styles.tooltipText}>{tooltip.value}</Text>
                     </View>
                 )}
-            </View><View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.changeIntervalButton}
-                        onPress={() => {
-                            setTimeRange('5d');
-                            setInterval('1d');
-                        } }
-                    >
-                        <Text style={styles.buttonText}>5d</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.changeIntervalButton}
-                        onPress={() => {
-                            setTimeRange('1mo');
-                            setInterval('1d');
-                        } }
-                    >
-                        <Text style={styles.buttonText}>1mo</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.changeIntervalButton}
-                        onPress={() => {
-                            setTimeRange('1y');
-                            setInterval('1mo');
-                        } }
-                    >
-                        <Text style={styles.buttonText}>1y</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.changeIntervalButton}
-                        onPress={() => {
-                            setTimeRange('5y');
-                            setInterval('3mo');
-                        } }
-                    >
-                        <Text style={styles.buttonText}>5y</Text>
-                    </TouchableOpacity>
-                </View></>
+            </View>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    style={styles.changeIntervalButton}
+                    onPress={() => {
+                        setTimeRange('5d');
+                        setInterval('1d');
+                    } }
+                >
+                    <Text style={styles.likedButtonText}>5d</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.changeIntervalButton}
+                    onPress={() => {
+                        setTimeRange('1mo');
+                        setInterval('1d');
+                    } }
+                >
+                    <Text style={styles.likedButtonText}>1mo</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.changeIntervalButton}
+                    onPress={() => {
+                        setTimeRange('1y');
+                        setInterval('1mo');
+                    } }
+                >
+                    <Text style={styles.likedButtonText}>1y</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.changeIntervalButton}
+                    onPress={() => {
+                        setTimeRange('5y');
+                        setInterval('3mo');
+                    } }
+                >
+                    <Text style={styles.likedButtonText}>5y</Text>
+                </TouchableOpacity>
+            </View></>
             ) : null}
 
             </View>
@@ -297,14 +355,19 @@ const Post = ({ navigation, route }) => {
 
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
-                    <Text style={styles.buttonText}>👍 Like ({likes})</Text>
+                <TouchableOpacity 
+                    style={defPost.liked_by.includes(userId) ? styles.likedButton : styles.likeButton} 
+                    onPress={handleLike}>
+                    <Text style={defPost.liked_by.includes(userId) ? styles.likedButtonText : styles.buttonText}>
+                        {defPost.liked_by.includes(userId) ? '👍 Liked' : '👍 Like'} {defPost.liked_by.length}
+                    </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                     style={styles.commentButton}
                     onPress={handleAddCommentButton}
                 >
-                    <Text style={styles.buttonText}>💬 Add Comment</Text>
+                    <Text style={styles.commentButtonText}>💬 Add Comment</Text>
                 </TouchableOpacity>
             </View>
 
@@ -336,13 +399,13 @@ const Post = ({ navigation, route }) => {
                         />
                         <View style={styles.modalButtons}>
                             <TouchableOpacity style={styles.submitButton} onPress={handleAddComment}>
-                                <Text style={styles.buttonText}>Submit</Text>
+                                <Text style={styles.commentButtonText}>Submit</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.cancelButton}
                                 onPress={() => setShowCommentInput(false)}
                             >
-                                <Text style={styles.buttonText}>Cancel</Text>
+                                <Text style={styles.commentButtonText}>Cancel</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -387,23 +450,69 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     likeButton: {
-        backgroundColor: '#0073e6',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
+        backgroundColor: '#e0f7fa', 
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        borderWidth: 1, // Subtle border for clarity
+        borderColor: '#cccccc',
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3, 
     },
-    commentButton: {
-        backgroundColor: '#28a745',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
+    likedButton: {
+        backgroundColor: '#0073e6', 
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#0073e6',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5, // Stronger shadow for emphasis
+        borderWidth: 1, // Optional border for a polished look
+        borderColor: '#005bb5', // Slightly darker border for depth
     },
     buttonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#0073e6', // White text for both states
+    },
+    likedButtonText: {
         color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
     },
+    commentButtonText:{
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#ffffff', // White text for both states
+    },
+     
+    commentButton: {
+        backgroundColor: '#28a745',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#0073e6',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5, // Stronger shadow for emphasis
+        borderWidth: 1, // Optional border for a polished look
+        borderColor: 'grey', // Slightly darker border for depth
+    },
+    
     tagsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
