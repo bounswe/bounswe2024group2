@@ -31,7 +31,8 @@ services:
              python3 manage.py collectstatic --noinput &&
              python3 manage.py update_currencies && 
              python3 manage.py update_stocks && 
-             python3 manage.py update_indices &&  
+             python3 manage.py update_indices && 
+             python3 manage.py generate_posts &&
              gunicorn backend.wsgi:application --bind 0.0.0.0:8000'
     restart: always
     environment:
