@@ -229,7 +229,6 @@ const CreatePostPage = () => {
           >
             Cancel
           </button>
-          <button className="preview-button">Preview</button>
           <button className="post-button" onClick={handlePost}>
             Post
           </button>
