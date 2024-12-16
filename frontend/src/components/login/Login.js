@@ -29,7 +29,6 @@ function Login() {
 
     try {
       const response = await UserService.login(username, password);
-      console.log(response);
       if (response.success) {
         toast.success("Login successful!");
         
@@ -63,12 +62,10 @@ function Login() {
     const timeToRefresh = expirationTime - currentTime - 60 * 1000; // Refresh 1 minute before expiry
 
     if (timeToRefresh > 0) {
-      //console.log("Setting up token refresh in", timeToRefresh, "ms");
       setTimeout(() => {
         refreshAccessToken();
       }, timeToRefresh);
     } else {
-      //console.log("refreshing immediately");
       refreshAccessToken();
     }
   }

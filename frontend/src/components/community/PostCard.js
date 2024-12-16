@@ -13,11 +13,6 @@ const getColorForTag = (tag) => {
 const PostCard = ({ post }) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(post.tags);
-  }
-  , [post]);
-
   const navigateToPost = (postId) => {
     navigate(`/post/${postId}`);
   };
