@@ -6,6 +6,7 @@ import { apiClient } from "../../service/apiClient";
 import CircleAnimation from "../CircleAnimation";
 import NotFound from "../notfound/NotFound";
 import UserService from "../../service/userService";
+import { renderContentWithAnnotations } from "./AnnotationUtils";
 import {
   FaNewspaper,
   FaImage,
@@ -23,15 +24,81 @@ const PostView = () => {
   const [commentText, setCommentText] = useState("");
   const [tags, setTags] = useState([]);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const [annotations, setAnnotations] = useState([]);
+  const [usernameCache, setUsernameCache] = useState(new Map());
+  const [annotationsVisible, setAnnotationsVisible] = useState(true);
 
   const getUserName = async (userID) => {
+    if (usernameCache.has(userID)) {
+      return usernameCache.get(userID);
+    }
+
     try {
       const userData = await apiClient.get(`/users/${userID}`);
       const userName = userData.data.username;
+      setUsernameCache((prevCache) => new Map(prevCache).set(userID, userName)); // Update the cache
       return userName;
     } catch (error) {
       console.error("Error fetching user name:", error);
       return "Unknown";
+    }
+  };
+
+  const fetchAnnotations = async () => {
+    try {
+      const response = await apiClient.get(
+        `/annotations/post-annotations/${postId}`
+      );
+      console.log("Fetched annotations from API:", response.data);
+
+      const annotationsData = await Promise.all(
+        response.data.map(async (annotation) => {
+          const username = await getUserName(annotation.user_id); // Fetch username
+          const creationDate = new Date(
+            annotation.created_at
+          ).toLocaleDateString(); // Format creation date
+          return {
+            ...annotation,
+            username,
+            creationDate, // Store formatted creation date
+          };
+        })
+      );
+      setAnnotations(annotationsData);
+    } catch (error) {
+      console.error("Error fetching annotations:", error);
+    }
+  };
+
+  const handleTextSelection = async () => {
+    if (annotationsVisible) return; // Block annotation interaction when annotations are enabled.
+
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const cleanText = range.toString().trim();
+      const cleanStart = range.startOffset + range.toString().search(/\S/);
+      const cleanEnd = cleanStart + cleanText.length;
+
+      if (cleanText) {
+        const note = prompt("Enter a note for the selected text:");
+        if (note) {
+          const annotationPayload = {
+            post_id: parseInt(postId, 10),
+            start: cleanStart,
+            end: cleanEnd,
+            value: note,
+          };
+
+          try {
+            await apiClient.post("/annotations/", annotationPayload);
+            setAnnotations((prev) => [...prev, annotationPayload]);
+            alert("Annotation added successfully!");
+          } catch (error) {
+            console.error("Error adding annotation:", error);
+          }
+        }
+      }
     }
   };
 
@@ -54,7 +121,7 @@ const PostView = () => {
         const commentsData = commentsResponse.data;
 
         const backendComments = await Promise.all(
-          commentsData.map(async (comment) => {
+          commentsData.reverse().map(async (comment) => {
             const username = await getUserName(comment.user_id);
             return {
               "comment-id": comment.id,
@@ -111,12 +178,12 @@ const PostView = () => {
         setPost((prevPost) => ({
           ...prevPost,
           comments: [
-            ...prevPost.comments,
             {
               "comment-id": Date.now(), // Temporary ID until refreshed
               user: username,
               comment: commentText.trim(),
             },
+            ...prevPost.comments, // Prepend the new comment
           ],
         }));
         setCommentText("");
@@ -144,6 +211,12 @@ const PostView = () => {
     }
   };
 
+  useEffect(() => {
+    if (postId) {
+      fetchAnnotations();
+    }
+  }, [postId]);
+
   if (loading) {
     return (
       <p>
@@ -161,9 +234,6 @@ const PostView = () => {
       <div className="post-author">
         <p>By: {post["user"]}</p>
         <p>Published on: {post["publication-date"]}</p>
-        <button className="follow-button">
-          <FaUserPlus /> Follow Author
-        </button>
       </div>
       <div className="tags">
         {tags.length > 0 ? (
@@ -184,6 +254,14 @@ const PostView = () => {
         )}
       </div>
       <div className="post-content">
+        <button
+          style={{ color: "white" }}
+          className="toggle-annotations"
+          onClick={() => setAnnotationsVisible((prev) => !prev)}
+        >
+          {annotationsVisible ? "Disable Annotations" : "Enable Annotations"}
+        </button>
+
         {post.content.map((content, index) => (
           <div className="timeline-item" key={index}>
             <span className="timeline-dot">
@@ -193,7 +271,19 @@ const PostView = () => {
               {content.type === "graph" && <FaChartLine className="icon" />}
             </span>
             <div className="timeline-content">
-              {content.type === "plain-text" && <p>{content["plain-text"]}</p>}
+              {content.type === "plain-text" && (
+                <div
+                  onMouseUp={!annotationsVisible ? handleTextSelection : null} // Disable text selection if annotationsVisible is true
+                  className="annotated-content"
+                >
+                  {annotationsVisible
+                    ? renderContentWithAnnotations(
+                        content["plain-text"],
+                        annotations
+                      )
+                    : content["plain-text"]}
+                </div>
+              )}
               {content.type === "news" && (
                 <div className="news">
                   <a

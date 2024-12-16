@@ -13,12 +13,15 @@ const CommunityPage = () => {
   const [searchActive, setSearchActive] = useState(false);
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState({});
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchData = async () => {
       try {
-        const response = await apiClient.get("/posts");
+        // Fetch posts and users
+        const postsResponse = await apiClient.get("/posts");
         const usersResponse = await apiClient.get("/users");
         const usersById = usersResponse.data.reduce((acc, user) => {
           acc[user.id] = user.username;
@@ -26,25 +29,64 @@ const CommunityPage = () => {
         }, {});
         setUsers(usersById);
 
+        // Fetch available tags
+        const tagsResponse = await apiClient.get("/tags");
+        setTags(tagsResponse.data);
+
+        // Process posts
         const transformedPosts = await Promise.all(
-          response.data.map(async (post) => transformPost(post))
+          postsResponse.data.map(async (post) => {
+            return {
+              "post-id": post.id,
+              user: usersById[post.author] || "Unknown",
+              title: post.title,
+              content: [{ type: "plain-text", "plain-text": post.content }],
+              comments: [],
+              likes: post.liked_by?.length || 0,
+              tags: post.tags || [],
+              "publication-date": new Date(post.created_at),
+            };
+          })
+
         );
         setPosts(transformedPosts);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching posts or tags:", error);
       }
     };
 
-    fetchPosts();
+    fetchData();
   }, []);
 
   const filteredPosts = posts
     .filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
     )
+    .filter((post) => {
+      if (selectedTags.length === 0) return true; // No tags selected, show all
+      const postTagIds = post.tags.map((tag) => tag.id);
+      if (selectedTags.length === 1) {
+        // If one tag is selected, check if it's in the post's tags
+        return postTagIds.includes(Number(selectedTags[0]));
+      } else {
+        // If multiple tags are selected, check if they are present as per the "and" or "or" condition
+        const hasAllTags = selectedTags.every((tagId) =>
+          postTagIds.includes(Number(tagId))
+        );
+        return hasAllTags; // For "and" filter (all tags must match)
+      }
+    })
     .sort((a, b) => {
       return sortOrder === "asc" ? a.likes - b.likes : b.likes - a.likes;
     });
+
+  const handleTagSelection = (tagId) => {
+    setSelectedTags((prevSelectedTags) =>
+      prevSelectedTags.includes(tagId)
+        ? prevSelectedTags.filter((id) => id !== tagId)
+        : [...prevSelectedTags, tagId]
+    );
+  };
 
   const handleSubmitPost = () => {
     navigate("/community/create-post");
@@ -81,6 +123,20 @@ const CommunityPage = () => {
             <option value="asc">Sort by Likes (Low to High)</option>
             <option value="desc">Sort by Likes (High to Low)</option>
           </select>
+        </div>
+
+        <div className="tags-selection">
+          <h3>Select Tags</h3>
+          {tags.map((tag) => (
+            <label key={tag.id} className="tag-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedTags.includes(tag.id.toString())}
+                onChange={() => handleTagSelection(tag.id.toString())}
+              />
+              {tag.name}
+            </label>
+          ))}
         </div>
 
         <div className="post-cards">
