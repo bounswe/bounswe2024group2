@@ -31,7 +31,7 @@ const CreatePostPage = () => {
         showModal(
           "You must be logged in to create a post.",
           () => navigate("/login"),
-          () => navigate("/home"),
+          () => navigate("/community"),
           true,
           "Home",
           "Login"
@@ -99,7 +99,7 @@ const CreatePostPage = () => {
       showModal(
         "You must be logged in to create a post.",
         () => navigate("/login"),
-        () => navigate("/home"),
+        () => navigate("/community"),
         true,
         "Home",
         "Login"

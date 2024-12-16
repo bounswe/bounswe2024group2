@@ -89,7 +89,7 @@ export const PortfolioService = {
             const data = {
                 "stocks": portfolio.stocks.map(stock => ({
                     stock: stock.id,
-                    price_bought: stock.boughtPrice,
+                    price_bought: parseFloat(stock.boughtPrice).toFixed(2),
                     quantity: stock.quantity
                 }))
             }

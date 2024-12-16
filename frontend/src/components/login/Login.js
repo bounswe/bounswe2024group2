@@ -22,18 +22,16 @@ function Login() {
     setError("");
     setLoading(false);
 
-    
     loadingTimeout.current = setTimeout(() => {
       setLoading(true);
     }, 1000); 
 
     try {
       const response = await UserService.login(username, password);
-      console.log(response);
       if (response.success) {
         toast.success("Login successful!");
         
-        navigate("/home");
+        navigate("/community");
       } else {
         setError(response.error || "Login failed! Please ensure that your username and password are correct.");
         toast.error(response.error || "Login failed! Please ensure that your username and password are correct.");
@@ -63,12 +61,10 @@ function Login() {
     const timeToRefresh = expirationTime - currentTime - 60 * 1000; // Refresh 1 minute before expiry
 
     if (timeToRefresh > 0) {
-      //console.log("Setting up token refresh in", timeToRefresh, "ms");
       setTimeout(() => {
         refreshAccessToken();
       }, timeToRefresh);
     } else {
-      //console.log("refreshing immediately");
       refreshAccessToken();
     }
   }

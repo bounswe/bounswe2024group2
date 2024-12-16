@@ -5,6 +5,7 @@ import PostCard from "./PostCard";
 import "../../styles/Page.css";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../../service/apiClient";
+import { transformPost } from "../../service/postService";
 
 const CommunityPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +47,7 @@ const CommunityPage = () => {
               "publication-date": new Date(post.created_at),
             };
           })
+
         );
         setPosts(transformedPosts);
       } catch (error) {

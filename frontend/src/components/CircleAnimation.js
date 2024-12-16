@@ -3,8 +3,8 @@ import "../styles/CircleAnimation.css";
 
 const CircleAnimation = ({ relative = false }) => {
   return (
-    <div className={`spinner-container ${relative ? "spinner-container-relative" : ""}`}>
-      <div className={relative ? "spinner-relative" : "spinner"}></div>
+    <div data-testid="spinner-container" className={`spinner-container ${relative ? "spinner-container-relative" : ""}`}>
+      <div data-testid="spinner" className={relative ? "spinner-relative" : "spinner"}></div>
     </div>
   );
 };

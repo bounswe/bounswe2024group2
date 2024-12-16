@@ -18,6 +18,11 @@ import Markets from './Markets';
 import Community from './Community';
 import Post from './Post';
 import CreatePost from './CreatePost';
+import StockDetails from './StockDetails';
+import Portfolio from './Portfolio';
+import PortfolioDetails from './PortfolioDetails';
+import CreatePortfolio from './CreatePortfolio';
+
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 
@@ -26,12 +31,12 @@ const Drawer = createDrawerNavigator();
 
 // Custom Header
 const CustomHeader = ({ navigation }) => {
-  const { user } = useAuth();
-
+  
+  const { username, userId } = useAuth();
 
   const handleProfileNavigation = () => {
-    if (user) {
-      navigation.navigate('Profile', { username: user.username });
+    if (userId) {
+      navigation.navigate('Profile', { username: username });
     } else {
       navigation.navigate('Login&Register');
     }
@@ -71,8 +76,49 @@ const PostStack = () => {
     
   )
 }
+
+const MarketsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Markets1"
+      component={Markets}
+      options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} /> }}
+    />
+    <Stack.Screen
+      name="StockDetails"
+      component={StockDetails}
+      options={{ headerShown: true, title: 'Stock Details' }}
+    />
+  </Stack.Navigator>
+);
+
+const PortfolioStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Markets1"
+      component={Portfolio}
+      options={{ header: ({ navigation }) => <CustomHeader navigation={navigation} /> }}
+    />
+    <Stack.Screen
+      name="StockDetails"
+      component={StockDetails}
+      options={{ headerShown: true, title: 'Stock Details' }}
+    />
+    <Stack.Screen     
+      name="PortfolioDetails"
+      component={PortfolioDetails}
+      options={{ headerShown: true, title: 'Portfolio Details' }}
+    />
+    <Stack.Screen     
+      name="CreatePortfolio"
+      component={CreatePortfolio}
+      options={{ headerShown: true, title: 'Create Portfolio' }}
+    />
+  </Stack.Navigator>
+);
+
 const DrawerNavigator = () => {
-  const { user } = useAuth();
+  const { username, userId } = useAuth();
 
 
 
@@ -84,12 +130,17 @@ const DrawerNavigator = () => {
         }}
           
         >
+            <Drawer.Screen
+              name="Community"
+              component={PostStack}
+              options={{ headerShown: false }}   
+            />
             <Drawer.Screen 
               name="Home" 
               component={Home}  
                        
             />
-            { user  ? (
+            { userId  ? (
               <Drawer.Screen 
                 name="Profile" 
                 component={Profile} 
@@ -104,19 +155,29 @@ const DrawerNavigator = () => {
             )}
             <Drawer.Screen
               name="Markets"
-              component={Markets}
+              component={MarketsStack}
+              options={{ headerShown: false }} 
               
             />
-            <Drawer.Screen
-              name="Community"
-              component={PostStack}
-              options={{ headerShown: false }}   
-            />
+            
             <Drawer.Screen
               name="News"
               component={News}
-               
             />
+            { userId  ? (
+              <Drawer.Screen 
+                name="Portfolio" 
+                component={PortfolioStack}
+                options={{ headerShown: false }}
+                
+              />
+              ) : (
+              <Drawer.Screen 
+                name="Portfolio" 
+                component={LoginStack} 
+                options={{ headerShown: false }}   
+              />
+            )}
             
           </Drawer.Navigator>
       );
@@ -138,7 +199,7 @@ const App = () => {
 const styles = StyleSheet.create({
   customHeader: {
     height: 60,
-    backgroundColor: '#0077B6',
+    backgroundColor: '#007BFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

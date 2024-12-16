@@ -72,7 +72,13 @@ class CurrencyViewSet(viewsets.ModelViewSet):
 class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.action == "create" or self.action == "destroy" or self.action == "update" or self.action == "patch":
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
     def list(self, request):
         pagination_class = StockResultsSetPagination()
@@ -628,8 +634,9 @@ class IndexViewSet(viewsets.ModelViewSet):
             )
             for index in serializerData
         ]
+        if not symbols:
+            return Response([], status=status.HTTP_200_OK)
         data = yf.download(tickers=symbols, period="1d", interval="1d")
-
         prices = {
             symbol.split(".")[0]: float(data["Close"][symbol]) for symbol in symbols
         }

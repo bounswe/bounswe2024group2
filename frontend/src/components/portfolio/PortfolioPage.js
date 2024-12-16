@@ -44,6 +44,10 @@ const PortfolioPage = () => {
         const fetchedPortfolios = await PortfolioService.fetchPortfolioByUserId(userId);
         log.debug('Fetched portfolios:', fetchedPortfolios);
         setPortfolios(fetchedPortfolios);
+        // Select the first portfolio by default
+        if (fetchedPortfolios.length > 0) {
+          handleSelectPortfolio(fetchedPortfolios[0]);
+        }
       } catch (err) {
         console.error('Error fetching portfolios:', err);
       } finally {
@@ -55,7 +59,6 @@ const PortfolioPage = () => {
   }, []);
 
   const handleDeletePortfolio = async (portfolioId) => {
-    log.debug('Deleting portfolio:', portfolioId);
     showModal(
       'Are you sure you want to delete this portfolio?',
       async () => {
@@ -111,7 +114,6 @@ const PortfolioPage = () => {
   }
 
   const handleAddAsset = async (data) => {
-    console.log(data);
     const stock = await StockService.fetchStockById(data.stockId);
     const asset = {
       id: data.stockId,
