@@ -27,6 +27,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState('Posts');
   const isCurrentUser = userId === UserService.getUserId();
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     if (!UserService.isLoggedIn()) {
@@ -39,20 +40,39 @@ const ProfilePage = () => {
     ProfileService.fetchProfileById(userId)
       .then((profile) => {
         setUserProfile(profile);
-        setLoading(false);
+
+        updateIsFollowing(userProfile).then(() => {
+          setLoading(false);
+          log.debug('Profile loaded:', profile);
+        }).catch((error) => {
+          console.error('Error updating isFollowing:', error);
+          setLoading(false);
+        });
       })
       .catch((error) => {
         console.error('Error fetching user profile:', error);
         toast.error('Error fetching user profile');
         setUserProfile(userProfilex);
         setLoading(false);
-      });
+      });    
   }, [navigate, userId]);
 
-  const isFollowing = (user) => {
-    console.log("User:", user);
-    
-    return userProfile.following.some((u) => u.username === UserService.getUsername());
+
+  useEffect(() => {
+    ProfileService.fetchProfileById(userId)
+    .then((profile) => {
+      setUserProfile(profile);
+    })
+    .catch((error) => {
+      console.error('Error fetching user profile:', error);
+    });    
+  }, [isFollowing]);
+
+  const updateIsFollowing = async (user) => {
+    if (!isCurrentUser) {
+      const result = await ProfileService.isFollowing(UserService.getUserId(), userId)
+      setIsFollowing(result);
+    }
   };
 
   const renderListContent = () => {
@@ -93,17 +113,19 @@ const ProfilePage = () => {
   };
 
   const handleFollowToggle = (user) => {
-    const action = isFollowing(user) ? 'Unfollow' : 'Follow';
+    const action = isFollowing ? 'Unfollow' : 'Follow';
 
     ProfileService.handleFollowToggle(user.username)
-      .then((message) => {
+      .then(async (message) => {
         toast.success(`${message} ${user.username}`);
-        // Optionally update the local state here
+        await updateIsFollowing();
       })
       .catch((error) => {
         console.error(`Failed to ${action.toLowerCase()} user:`, error);
         toast.error(`Failed to ${action.toLowerCase()} user.`);
       });
+
+      
   };
 
   if (loading) {
@@ -134,10 +156,10 @@ const ProfilePage = () => {
               <div className="profile-details">
                 <h1>{userProfile.username}</h1>
                 {!isCurrentUser && (
-                  <button
+                  <button className= {`follow-button ${isFollowing ? 'following' : ''}`}
                     onClick={() => handleFollowToggle(userProfile)}
                   >
-                    {isFollowing(userProfile) ? 'Unfollow' : 'Follow'}
+                    {isFollowing ? 'Unfollow' : 'Follow'}
                   </button>
                 )}
               </div>

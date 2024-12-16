@@ -133,9 +133,22 @@ const ProfileService = {
     // is user following target user 
     // all props with id
     async isFollowing(user, target) {
-        
-
-    }
+        try{
+            const response = await apiClient.get(`/profiles/by-user-id/${target}/`);
+            const userProfileId = await this.profileIdByUserId(user);
+            const followers = response.data.followers;
+            console.log("followers", followers);
+            console.log("userProfileId", userProfileId);
+            if (followers.includes(userProfileId)) {
+                return true;
+            }
+            return false;
+        }
+        catch (error) {
+            log.error(`Error fetching followers for user with ID ${target}:`, error);
+            throw error;
+        }
+    },
 
     // async fetchCommentsByProfileId(id) {
     //     try {
