@@ -283,7 +283,7 @@ const Post = ({ navigation, route }) => {
                         style={styles.changeIntervalButton}
                         onPress={() => {
                             setTimeRange('5y');
-                            setInterval('1mo');
+                            setInterval('3mo');
                         } }
                     >
                         <Text style={styles.buttonText}>5y</Text>

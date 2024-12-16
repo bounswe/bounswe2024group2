@@ -175,8 +175,13 @@ const Community = ({navigation}) => {
                 <TouchableOpacity style={styles.actionButton}>
                     <Text>👍 {post.liked_by.length}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton} onPress={handleAddCommentButton}>
-                    <Text>💬 {post.comments}</Text>
+                <TouchableOpacity 
+                    style={styles.actionButton} 
+                    onPress={handleAddCommentButton} 
+                    accessibilityLabel="Add Comment Button"
+                    testID="add-comment-button"
+                >
+                    <Text>💬</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.viewPostButton}
