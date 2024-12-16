@@ -23,6 +23,89 @@ const PostView = () => {
   const [commentText, setCommentText] = useState("");
   const [tags, setTags] = useState([]);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
+  const [annotations, setAnnotations] = useState([]);
+
+  useEffect(() => {
+    const fetchAnnotations = async () => {
+      try {
+        const response = await apiClient.get(
+          `/annotations/post-annotations/${postId}`
+        );
+        setAnnotations(response.data);
+      } catch (error) {
+        console.error("Error fetching annotations:", error);
+      }
+    };
+
+    if (postId) {
+      fetchAnnotations();
+    }
+  }, [postId]);
+
+  const handleTextSelection = async () => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+
+      if (selectedText.trim()) {
+        const start = range.startOffset;
+        const end = range.endOffset;
+
+        const note = prompt("Enter a note for the selected text:");
+        if (note) {
+          const annotationPayload = {
+            post_id: parseInt(postId, 10),
+            start,
+            end,
+            value: note,
+          };
+          console.log("payload", annotationPayload);
+
+          try {
+            await apiClient.post("/annotations/", annotationPayload);
+            setAnnotations((prev) => [...prev, annotationPayload]);
+            alert("Annotation added successfully!");
+          } catch (error) {
+            console.error("Error adding annotation:", error);
+          }
+        }
+      }
+    }
+  };
+
+  const renderContentWithAnnotations = (content) => {
+    let annotatedContent = [];
+    let currentIndex = 0;
+
+    annotations.forEach(({ start, end, value }, idx) => {
+      if (currentIndex < start) {
+        annotatedContent.push(
+          <span key={`plain-${idx}`}>{content.slice(currentIndex, start)}</span>
+        );
+      }
+
+      annotatedContent.push(
+        <span
+          key={`annotation-${idx}`}
+          className="annotated-text"
+          title={value} // Tooltip with annotation
+        >
+          {content.slice(start, end)}
+        </span>
+      );
+
+      currentIndex = end;
+    });
+
+    if (currentIndex < content.length) {
+      annotatedContent.push(
+        <span key="remainder">{content.slice(currentIndex)}</span>
+      );
+    }
+    console.log(annotatedContent);
+    return annotatedContent;
+  };
 
   const getUserName = async (userID) => {
     try {
@@ -193,7 +276,14 @@ const PostView = () => {
               {content.type === "graph" && <FaChartLine className="icon" />}
             </span>
             <div className="timeline-content">
-              {content.type === "plain-text" && <p>{content["plain-text"]}</p>}
+              {content.type === "plain-text" && (
+                <div
+                  onMouseUp={handleTextSelection} // Detect selection for annotation
+                  className="annotated-content"
+                >
+                  {renderContentWithAnnotations(content["plain-text"])}
+                </div>
+              )}
               {content.type === "news" && (
                 <div className="news">
                   <a

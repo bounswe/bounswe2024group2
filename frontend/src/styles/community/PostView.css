@@ -213,3 +213,12 @@ h1 {
 .comment-box button:hover {
   background-color: var(--color-primary-300);
 }
+
+.annotated-text {
+  background-color: rgba(255, 255, 0, 0.5); /* Light yellow */
+  cursor: pointer;
+}
+
+.annotated-text:hover {
+  background-color: rgba(255, 255, 0, 0.7); /* Brighter on hover */
+}
