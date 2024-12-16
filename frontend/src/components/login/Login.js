@@ -32,7 +32,7 @@ function Login() {
       if (response.success) {
         toast.success("Login successful!");
         
-        navigate("/home");
+        navigate("/community");
       } else {
         setError(response.error || "Login failed! Please ensure that your username and password are correct.");
         toast.error(response.error || "Login failed! Please ensure that your username and password are correct.");
