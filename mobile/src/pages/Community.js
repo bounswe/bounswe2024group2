@@ -97,6 +97,36 @@ const Community = ({navigation}) => {
         }
     };
 
+    const postLike = async (postId) => {
+        const likeURL = `${baseURL}/like`;
+        try {
+            const response = await fetch(likeURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ post_id: postId }),
+            });
+            if (response.ok) {
+                fetchPosts();
+                Alert.alert('Liked successfully!');
+            } else {
+                console.error(`Failed to like the post: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error liking the post:', error);
+        }
+    };
+
+    const handleLike = (postId) => {
+        if (!accessToken) {
+            navigation.navigate('Login&Register');
+            Alert.alert('Please login to like the post');
+            return;
+        }
+        postLike(postId);
+    };
 
     useFocusEffect(
         React.useCallback(() => {
@@ -172,8 +202,8 @@ const Community = ({navigation}) => {
             </View>
 
             <View style={styles.actions}>
-                <TouchableOpacity style={styles.actionButton}>
-                    <Text>👍 {post.liked_by.length}</Text>
+                <TouchableOpacity style={post.liked_by.includes(userId) ? styles.likedButton : styles.actionButton} onPress={() => handleLike(post.id)}>
+                    <Text style={post.liked_by.includes(userId) ? styles.likedButtonText : styles.buttonText}>👍 {post.liked_by.length}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={styles.actionButton} 
@@ -222,13 +252,13 @@ const Community = ({navigation}) => {
                         />
                         <View style={styles.modalButtons}>
                             <TouchableOpacity style={styles.submitButton} onPress={handleAddComment}>
-                                <Text style={styles.buttonText}>Submit</Text>
+                                <Text style={styles.commentButtonText}>Submit</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.cancelButton}
                                 onPress={() => setShowCommentInput(false)}
                             >
-                                <Text style={styles.buttonText}>Cancel</Text>
+                                <Text style={styles.commentButtonText}>Cancel</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -320,7 +350,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     actionButton: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#e0f7fa',
+        padding: 10,
+        borderRadius: 5,
+    },
+    likedButton: {
+        backgroundColor: '#007BFF',
         padding: 10,
         borderRadius: 5,
     },
@@ -373,6 +408,18 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     buttonText: {
+        color: '#007BFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    likedButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    commentButtonText: {
         color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
