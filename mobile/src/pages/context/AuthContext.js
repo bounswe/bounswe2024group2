@@ -24,11 +24,15 @@
       if (!refreshToken) {
         console.warn('No refresh token available for logout.');
         setUsername(null);
+        setUserId(null);
         setRefreshToken(null);
+        setAccessToken(null);
         return;
       }else{
         setUsername(null);
+        setUserId(null);
         setRefreshToken(null);
+        setAccessToken(null);
         return;
       }
 
