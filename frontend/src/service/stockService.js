@@ -2,11 +2,12 @@ import { apiClient } from './apiClient';
 import log from '../utils/logger';
 
 const transformStockItem = (stockItem) => {
+    console.log("Transforming stock item:", stockItem);
     return {
         id: stockItem.id,
         code: stockItem.symbol,
         name: stockItem.name,
-        price: stockItem.detail.currentPrice,
+        price: stockItem?.detail?.currentPrice || stockItem?.price || 0,
         currency: stockItem.currency
     };
 }
@@ -26,6 +27,7 @@ export const StockService = {
             }
             );
             const stocks = response.data;
+            console.log("Similar stocks:", stocks);
             return stocks.map(transformStockItem);
         }
         catch (error) {
