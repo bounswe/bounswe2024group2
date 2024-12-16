@@ -2,7 +2,7 @@ import random
 from faker import Faker
 from django.core.management.base import BaseCommand
 from marketfeed.models import Post
-from onboarding.models import User  # Replace with your custom user model if applicable
+from onboarding.models import User
 
 class Command(BaseCommand):
     help = 'Generate fake data for the Post model if there are fewer than 100 posts in the database'
