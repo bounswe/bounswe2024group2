@@ -6,6 +6,7 @@ import { apiClient } from "../../service/apiClient";
 import CircleAnimation from "../CircleAnimation";
 import NotFound from "../notfound/NotFound";
 import UserService from "../../service/userService";
+import { renderContentWithAnnotations } from "./AnnotationUtils";
 import {
   FaNewspaper,
   FaImage,
@@ -24,43 +25,71 @@ const PostView = () => {
   const [tags, setTags] = useState([]);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
   const [annotations, setAnnotations] = useState([]);
+  const [usernameCache, setUsernameCache] = useState(new Map());
 
-  useEffect(() => {
-    const fetchAnnotations = async () => {
-      try {
-        const response = await apiClient.get(
-          `/annotations/post-annotations/${postId}`
-        );
-        setAnnotations(response.data);
-      } catch (error) {
-        console.error("Error fetching annotations:", error);
-      }
-    };
-
-    if (postId) {
-      fetchAnnotations();
+  const getUserName = async (userID) => {
+    if (usernameCache.has(userID)) {
+      return usernameCache.get(userID);
     }
-  }, [postId]);
+
+    try {
+      const userData = await apiClient.get(`/users/${userID}`);
+      const userName = userData.data.username;
+      setUsernameCache((prevCache) => new Map(prevCache).set(userID, userName)); // Update the cache
+      return userName;
+    } catch (error) {
+      console.error("Error fetching user name:", error);
+      return "Unknown";
+    }
+  };
+
+  const fetchAnnotations = async () => {
+    try {
+      const response = await apiClient.get(
+        `/annotations/post-annotations/${postId}`
+      );
+      console.log("Fetched annotations from API:", response.data);
+
+      const annotationsData = await Promise.all(
+        response.data.map(async (annotation) => {
+          const username = await getUserName(annotation.user_id); // Fetch username
+          const creationDate = new Date(
+            annotation.created_at
+          ).toLocaleDateString(); // Format creation date
+          return {
+            ...annotation,
+            username,
+            creationDate, // Store formatted creation date
+          };
+        })
+      );
+      setAnnotations(annotationsData);
+    } catch (error) {
+      console.error("Error fetching annotations:", error);
+    }
+  };
 
   const handleTextSelection = async () => {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
-      const selectedText = range.toString();
+      console.log("range", range);
+      // Normalize to prevent capturing whitespace:
+      const cleanText = range.toString().trim();
+      const cleanStart = range.startOffset + range.toString().search(/\S/);
+      const cleanEnd = cleanStart + cleanText.length;
 
-      if (selectedText.trim()) {
-        const start = range.startOffset;
-        const end = range.endOffset;
-
+      if (cleanText) {
         const note = prompt("Enter a note for the selected text:");
         if (note) {
           const annotationPayload = {
             post_id: parseInt(postId, 10),
-            start,
-            end,
+            start: cleanStart,
+            end: cleanEnd,
             value: note,
           };
-          console.log("payload", annotationPayload);
+
+          console.log("Payload to be sent:", annotationPayload);
 
           try {
             await apiClient.post("/annotations/", annotationPayload);
@@ -71,50 +100,6 @@ const PostView = () => {
           }
         }
       }
-    }
-  };
-
-  const renderContentWithAnnotations = (content) => {
-    let annotatedContent = [];
-    let currentIndex = 0;
-
-    annotations.forEach(({ start, end, value }, idx) => {
-      if (currentIndex < start) {
-        annotatedContent.push(
-          <span key={`plain-${idx}`}>{content.slice(currentIndex, start)}</span>
-        );
-      }
-
-      annotatedContent.push(
-        <span
-          key={`annotation-${idx}`}
-          className="annotated-text"
-          title={value} // Tooltip with annotation
-        >
-          {content.slice(start, end)}
-        </span>
-      );
-
-      currentIndex = end;
-    });
-
-    if (currentIndex < content.length) {
-      annotatedContent.push(
-        <span key="remainder">{content.slice(currentIndex)}</span>
-      );
-    }
-    console.log(annotatedContent);
-    return annotatedContent;
-  };
-
-  const getUserName = async (userID) => {
-    try {
-      const userData = await apiClient.get(`/users/${userID}`);
-      const userName = userData.data.username;
-      return userName;
-    } catch (error) {
-      console.error("Error fetching user name:", error);
-      return "Unknown";
     }
   };
 
@@ -227,6 +212,12 @@ const PostView = () => {
     }
   };
 
+  useEffect(() => {
+    if (postId) {
+      fetchAnnotations();
+    }
+  }, [postId]);
+
   if (loading) {
     return (
       <p>
@@ -281,7 +272,10 @@ const PostView = () => {
                   onMouseUp={handleTextSelection} // Detect selection for annotation
                   className="annotated-content"
                 >
-                  {renderContentWithAnnotations(content["plain-text"])}
+                  {renderContentWithAnnotations(
+                    content["plain-text"],
+                    annotations
+                  )}
                 </div>
               )}
               {content.type === "news" && (
