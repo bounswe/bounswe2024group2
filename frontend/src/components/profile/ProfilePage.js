@@ -86,9 +86,7 @@ const ProfilePage = () => {
       Followers: userProfile.followers,
       Following: userProfile.following
     };
-    
-    console.log("contentMap", contentMap);
-
+  
     const content = contentMap[currentTab];
     if (!content || content.length === 0) {
       return <p>No {currentTab.toLowerCase()} available.</p>;
