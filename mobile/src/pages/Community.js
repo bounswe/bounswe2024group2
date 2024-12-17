@@ -346,10 +346,11 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: 'black',
         borderRadius: 5,
         padding: 10,
         marginBottom: 20,
+        color: 'black',
     },
     postCard: {
         backgroundColor: '#fff',
@@ -495,9 +496,10 @@ const styles = StyleSheet.create({
         height: 40,
         marginLeft: 10,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',
+        color: "black",
     },
     
 });
