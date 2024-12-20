@@ -1,7 +1,3 @@
----
-title: CMPE451 Group 2 Milestone 3 Report
-
----
 
 # CMPE451 Group 2 Milestone 3 Report
 
